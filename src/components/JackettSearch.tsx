@@ -112,7 +112,7 @@ const JackettSearch = () => {
       field: "Title",
       sortable: true,
       resizable: true,
-      width: 300,
+      width: 500,
     },
 
     {
@@ -120,8 +120,8 @@ const JackettSearch = () => {
       field: "Seeders",
       sortable: true,
       resizable: true,
-      width: 100,
       sort: "desc",
+      width: 100,
     },
 
     {
@@ -137,8 +137,8 @@ const JackettSearch = () => {
     {
       headerName: "Actions",
       cellRenderer: (params: { data: JackettSearchResult }) => (
-        <div className="flex gap-2">
-          {params.data.Link ? (
+        <div>
+          {
             <Button
               color={
                 copiedItem?.type === "magnet" &&
@@ -147,14 +147,26 @@ const JackettSearch = () => {
                   : "secondary"
               }
               onPress={() =>
-                handleCopy("magnet", params.data.Link, params.data.Link)
+                handleCopy(
+                  "magnet",
+                  params.data.Link || `magnet:?xt=urn:btih:${params.data.InfoHash}`,
+                  params.data.Link || params.data.InfoHash
+                )
               }
             >
-              Copy Magnet
+              {params.data.Link ? "Copy 🧲" : "Copy InfoHash"}
             </Button>
-          ) : (
-            <span>no link</span>
-          )}
+          }
+        </div>
+      ),
+    },
+    {
+      headerName: "website",
+      field: "Details",
+      sortable: true,
+      resizable: true,
+      cellRenderer: (params: { data: JackettSearchResult }) => (
+        <>
           <Button
             color={
               copiedItem?.type === "source" &&
@@ -168,10 +180,8 @@ const JackettSearch = () => {
           >
             Copy Source
           </Button>
-        </div>
+        </>
       ),
-      width: 250,
-      resizable: true,
     },
     {
       headerName: "IndexerId",
@@ -262,7 +272,7 @@ const JackettSearch = () => {
       </div>
       <div
         className="ag-theme-material-auto-dark mx-auto p-4"
-        style={{ height: 400, width: "100%" }}
+        style={{ height: 500, width: "100%" }}
       >
         {error && (
           <p color="error" className="text-center">
