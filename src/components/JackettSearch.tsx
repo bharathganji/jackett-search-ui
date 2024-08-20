@@ -4,6 +4,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-material.css";
 import { ColDef } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
+import GitHubButton from "react-github-btn";
 
 // Define the interface for Jackett search results
 interface JackettSearchResult {
@@ -149,7 +150,8 @@ const JackettSearch = () => {
               onPress={() =>
                 handleCopy(
                   "magnet",
-                  params.data.Link || `magnet:?xt=urn:btih:${params.data.InfoHash}`,
+                  params.data.Link ||
+                    `magnet:?xt=urn:btih:${params.data.InfoHash}`,
                   params.data.Link || params.data.InfoHash
                 )
               }
@@ -237,11 +239,22 @@ const JackettSearch = () => {
         />
       )}
       <div className="flex flex-col w-full gap-4 p-4">
-        <h1>
-          <p className="text-2xl font-bold">
+        <div className="flex items-center gap-2 items-center">
+          <h1 className="text-2xl font-bold">
             Jackett Search ({results.length} Results)
-          </p>
-        </h1>
+          </h1>
+          <GitHubButton
+            href="https://github.com/bharathganji/jackett-search-ui"
+            data-color-scheme="no-preference: light; light: light; dark: dark;"
+            data-icon="octicon-star"
+            data-size="small"
+            data-show-count="true"
+            aria-label="Star bharathganji/pikpak-plus on GitHub"
+          >
+            Star
+          </GitHubButton>
+        </div>
+
         <div className="flex mb-4">
           <div className="flex mb-4 mt-4 w-full">
             <Input
