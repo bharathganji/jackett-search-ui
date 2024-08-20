@@ -58,6 +58,8 @@ This is a simple React UI for searching torrents using Jackett.
 - Ag-Grid
 - Vite
 
+![local view](local-image.png)
+
 ## Contributing
 
 Contributions are welcome! Please open an issue or submit a pull request.
