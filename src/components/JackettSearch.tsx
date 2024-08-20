@@ -97,6 +97,15 @@ const JackettSearch = () => {
     }, 1000);
   };
 
+  const renderMagetButton = (Link: string) => {
+    if (Link.startsWith("magnet:")) {
+      return "Copy 🧲";
+    } else {
+      return "Open";
+    }
+  };
+
+
   const indexerNames = Array.from(
     new Set(results.map((result) => result.IndexerId))
   );
@@ -114,6 +123,7 @@ const JackettSearch = () => {
       sortable: true,
       resizable: true,
       width: 500,
+      filter: 'agTextColumnFilter',
     },
 
     {
@@ -139,26 +149,24 @@ const JackettSearch = () => {
       headerName: "Actions",
       cellRenderer: (params: { data: JackettSearchResult }) => (
         <div>
-          {
-            <Button
-              color={
-                copiedItem?.type === "magnet" &&
-                copiedItem.id === params.data.Link
-                  ? "success"
-                  : "secondary"
+          <Button
+            color={
+              copiedItem?.type === "magnet" &&
+              copiedItem.id === params.data.Link
+                ? "success"
+                : "secondary"
+            }
+            onPress={() => {
+              if (params.data.Link.startsWith("magnet:")) {
+                handleCopy("magnet", params.data.Link, params.data.Link);
+              } else {
+                handleCopy("magnet", params.data.Link, params.data.Link);
+                window.open(params.data.Link, "_blank"); // Open in new tab
               }
-              onPress={() =>
-                handleCopy(
-                  "magnet",
-                  params.data.Link ||
-                    `magnet:?xt=urn:btih:${params.data.InfoHash}`,
-                  params.data.Link || params.data.InfoHash
-                )
-              }
-            >
-              {params.data.Link ? "Copy 🧲" : "Copy InfoHash"}
-            </Button>
-          }
+            }}
+          >
+            {renderMagetButton(params.data.Link)}
+          </Button>
         </div>
       ),
     },
@@ -190,6 +198,7 @@ const JackettSearch = () => {
       field: "IndexerId",
       sortable: true,
       resizable: true,
+      filter: 'agTextColumnFilter',
     },
     {
       headerName: "Year",
