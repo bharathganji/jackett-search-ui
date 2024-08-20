@@ -1,0 +1,14 @@
+node_modules/  
+dist/
+public/  
+build/  
+.eslintcache  
+.cache  
+config/  
+coverage/  
+.vscode/  
+.DS_Store  
+*.log  
+*.tmp  
+*.orig 
+.env
