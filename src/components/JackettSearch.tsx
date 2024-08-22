@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Input, Button, Progress, Chip } from "@nextui-org/react";
+import { Input, Button, Progress, Chip, Avatar } from "@nextui-org/react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-material.css";
 import { ColDef, GridOptions } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import GitHubButton from "react-github-btn";
+import HitsBadge from "./HitsBadge";
+import jackettLogo from "../assets/jackett-icon.png";
 
 // Define the interface for Jackett search results
 interface JackettSearchResult {
@@ -254,6 +256,7 @@ const JackettSearch = () => {
       )}
       <div className="flex flex-col w-full gap-4 p-4">
         <div className="flex gap-2 items-center">
+          <Avatar src={jackettLogo} size="lg" className="w-8 h-8" />
           <h1 className="text-2xl font-bold">
             Jackett Search ({results.length} Results)
           </h1>
@@ -320,6 +323,9 @@ const JackettSearch = () => {
             suppressDragLeaveHidesColumns={true}
           />
         )}
+      </div>
+      <div className="flex justify-center">
+        <HitsBadge />
       </div>
     </>
   );
