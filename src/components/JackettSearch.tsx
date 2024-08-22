@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Input, Button, Progress, Chip } from "@nextui-org/react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-material.css";
-import { ColDef } from "ag-grid-community";
+import { ColDef, GridOptions } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import GitHubButton from "react-github-btn";
 
@@ -48,7 +48,6 @@ const JackettSearch = () => {
         `${import.meta.env.VITE_JACKETT_API_URL}/search?query=${
           inputRef.current?.value || ""
         }`
-        // `http://localhost:8000/search?query=${inputRef.current?.value || ""}`
       );
 
       eventSourceRef.current = eventSource;
@@ -105,10 +104,14 @@ const JackettSearch = () => {
     }
   };
 
-
-  const indexerNames = Array.from(
-    new Set(results.map((result) => result.IndexerId))
-  );
+  // Optimized function to get unique indexer names from the results
+  const indexerNames = useMemo(() => {
+    const names = new Set<string>();
+    for (const result of results) {
+      names.add(result.IndexerId);
+    }
+    return Array.from(names);
+  }, [results]);
 
   // Helper function to convert size to GB
   const convertSizeToGB = (size: number): string => {
@@ -116,23 +119,21 @@ const JackettSearch = () => {
     const sizeInGB = sizeInBytes / (1024 * 1024 * 1024);
     return `${sizeInGB.toFixed(2)} GB`;
   };
+
   const columnDefs: ColDef<JackettSearchResult>[] = [
     {
       headerName: "Title",
       field: "Title",
       sortable: true,
       resizable: true,
-      width: 500,
-      filter: 'agTextColumnFilter',
+      filter: "agTextColumnFilter",
     },
-
     {
       headerName: "Seeders",
       field: "Seeders",
       sortable: true,
       resizable: true,
       sort: "desc",
-      width: 100,
     },
 
     {
@@ -140,8 +141,6 @@ const JackettSearch = () => {
       field: "Size",
       sortable: true,
       resizable: true,
-      width: 100,
-
       cellRenderer: (params: { value: number }) =>
         convertSizeToGB(params.value),
     },
@@ -198,16 +197,22 @@ const JackettSearch = () => {
       field: "IndexerId",
       sortable: true,
       resizable: true,
-      filter: 'agTextColumnFilter',
+      filter: "agTextColumnFilter",
     },
     {
       headerName: "Year",
       field: "Year",
       sortable: true,
       resizable: true,
-      width: 100,
     },
   ];
+
+  const gridOptions: GridOptions = {
+    rowHeight: 45,
+    autoSizeStrategy: {
+      type: "fitCellContents",
+    },
+  };
 
   useEffect(() => {
     let batch: JackettSearchResult[] = [];
@@ -248,7 +253,7 @@ const JackettSearch = () => {
         />
       )}
       <div className="flex flex-col w-full gap-4 p-4">
-        <div className="flex items-center gap-2 items-center">
+        <div className="flex gap-2 items-center">
           <h1 className="text-2xl font-bold">
             Jackett Search ({results.length} Results)
           </h1>
@@ -265,24 +270,34 @@ const JackettSearch = () => {
         </div>
 
         <div className="flex mb-4">
-          <div className="flex mb-4 mt-4 w-full">
-            <Input
-              ref={inputRef}
-              className="flex-grow mr-2"
-              placeholder="Search query"
-              isDisabled={loading}
-            />
-            <Button
-              color="primary"
-              variant="shadow"
-              isDisabled={loading}
-              onPress={fetchDataJackett}
-            >
-              Search
-            </Button>
-          </div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              fetchDataJackett();
+            }}
+            className="w-full"
+          >
+            <div className="flex mb-4 mt-4">
+              <Input
+                ref={inputRef}
+                className="flex-grow mr-2"
+                placeholder="Search query"
+                isDisabled={loading}
+              />
+              <Button
+                color="primary"
+                variant="solid"
+                isDisabled={loading}
+                isLoading={loading}
+                type="submit"
+              >
+                Search
+              </Button>
+            </div>
+          </form>
         </div>
       </div>
+      <div>{error && <p className="text-center text-red-500">{error}</p>}</div>
       <div className="flex flex-wrap gap-2 p-3">
         {indexerNames.map((indexer, index) => (
           <Chip key={index} color="primary" variant="shadow">
@@ -293,20 +308,16 @@ const JackettSearch = () => {
         ))}
       </div>
       <div
-        className="ag-theme-material-auto-dark mx-auto p-4"
-        style={{ height: 500, width: "100%" }}
+        className="ag-theme-material-auto-dark mx-auto p-4 w-full"
+        style={{ height: 500 }}
       >
-        {error && (
-          <p color="error" className="text-center">
-            {error}
-          </p>
-        )}
         {results.length > 0 && (
           <AgGridReact
             columnDefs={columnDefs}
+            gridOptions={gridOptions}
             rowData={results}
-            defaultColDef={{ sortable: true, resizable: true }}
             enableCellTextSelection={true}
+            suppressDragLeaveHidesColumns={true}
           />
         )}
       </div>
