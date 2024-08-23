@@ -253,8 +253,8 @@ const JackettSearch = () => {
       )}
       <div className="flex flex-col w-full gap-4 p-4">
         <div className="flex gap-2 items-center">
-          <Avatar src={jackettLogo} size="lg" className="w-8 h-8" />
-          <h1 className="text-2xl font-bold">
+          <Avatar src={jackettLogo} size="lg" className="w-8 h-8" alt="jackett logo" />
+          <h1>
             Jackett Search ({results.length} Results)
           </h1>
           <GitHubButton
