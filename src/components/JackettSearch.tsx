@@ -95,11 +95,11 @@ const JackettSearch = () => {
     setCopiedItem({ type, id });
     setTimeout(() => {
       setCopiedItem(null);
-    }, 1000);
+    }, 200);
   };
 
   const renderMagetButton = (Link: string) => {
-    if (Link.startsWith("magnet:")) {
+    if (Link?.startsWith("magnet:")) {
       return "Copy 🧲";
     } else {
       return "Open";
@@ -117,6 +117,7 @@ const JackettSearch = () => {
 
   // Helper function to convert size to GB
   const convertSizeToGB = (size: number): string => {
+    if (!size) return "N/A";
     const sizeInBytes = parseFloat(size.toString());
     const sizeInGB = sizeInBytes / (1024 * 1024 * 1024);
     return `${sizeInGB.toFixed(2)} GB`;
@@ -158,7 +159,7 @@ const JackettSearch = () => {
                 : "secondary"
             }
             onPress={() => {
-              if (params.data.Link.startsWith("magnet:")) {
+              if (params.data.Link?.startsWith("magnet:")) {
                 handleCopy("magnet", params.data.Link, params.data.Link);
               } else {
                 handleCopy("magnet", params.data.Link, params.data.Link);
@@ -185,11 +186,12 @@ const JackettSearch = () => {
                 ? "success"
                 : "secondary"
             }
-            onPress={() =>
-              handleCopy("source", params.data.Details, params.data.Details)
-            }
+            onPress={() => {
+              handleCopy("source", params.data.Details, params.data.Details);
+              window.open(params.data.Details, "_blank"); // Open in new tab
+            }}
           >
-            Copy Source
+            open Source
           </Button>
         </>
       ),
@@ -201,12 +203,7 @@ const JackettSearch = () => {
       resizable: true,
       filter: "agTextColumnFilter",
     },
-    {
-      headerName: "Year",
-      field: "Year",
-      sortable: true,
-      resizable: true,
-    },
+
   ];
 
   const gridOptions: GridOptions = {
@@ -301,15 +298,7 @@ const JackettSearch = () => {
         </div>
       </div>
       <div>{error && <p className="text-center text-red-500">{error}</p>}</div>
-      <div className="flex flex-wrap gap-2 p-3">
-        {indexerNames.map((indexer, index) => (
-          <Chip key={index} color="primary" variant="shadow">
-            {`${indexer} (${
-              results.filter((result) => result.IndexerId === indexer).length
-            })`}
-          </Chip>
-        ))}
-      </div>
+
       <div
         className="ag-theme-material-auto-dark mx-auto p-4 w-full"
         style={{ height: 500 }}
@@ -321,8 +310,18 @@ const JackettSearch = () => {
             rowData={results}
             enableCellTextSelection={true}
             suppressDragLeaveHidesColumns={true}
+            suppressMovableColumns={true}
           />
         )}
+      </div>
+      <div className="flex flex-wrap gap-2 p-3">
+        {indexerNames.map((indexer, index) => (
+          <Chip key={index} color="primary" variant="shadow">
+            {`${indexer} (${
+              results.filter((result) => result.IndexerId === indexer).length
+            })`}
+          </Chip>
+        ))}
       </div>
       <div className="flex justify-center">
         <HitsBadge />
