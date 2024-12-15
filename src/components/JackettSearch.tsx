@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, memo } from "react";
 import { Input, Button, Progress, Chip, Avatar } from "@nextui-org/react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-material.css";
@@ -22,7 +22,7 @@ interface JackettSearchResult {
 }
 
 // JackettSearch component for searching and displaying results
-const JackettSearch = () => {
+const JackettSearch = memo(() => {
   const [results, setResults] = useState<JackettSearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -203,7 +203,6 @@ const JackettSearch = () => {
       resizable: true,
       filter: "agTextColumnFilter",
     },
-
   ];
 
   const gridOptions: GridOptions = {
@@ -253,10 +252,13 @@ const JackettSearch = () => {
       )}
       <div className="flex flex-col w-full gap-4 p-4">
         <div className="flex gap-2 items-center">
-          <Avatar src={jackettLogo} size="lg" className="w-8 h-8" alt="jackett logo" />
-          <h1>
-            Jackett Search ({results.length} Results)
-          </h1>
+          <Avatar
+            src={jackettLogo}
+            size="lg"
+            className="w-8 h-8"
+            alt="jackett logo"
+          />
+          <h1>Jackett Search ({results.length} Results)</h1>
           <GitHubButton
             href="https://github.com/bharathganji/jackett-search-ui"
             data-color-scheme="no-preference: light; light: light; dark: dark;"
@@ -328,6 +330,6 @@ const JackettSearch = () => {
       </div>
     </>
   );
-};
+});
 
 export default JackettSearch;
