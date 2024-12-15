@@ -1,5 +1,12 @@
 import { useEffect, useMemo, useRef, useState, memo } from "react";
-import { Input, Button, Progress, Chip, Avatar } from "@nextui-org/react";
+import {
+  Input,
+  Button,
+  Progress,
+  Chip,
+  Avatar,
+  Image,
+} from "@nextui-org/react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-material.css";
 import { ColDef, GridOptions } from "ag-grid-community";
@@ -7,6 +14,11 @@ import { AgGridReact } from "ag-grid-react";
 import GitHubButton from "react-github-btn";
 import HitsBadge from "./HitsBadge";
 import jackettLogo from "../assets/jackett-icon.png";
+import magnetOutline from "../assets/magnet-outline.svg";
+import openOutline from "../assets/open-outline.svg";
+import toast from "react-simple-toasts";
+import "react-simple-toasts/dist/style.css";
+import "./JackettSearch.css";
 
 // Define the interface for Jackett search results
 interface JackettSearchResult {
@@ -43,9 +55,8 @@ const JackettSearch = memo(() => {
       eventSourceRef.current.close();
       eventSourceRef.current = null;
     }
-
+    const timeout = 60000; // 1 minute
     try {
-      // Create a new EventSource instance for the query
       const eventSource = new EventSource(
         `${import.meta.env.VITE_JACKETT_API_URL}/search?query=${
           inputRef.current?.value || ""
@@ -53,6 +64,14 @@ const JackettSearch = memo(() => {
       );
 
       eventSourceRef.current = eventSource;
+
+      const abortController = new AbortController();
+      const timeoutId = setTimeout(() => {
+        abortController.abort();
+        eventSource.close();
+        setLoading(false);
+        setError("1 minute  Timeout exceeded");
+      }, timeout);
 
       eventSource.onmessage = (event) => {
         try {
@@ -72,6 +91,11 @@ const JackettSearch = memo(() => {
         setLoading(true);
         console.log("EventSource connection opened");
       };
+
+      // Clean up the timeout when the component unmounts
+      return () => {
+        clearTimeout(timeoutId);
+      };
     } catch (error) {
       console.error("Error fetching data:", error);
       setError("Error fetching data");
@@ -80,29 +104,43 @@ const JackettSearch = memo(() => {
     }
   };
 
-  const [copiedItem, setCopiedItem] = useState<{
-    type: "magnet" | "source";
-    id: string;
-  } | null>(null);
-
   // Handle copy to clipboard
-  const handleCopy = (
-    type: "magnet" | "source",
-    content: string,
-    id: string
-  ) => {
-    navigator.clipboard.writeText(content);
-    setCopiedItem({ type, id });
-    setTimeout(() => {
-      setCopiedItem(null);
-    }, 200);
+  const handleCopy = (type: "magnet" | "source", content: string) => {
+    navigator.clipboard.writeText(content).then(
+      () => {
+        toast(`Copied ${type} link to clipboard`, { className: "my-toast" });
+      },
+      () => {
+        toast(`Failed to copy ${type} link to clipboard`, { theme: "light" });
+      }
+    );
   };
 
   const renderMagetButton = (Link: string) => {
     if (Link?.startsWith("magnet:")) {
-      return "Copy 🧲";
+      return (
+        <Image
+          style={{
+            filter: "invert(1)",
+          }}
+          src={magnetOutline}
+          alt="magnet"
+          width={20}
+          height={20}
+        />
+      );
     } else {
-      return "Open";
+      return (
+        <Image
+          style={{
+            filter: "invert(1)",
+          }}
+          src={openOutline}
+          alt="magnet"
+          width={20}
+          height={20}
+        />
+      );
     }
   };
 
@@ -138,31 +176,30 @@ const JackettSearch = memo(() => {
       resizable: true,
       sort: "desc",
     },
-
     {
       headerName: "Size",
       field: "Size",
       sortable: true,
       resizable: true,
+      width: 120,
       cellRenderer: (params: { value: number }) =>
         convertSizeToGB(params.value),
     },
     {
       headerName: "Actions",
+      width: 100,
+      resizable: false,
+      sortable: false,
       cellRenderer: (params: { data: JackettSearchResult }) => (
         <div>
           <Button
-            color={
-              copiedItem?.type === "magnet" &&
-              copiedItem.id === params.data.Link
-                ? "success"
-                : "secondary"
-            }
+            isIconOnly
+            color="secondary"
             onPress={() => {
               if (params.data.Link?.startsWith("magnet:")) {
-                handleCopy("magnet", params.data.Link, params.data.Link);
+                handleCopy("magnet", params.data.Link);
               } else {
-                handleCopy("magnet", params.data.Link, params.data.Link);
+                handleCopy("magnet", params.data.Link);
                 window.open(params.data.Link, "_blank"); // Open in new tab
               }
             }}
@@ -175,23 +212,28 @@ const JackettSearch = memo(() => {
     {
       headerName: "website",
       field: "Details",
-      sortable: true,
-      resizable: true,
+      sortable: false,
+      resizable: false,
+      width: 100,
       cellRenderer: (params: { data: JackettSearchResult }) => (
         <>
           <Button
-            color={
-              copiedItem?.type === "source" &&
-              copiedItem.id === params.data.Details
-                ? "success"
-                : "secondary"
-            }
+            color="primary"
+            isIconOnly
             onPress={() => {
-              handleCopy("source", params.data.Details, params.data.Details);
+              handleCopy("source", params.data.Details);
               window.open(params.data.Details, "_blank"); // Open in new tab
             }}
           >
-            open Source
+            <Image
+              style={{
+                filter: "invert(1)",
+              }}
+              src={openOutline}
+              alt="jackett"
+              width={20}
+              height={20}
+            />
           </Button>
         </>
       ),
