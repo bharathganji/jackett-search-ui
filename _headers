@@ -1,0 +1,22 @@
+# Headers for all files
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  
+# Headers for HTML files
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+  
+# Headers for static assets
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+  
+# Headers for JavaScript and CSS
+*.js
+  Content-Type: application/javascript; charset=utf-8
+  Cache-Control: public, max-age=31536000, immutable
+  
+*.css
+  Content-Type: text/css; charset=utf-8
+  Cache-Control: public, max-age=31536000, immutable

@@ -1,0 +1,5 @@
+name = "jackett-search-ui"
+compatibility_date = "2024-08-14"
+
+# Cloudflare Pages configuration
+pages_build_output_dir = "dist"
