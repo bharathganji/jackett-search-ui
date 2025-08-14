@@ -28,6 +28,7 @@ interface JackettSearchResult {
   Details: string;
 }
 
+const apiUrl = __API_URL__;
 // JackettSearch component for searching and displaying results
 const JackettSearch = memo(() => {
   // Use regular state instead of sessionStorage to start fresh on page reload
@@ -134,10 +135,7 @@ const JackettSearch = memo(() => {
 
     toast.info("Search cancelled");
   }, []);
-  console.log(
-    "VITE_APP_JACKETT_API_URL:",
-    import.meta.env.VITE_APP_JACKETT_API_URL
-  );
+  console.log("apiUrl:", apiUrl);
 
   // Function to fetch data from Jackett
   const fetchDataJackett = (): void => {
@@ -190,7 +188,7 @@ const JackettSearch = memo(() => {
 
     try {
       // Build the search URL based on indexer selection
-      let searchUrl = `${import.meta.env.VITE_APP_JACKETT_API_URL}/search?query=${encodeURIComponent(query)}`;
+      let searchUrl = `${apiUrl}/search?query=${encodeURIComponent(query)}`;
       let useMultipleEndpoint = false;
 
       // If specific indexers are selected and search mode is 'selected'
@@ -201,10 +199,10 @@ const JackettSearch = memo(() => {
         if (indexerSelection.selectedIndexers.length === 1) {
           // Single indexer - use the existing single indexer endpoint
           const indexerId = indexerSelection.selectedIndexers[0];
-          searchUrl = `${import.meta.env.VITE_APP_JACKETT_API_URL}/search/${indexerId}?query=${encodeURIComponent(query)}`;
+          searchUrl = `${apiUrl}/search/${indexerId}?query=${encodeURIComponent(query)}`;
         } else {
           // Multiple indexers - use the new multiple endpoint
-          searchUrl = `${import.meta.env.VITE_APP_JACKETT_API_URL}/search/multiple?query=${encodeURIComponent(query)}`;
+          searchUrl = `${apiUrl}/search/multiple?query=${encodeURIComponent(query)}`;
           useMultipleEndpoint = true;
         }
       }
