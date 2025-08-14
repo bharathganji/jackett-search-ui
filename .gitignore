@@ -12,3 +12,4 @@ coverage/
 *.orig 
 .env
 .million
+*.tsbuildinfo
