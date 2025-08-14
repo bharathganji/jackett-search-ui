@@ -15,5 +15,4 @@ cwd = "."
 watch_dir = "src"
 
 # Static site configuration
-[[pages_build_output_dir]]
-value = "dist"
+pages_build_output_dir = "dist"
