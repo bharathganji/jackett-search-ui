@@ -134,6 +134,7 @@ const JackettSearch = memo(() => {
 
     toast.info("Search cancelled");
   }, []);
+  console.log("VITE_JACKETT_API_URL:", import.meta.env.VITE_JACKETT_API_URL);
 
   // Function to fetch data from Jackett
   const fetchDataJackett = (): void => {
