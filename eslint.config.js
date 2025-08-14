@@ -27,22 +27,22 @@ export default tseslint.config(
         "warn",
         { allowConstantExport: true },
       ],
-      // Import rules
-      "import/order": [
-        "error",
-        {
-          groups: [
-            "builtin",
-            "external",
-            "internal",
-            "parent",
-            "sibling",
-            "index",
-          ],
-          "newlines-between": "always",
-          alphabetize: { order: "asc", caseInsensitive: true },
-        },
-      ],
+      // Import rules - disabled to avoid conflict with Prettier's sort-imports plugin
+      // "import/order": [
+      //   "error",
+      //   {
+      //     groups: [
+      //       "builtin",
+      //       "external",
+      //       "internal",
+      //       "parent",
+      //       "sibling",
+      //       "index",
+      //     ],
+      //     "newlines-between": "always",
+      //     alphabetize: { order: "asc", caseInsensitive: true },
+      //   },
+      // ],
       "import/no-duplicates": "error",
       "import/no-unused-modules": "warn",
       // Unused imports
