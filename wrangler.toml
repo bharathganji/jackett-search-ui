@@ -1,0 +1,19 @@
+name = "jackett-search-ui"
+compatibility_date = "2024-08-14"
+
+[env.production]
+name = "jackett-search-ui"
+
+[env.production.vars]
+# Environment variables for production
+NODE_ENV = "production"
+
+# Build configuration
+[build]
+command = "npm run build"
+cwd = "."
+watch_dir = "src"
+
+# Static site configuration
+[[pages_build_output_dir]]
+value = "dist"

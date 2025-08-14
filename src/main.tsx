@@ -1,10 +1,24 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
+import { StrictMode } from "react";
 
-createRoot(document.getElementById('root')!).render(
+import { createRoot } from "react-dom/client";
+
+import App from "./App.tsx";
+import { ThemeProvider } from "./components/ThemeProvider.tsx";
+import { Toaster } from "./components/ui/sonner";
+import "./index.css";
+
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <App />
-  </StrictMode>,
-)
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+    >
+      <div className="font-sans antialiased">
+        <App />
+        <Toaster />
+      </div>
+    </ThemeProvider>
+  </StrictMode>
+);

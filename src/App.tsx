@@ -1,11 +1,13 @@
-// src/App.jsx
- import JackettSearch from "./components/JackettSearch";
- 
+import { ErrorBoundary } from "./components/ErrorBoundary";
+import JackettSearch from "./components/JackettSearch";
+
 function App() {
   return (
-    <div className="App">
-      <JackettSearch/>
-    </div>
+    <ErrorBoundary>
+      <div className="App">
+        <JackettSearch />
+      </div>
+    </ErrorBoundary>
   );
 }
 

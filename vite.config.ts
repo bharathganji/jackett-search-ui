@@ -1,24 +1,29 @@
-import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import MillionLint from "@million/lint";
+import path from "path";
+import { defineConfig } from "vite";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-
-  plugins: [react(),
-    MillionLint.vite()
-  ],
+  plugins: [react()],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
   build: {
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          if (id.includes("ag-grid")) {
-            return "ag-grid"; // Group ag-grid related modules into a separate chunk
+          // Group large third-party libraries into separate chunks
+          if (id.includes("node_modules")) {
+            if (id.includes("react") || id.includes("react-dom")) {
+              return "react";
+            }
+            if (id.includes("lucide-react")) {
+              return "icons";
+            }
+            return "vendor";
           }
-          if (id.includes("nextui")) {
-            return "nextui"; // Group NextUI components into a separate chunk
-          }
-          // ... your other chunking logic ...
         },
       },
     },

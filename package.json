@@ -1,43 +1,100 @@
 {
-  "name": "jackett-ui",
+  "name": "jackett-search-ui",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "Modern React-based UI for Jackett torrent search with real-time streaming results, advanced filtering, mobile-responsive design, and efficient caching",
+  "keywords": [
+    "jackett",
+    "torrent",
+    "search",
+    "react",
+    "typescript",
+    "vite",
+    "ui",
+    "modern",
+    "real-time",
+    "streaming",
+    "mobile-responsive",
+    "virtualization",
+    "caching",
+    "tailwindcss",
+    "shadcn"
+  ],
+  "author": "Bharath Ganji",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bharathganji/jackett-search-ui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bharathganji/jackett-search-ui/issues"
+  },
+  "homepage": "https://github.com/bharathganji/jackett-search-ui#readme",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint . --ext ts,tsx",
-    "preview": "vite preview"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,md}\"",
+    "format:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,json,css,md}\"",
+    "preview": "vite preview",
+    "prepare": "husky",
+    "release": "standard-version",
+    "release:minor": "standard-version --release-as minor",
+    "release:major": "standard-version --release-as major",
+    "release:patch": "standard-version --release-as patch",
+    "version": "echo 'Version updated to' $npm_package_version",
+    "postversion": "git push && git push --tags"
   },
   "engines": {
     "node": ">=18",
     "npm": ">=9"
   },
   "dependencies": {
-    "@million/lint": "^1.0.14",
-    "@nextui-org/react": "2.6.8",
-    "@nextui-org/system": "^2.2.5",
-    "@nextui-org/theme": "^2.2.9",
-    "ag-grid-community": "^32.1.0",
-    "ag-grid-react": "^32.1.0",
-    "axios": "^1.7.4",
-    "framer-motion": "^11.3.28",
+    "@radix-ui/react-progress": "^1.1.7",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@tanstack/react-virtual": "^3.13.12",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.539.0",
+    "next-themes": "^0.4.6",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-github-btn": "^1.4.0",
-    "react-simple-toasts": "^6.0.1"
+    "sonner": "^2.0.7",
+    "tailwind-merge": "^3.3.1",
+    "tailwindcss-animate": "^1.0.7"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,css,md}": [
+      "prettier --write"
+    ]
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@eslint/js": "9.17.0",
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/react": "19.0.1",
     "@types/react-dom": "19.0.2",
     "@vitejs/plugin-react": "4.3.4",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.9.0",
+    "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
+    "eslint-plugin-unused-imports": "^4.1.4",
     "globals": "^15.9.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.5",
     "postcss": "^8.4.41",
+    "prettier": "^3.6.2",
+    "standard-version": "^9.5.0",
     "tailwindcss": "^3.4.10",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
