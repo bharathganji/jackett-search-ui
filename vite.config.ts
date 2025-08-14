@@ -7,10 +7,14 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react()],
-    base: "/", // Ensure proper base path for deployment
-    publicDir: "public", // Explicit public directory
+    base: "/",
+    publicDir: "public",
     define: {
       __APP_ENV__: JSON.stringify(env.APP_ENV),
+      // Add other variables as needed
+      __API_URL__: JSON.stringify(
+        env.VITE_APP_JACKETT_API_URL || process.env.VITE_APP_JACKETT_API_URL
+      ),
     },
     resolve: {
       alias: {
