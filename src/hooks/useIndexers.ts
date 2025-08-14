@@ -13,7 +13,7 @@ export function useIndexers() {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_JACKETT_API_URL}/indexers`
+        `${import.meta.env.VITE_APP_JACKETT_API_URL}/indexers`
       );
 
       if (!response.ok) {

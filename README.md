@@ -1,4 +1,4 @@
-````markdown
+```markdown
 # Jackett Search UI
 
 This is a simple React UI for searching torrents using Jackett.
@@ -8,8 +8,7 @@ This is a simple React UI for searching torrents using Jackett.
 - Search for torrents using a [Jackett API endpoint](https://github.com/bharathganji/jackett-python).
 - Display search results in a table with information like title, seeders, leechers, size, and indexer.
 - Copy magnet links and source links to clipboard.
-````
-
+```
 
 ## Getting Started
 
@@ -31,7 +30,7 @@ This is a simple React UI for searching torrents using Jackett.
    Create a `.env` file in the root of the project and add the following line:
 
    ```
-   VITE_JACKETT_API_URL=http://your-jackett-server:port
+   VITE_APP_JACKETT_API_URL=http://your-jackett-server:port
    ```
 
    Replace `http://your-jackett-server:port` with your actual Jackett API URL.
@@ -70,5 +69,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 ### Disclaimer
 
-This project is for educational purposes and is not intended for illegal activities. Please respect the copyright and intellectual property rights of others. 
-
+This project is for educational purposes and is not intended for illegal activities. Please respect the copyright and intellectual property rights of others.
