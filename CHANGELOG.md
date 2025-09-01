@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/bharathganji/jackett-search-ui/compare/v1.0.1...v1.1.0) (2025-09-01)
+
+### Features
+
+- Add automated release workflow ([333d52b](https://github.com/bharathganji/jackett-search-ui/commit/333d52bbe4c94ba30812a4e6fdd64ea5c5291a32))
+- Remove ci.yml ([5bf1bd4](https://github.com/bharathganji/jackett-search-ui/commit/5bf1bd4cb7486b5e70633c81d05ccbfb83ea8810))
+
+### Bug Fixes
+
+- Configure git user in auto-release workflow ([ed5e7c0](https://github.com/bharathganji/jackett-search-ui/commit/ed5e7c0a6d5b6809892abaffa52d0b7f7bd9ddfd))
+
 ### 1.0.1 (2025-09-01)
 
 ### Bug Fixes
