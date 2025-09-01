@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState } from "react";
+import { Suspense, lazy, memo, useEffect, useRef, useState } from "react";
 
 import { toast } from "sonner";
 
@@ -9,14 +9,37 @@ import { useResultBatching } from "../hooks/useResultBatching";
 import { useSearch } from "../hooks/useSearch";
 import { useSearchCache } from "../hooks/useSearchCache";
 import type { IndexerSelectionState } from "../types/indexer";
-import { ErrorDisplay } from "./ErrorDisplay";
-import { Header } from "./Header";
-import { IndexerChips } from "./IndexerChips";
-import { IndexerSelector } from "./IndexerSelector";
-import { InfoDisplay } from "./InfoDisplay";
-import { ResultsTable } from "./ResultsTable";
-import { SearchForm } from "./SearchForm";
-import { SearchSuggestions } from "./SearchSuggestions";
+import { LoadingState } from "./LoadingState";
+
+// Dynamically import components for code splitting
+const ErrorDisplay = lazy(() =>
+  import("./ErrorDisplay").then((module) => ({ default: module.ErrorDisplay }))
+);
+const Header = lazy(() =>
+  import("./Header").then((module) => ({ default: module.Header }))
+);
+const IndexerChips = lazy(() =>
+  import("./IndexerChips").then((module) => ({ default: module.IndexerChips }))
+);
+const IndexerSelector = lazy(() =>
+  import("./IndexerSelector").then((module) => ({
+    default: module.IndexerSelector,
+  }))
+);
+const InfoDisplay = lazy(() =>
+  import("./InfoDisplay").then((module) => ({ default: module.InfoDisplay }))
+);
+const ResultsTable = lazy(() =>
+  import("./ResultsTable").then((module) => ({ default: module.ResultsTable }))
+);
+const SearchForm = lazy(() =>
+  import("./SearchForm").then((module) => ({ default: module.SearchForm }))
+);
+const SearchSuggestions = lazy(() =>
+  import("./SearchSuggestions").then((module) => ({
+    default: module.SearchSuggestions,
+  }))
+);
 
 // Define the interface for Jackett search results
 interface JackettSearchResult {
@@ -127,54 +150,82 @@ const JackettSearch = memo(() => {
   return (
     <>
       <div className="flex flex-col w-full gap-4 p-2 sm:p-4">
-        <Header />
+        <Suspense fallback={<LoadingState message="Loading header..." />}>
+          <Header />
+        </Suspense>
 
-        <SearchForm
-          ref={inputRef}
-          onSubmit={(e) => {
-            e.preventDefault();
-            fetchDataJackettWrapper();
-          }}
-          onCancel={cancelSearch}
-          loading={loading}
-          showSuggestions={results.length === 0 && !loading}
-        />
+        <Suspense fallback={<LoadingState message="Loading search form..." />}>
+          <SearchForm
+            ref={inputRef}
+            onSubmit={(e: React.FormEvent) => {
+              e.preventDefault();
+              fetchDataJackettWrapper();
+            }}
+            onCancel={cancelSearch}
+            loading={loading}
+            showSuggestions={results.length === 0 && !loading}
+          />
+        </Suspense>
 
         {error && (
-          <ErrorDisplay error={error} onRetry={fetchDataJackettWrapper} />
+          <Suspense
+            fallback={<LoadingState message="Loading error display..." />}
+          >
+            <ErrorDisplay error={error} onRetry={fetchDataJackettWrapper} />
+          </Suspense>
         )}
-        {info && <InfoDisplay message={info} variant="info" />}
+        {info && (
+          <Suspense
+            fallback={<LoadingState message="Loading info display..." />}
+          >
+            <InfoDisplay message={info} variant="info" />
+          </Suspense>
+        )}
 
-        <IndexerSelector
-          indexers={indexers}
-          loading={indexersLoading}
-          error={indexersError}
-          selectionState={indexerSelection}
-          onSelectionChange={setIndexerSelection}
-          onRefetch={refetchIndexers}
-        />
+        <Suspense
+          fallback={<LoadingState message="Loading indexer selector..." />}
+        >
+          <IndexerSelector
+            indexers={indexers}
+            loading={indexersLoading}
+            error={indexersError}
+            selectionState={indexerSelection}
+            onSelectionChange={setIndexerSelection}
+            onRefetch={refetchIndexers}
+          />
+        </Suspense>
       </div>
 
       {results.length > 0 ? (
         <>
-          <ResultsTable
-            results={results}
-            onCopy={handleCopy}
-            indexers={indexers}
-          />
-          <IndexerChips results={results} indexers={indexers} />
+          <Suspense fallback={<LoadingState message="Loading results..." />}>
+            <ResultsTable
+              results={results}
+              onCopy={handleCopy}
+              indexers={indexers}
+            />
+          </Suspense>
+          <Suspense
+            fallback={<LoadingState message="Loading indexer chips..." />}
+          >
+            <IndexerChips results={results} indexers={indexers} />
+          </Suspense>
         </>
       ) : (
         !loading && (
           <div className="p-4">
-            <SearchSuggestions
-              onSuggestionClick={(suggestion) => {
-                if (inputRef.current) {
-                  inputRef.current.value = suggestion;
-                  fetchDataJackettWrapper();
-                }
-              }}
-            />
+            <Suspense
+              fallback={<LoadingState message="Loading suggestions..." />}
+            >
+              <SearchSuggestions
+                onSuggestionClick={(suggestion: string) => {
+                  if (inputRef.current) {
+                    inputRef.current.value = suggestion;
+                    fetchDataJackettWrapper();
+                  }
+                }}
+              />
+            </Suspense>
           </div>
         )
       )}
