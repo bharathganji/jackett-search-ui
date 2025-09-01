@@ -2,18 +2,28 @@ name: Release
 
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v*'
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
+        
+    - name: Setup Git user
+      run: |
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git config --global user.name "github-actions[bot]"
         
     - name: Setup Node.js
       uses: actions/setup-node@v4
@@ -30,10 +40,48 @@ jobs:
         npx tsc --noEmit
         npm run format:check
         
+    # This section only runs when pushing to main branch (not tags)
+    - name: Determine version bump and create release
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: |
+        # Get the latest tag or set to 0.0 if none exists
+        if git describe --tags --abbrev=0 >/dev/null 2>&1; then
+          LATEST_TAG=$(git describe --tags --abbrev=0)
+        else
+          LATEST_TAG="v0.0.0"
+        fi
+        
+        echo "Latest tag: $LATEST_TAG"
+        
+        # Analyze commits since last tag to determine version bump
+        if git log --oneline $LATEST_TAG..HEAD | grep -q "feat:"; then
+          BUMP="minor"
+        elif git log --oneline $LATEST_TAG..HEAD | grep -q "fix:"; then
+          BUMP="patch"
+        elif git log --oneline $LATEST_TAG..HEAD | grep -q "perf:"; then
+          BUMP="patch"
+        else
+          BUMP="patch"  # Default to patch if no conventional commits found
+        fi
+        
+        echo "Bump type: $BUMP"
+        
+        # Create new version and tag
+        npm run release:$BUMP
+        
+        # Push changes and tags
+        git push --follow-tags origin main
+        
+        # Exit early as the tag push will trigger this workflow again
+        exit 0
+        
+    # This section only runs when pushing tags
     - name: Build project
+      if: startsWith(github.ref, 'refs/tags/')
       run: npm run build
       
     - name: Generate changelog
+      if: startsWith(github.ref, 'refs/tags/')
       id: changelog
       run: |
         # Get the tag name
@@ -51,6 +99,7 @@ jobs:
         fi
         
     - name: Create Release
+      if: startsWith(github.ref, 'refs/tags/')
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -62,6 +111,7 @@ jobs:
         prerelease: false
         
     - name: Upload Release Assets
+      if: startsWith(github.ref, 'refs/tags/')
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
