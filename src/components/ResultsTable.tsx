@@ -76,8 +76,10 @@ export function ResultsTable({ results, onCopy, indexers }: ResultsTableProps) {
     if (filter) {
       filtered = results.filter(
         (result) =>
-          result.Title.toLowerCase().includes(filter.toLowerCase()) ||
-          result.IndexerId.toLowerCase().includes(filter.toLowerCase())
+          (result.Title &&
+            result.Title.toLowerCase().includes(filter.toLowerCase())) ||
+          (result.IndexerId &&
+            result.IndexerId.toLowerCase().includes(filter.toLowerCase()))
       );
     }
 
