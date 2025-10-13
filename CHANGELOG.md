@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/bharathganji/jackett-search-ui/compare/v1.1.1...v1.2.0) (2025-10-13)
+
+### Features
+
+- Implement advanced fuzzy search with Fuse.js and improve UI components ([#5](https://github.com/bharathganji/jackett-search-ui/issues/5)) ([c675217](https://github.com/bharathganji/jackett-search-ui/commit/c6752177c383a6af4160735b3e9444b3c1f46130))
+
 ### [1.1.1](https://github.com/bharathganji/jackett-search-ui/compare/v1.1.0...v1.1.1) (2025-09-01)
 
 ### Code Refactoring
