@@ -1,23 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useVirtualizer } from "@tanstack/react-virtual";
-import {
-  ChevronLeft,
-  ChevronRight,
-  ExternalLink,
-  Globe,
-  Magnet,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, ExternalLink, Magnet } from "lucide-react";
 
 import {
   MobileSortModal,
   type SortOption,
 } from "@/components/ui/MobileSortModal";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
+import { advancedFuzzySearch } from "../lib/searchUtils";
 import type { Indexer } from "../types/indexer";
 
 interface JackettSearchResult {
@@ -38,7 +32,7 @@ interface ResultsTableProps {
   indexers: Indexer[];
 }
 
-export function ResultsTable({ results, onCopy, indexers }: ResultsTableProps) {
+export function ResultsTable({ results, onCopy }: ResultsTableProps) {
   const [filter, setFilter] = useState("");
   const [sortField, setSortField] =
     useState<keyof JackettSearchResult>("Seeders");
@@ -56,11 +50,6 @@ export function ResultsTable({ results, onCopy, indexers }: ResultsTableProps) {
     return `${sizeInGB.toFixed(2)} GB`;
   };
 
-  // Helper function to get indexer site link
-  const getIndexerSiteLink = (indexerId: string): string | undefined => {
-    return indexers.find((idx) => idx.id === indexerId)?.site_link;
-  };
-
   const renderMagetButton = (Link: string) => {
     if (Link?.startsWith("magnet:")) {
       return <Magnet className="h-4 w-4" />;
@@ -74,13 +63,8 @@ export function ResultsTable({ results, onCopy, indexers }: ResultsTableProps) {
     let filtered = results;
 
     if (filter) {
-      filtered = results.filter(
-        (result) =>
-          (result.Title &&
-            result.Title.toLowerCase().includes(filter.toLowerCase())) ||
-          (result.IndexerId &&
-            result.IndexerId.toLowerCase().includes(filter.toLowerCase()))
-      );
+      // Use the advanced fuzzy search utility function
+      filtered = advancedFuzzySearch(results, filter);
     }
 
     const sorted = filtered.sort((a, b) => {
@@ -115,23 +99,52 @@ export function ResultsTable({ results, onCopy, indexers }: ResultsTableProps) {
     };
   }, [results, filter, sortField, sortDirection, currentPage, itemsPerPage]);
 
+  // Determine row height based on screen size
+  const rowHeight =
+    typeof window !== "undefined" && window.innerWidth < 640 ? 180 : 60; // Increased mobile height to account for buttons
+
   const rowVirtualizer = useVirtualizer({
     count: paginatedResults.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => {
-      // Mobile cards are taller than desktop rows but more compact now
-      if (window.innerWidth < 640) {
-        return 160; // Reduced height for more compact mobile card
-      }
-      return 60; // Desktop row height
-    },
+    estimateSize: () => rowHeight,
     overscan: 5,
   });
+
+  // Ensure virtualizer updates when results change or window is resized
+  useEffect(() => {
+    rowVirtualizer?.measure?.();
+  }, [paginatedResults.length, rowVirtualizer]);
+
+  // Recalculate when window resizes
+  useEffect(() => {
+    const handleResize = () => {
+      // Update row height based on new window size
+      const newHeight = window.innerWidth < 640 ? 180 : 60;
+      if (newHeight !== rowHeight) {
+        setTimeout(() => {
+          rowVirtualizer?.measure?.();
+        }, 0);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [rowHeight, rowVirtualizer]);
 
   // Reset to first page when filter changes
   useEffect(() => {
     setCurrentPage(1);
   }, [filter]);
+
+  // Recalculate virtualizer on window resize
+  useEffect(() => {
+    const handleResize = () => {
+      rowVirtualizer?.measure?.();
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [rowVirtualizer]);
 
   const handleSort = (field: keyof JackettSearchResult) => {
     if (sortField === field) {
@@ -159,8 +172,8 @@ export function ResultsTable({ results, onCopy, indexers }: ResultsTableProps) {
   }
 
   return (
-    <Card className="mx-auto p-2 sm:p-4 w-full">
-      <CardHeader className="pb-4">
+    <Card className="w-full mx-2">
+      <CardHeader className="pb-3">
         <CardTitle className="space-y-3">
           <div className="flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between">
             <span className="text-lg font-semibold">
@@ -170,22 +183,41 @@ export function ResultsTable({ results, onCopy, indexers }: ResultsTableProps) {
               Page {currentPage} of {totalPages}
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row gap-2">
-            <select
-              value={itemsPerPage}
-              onChange={(e) => setItemsPerPage(Number(e.target.value))}
-              className="px-3 py-2 border rounded-md text-sm bg-background"
-            >
-              <option value={25}>25 per page</option>
-              <option value={50}>50 per page</option>
-              <option value={100}>100 per page</option>
-            </select>
-            <Input
-              placeholder="Filter results..."
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-              className="flex-1 sm:max-w-xs"
-            />
+          <div className="flex flex-col sm:flex-row gap-3 items-center">
+            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+              <select
+                value={itemsPerPage}
+                onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                className="px-3 py-2 border rounded-md text-sm bg-background"
+              >
+                <option value={25}>25 per page</option>
+                <option value={50}>50 per page</option>
+                <option value={100}>100 per page</option>
+              </select>
+              <div className="relative w-full sm:w-64">
+                <Input
+                  placeholder="Fuzzy search (e.g. '720p season 1 complete')..."
+                  value={filter}
+                  onChange={(e) => setFilter(e.target.value)}
+                  className="w-full"
+                />
+                {filter && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
+                    onClick={() => setFilter("")}
+                  >
+                    ×
+                  </Button>
+                )}
+              </div>
+            </div>
+            {filter && (
+              <div className="text-xs text-muted-foreground self-start sm:self-center">
+                {totalResults} of {results.length} results match "{filter}"
+              </div>
+            )}
           </div>
         </CardTitle>
       </CardHeader>
@@ -237,8 +269,12 @@ export function ResultsTable({ results, onCopy, indexers }: ResultsTableProps) {
         </div>
 
         {/* Virtualized List */}
-        <div ref={parentRef} className="h-[600px] sm:h-96 overflow-auto">
+        <div
+          ref={parentRef}
+          className="h-[600px] sm:h-96 overflow-auto mt-2 will-change-transform box-border"
+        >
           <div
+            key={`virtual-list-${paginatedResults.length}`}
             style={{
               height: `${rowVirtualizer.getTotalSize()}px`,
               width: "100%",
@@ -250,18 +286,21 @@ export function ResultsTable({ results, onCopy, indexers }: ResultsTableProps) {
               if (!result) return null;
               return (
                 <div
-                  key={virtualItem.key}
+                  key={`${virtualItem.key}-${virtualItem.index}`}
+                  data-index={virtualItem.index}
                   style={{
                     position: "absolute",
                     top: 0,
                     left: 0,
                     width: "100%",
                     height: `${virtualItem.size}px`,
+                    minHeight: `${virtualItem.size}px`,
                     transform: `translateY(${virtualItem.start}px)`,
                   }}
+                  className="overflow-hidden border-box"
                 >
                   {/* Desktop Layout */}
-                  <div className="hidden sm:grid grid-cols-12 gap-2 p-2 border-b hover:bg-muted/50 items-center text-sm">
+                  <div className="hidden sm:grid grid-cols-12 gap-2 p-2 border-b hover:bg-muted/50 items-center text-sm h-full">
                     <div className="col-span-5 truncate" title={result.Title}>
                       {result.Title}
                     </div>
@@ -308,104 +347,51 @@ export function ResultsTable({ results, onCopy, indexers }: ResultsTableProps) {
                     </div>
                   </div>
 
-                  {/* Mobile Layout - Card Design */}
-                  <div className="sm:hidden">
-                    <Card className="m-2 shadow-sm hover:shadow-md transition-all duration-200 border border-border/50 mobile-card-hover touch-manipulation active:scale-[0.98]">
-                      <div className="p-3 space-y-3">
-                        {/* Top Section - Title */}
-                        <div>
-                          <h3 className="font-semibold text-sm leading-tight line-clamp-2 text-foreground">
-                            {result.Title}
-                          </h3>
-                        </div>
-
-                        {/* Bottom Section - Horizontal Scrollable Chip Group */}
-                        <div className="space-y-3">
-                          {/* Chips Row */}
-                          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
-                            <Badge
-                              variant="chip-seeds"
-                              className="flex-shrink-0"
-                            >
-                              <span className="font-medium">
-                                {result.Seeders}
-                              </span>
-                              <span className="text-xs opacity-75">seeds</span>
-                            </Badge>
-
-                            <Badge
-                              variant="chip-size"
-                              className="flex-shrink-0"
-                            >
-                              <span className="font-medium">
-                                {convertSizeToGB(Number(result.Size))}
-                              </span>
-                            </Badge>
-
-                            <Badge
-                              variant="chip-indexer"
-                              className="flex-shrink-0"
-                            >
-                              <span>{result.IndexerId}</span>
-                              {getIndexerSiteLink(result.IndexerId) && (
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="h-4 w-4 p-0 hover:bg-white/20"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    window.open(
-                                      getIndexerSiteLink(result.IndexerId),
-                                      "_blank",
-                                      "noopener,noreferrer"
-                                    );
-                                  }}
-                                  title={`Visit ${result.IndexerId} site`}
-                                >
-                                  <Globe className="h-3 w-3" />
-                                </Button>
-                              )}
-                            </Badge>
-                          </div>
-
-                          {/* Action Buttons */}
-                          <div className="flex gap-2 justify-end">
-                            <Button
-                              variant="secondary"
-                              size="sm"
-                              className="flex items-center gap-1.5 min-h-[32px] px-3"
-                              onClick={() => {
-                                if (result.Link?.startsWith("magnet:")) {
-                                  onCopy("magnet", result.Link);
-                                } else {
-                                  onCopy("magnet", result.Link);
-                                  window.open(result.Link, "_blank");
-                                }
-                              }}
-                            >
-                              {renderMagetButton(result.Link)}
-                              <span className="text-xs font-medium">
-                                Magnet
-                              </span>
-                            </Button>
-                            <Button
-                              variant="default"
-                              size="sm"
-                              className="flex items-center gap-1.5 min-h-[32px] px-3"
-                              onClick={() => {
-                                onCopy("source", result.Details);
-                                window.open(result.Details, "_blank");
-                              }}
-                            >
-                              <ExternalLink className="h-4 w-4" />
-                              <span className="text-xs font-medium">
-                                Source
-                              </span>
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    </Card>
+                  {/* Mobile Layout - Card Format */}
+                  <div className="sm:hidden p-2 border-b hover:bg-muted/50 h-full">
+                    <div className="font-medium mb-2" title={result.Title}>
+                      {result.Title}
+                    </div>
+                    <div className="flex justify-between text-sm text-muted-foreground mb-2">
+                      <span>
+                        <span className="font-medium">{result.Seeders}</span>{" "}
+                        seeds
+                      </span>
+                      <span>{convertSizeToGB(Number(result.Size))}</span>
+                    </div>
+                    <div className="text-xs text-muted-foreground mb-3">
+                      Indexer: {result.IndexerId}
+                    </div>
+                    <div className="flex justify-between">
+                      <Button
+                        variant="default"
+                        size="sm"
+                        className="h-9 px-3"
+                        onClick={() => {
+                          onCopy("source", result.Details);
+                          window.open(result.Details, "_blank");
+                        }}
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                        <span className="ml-2">Source</span>
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        className="h-9 px-3"
+                        onClick={() => {
+                          if (result.Link?.startsWith("magnet:")) {
+                            onCopy("magnet", result.Link);
+                          } else {
+                            onCopy("magnet", result.Link);
+                            window.open(result.Link, "_blank");
+                          }
+                        }}
+                      >
+                        {renderMagetButton(result.Link)}
+                        <span className="ml-2">Magnet</span>
+                      </Button>
+                    </div>
                   </div>
                 </div>
               );
