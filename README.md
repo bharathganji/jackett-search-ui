@@ -48,10 +48,11 @@ A modern, responsive React-based UI for searching torrents using Jackett with re
    Edit `.env` and add your Jackett API URL:
 
    ```env
-   VITE_JACKETT_API_URL=http://your-jackett-server:port
+   VITE_JACKETT_API_URL=https://your-jackett-python-endpoint.com
    ```
 
-   Replace `http://your-jackett-server:port` with your actual Jackett API URL.
+   Replace `https://your-jackett-python-endpoint.com` with your actual Jackett Python API URL.
+   For more information about the Python endpoint, see: https://github.com/bharathganji/jackett-python/
 
 4. **Start the development server:**
 
