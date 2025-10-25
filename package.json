@@ -39,6 +39,8 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,md}\"",
     "format:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,json,css,md}\"",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
     "preview": "vite preview",
     "prepare": "husky",
     "release": "standard-version",
@@ -66,7 +68,8 @@
     "react-github-btn": "^1.4.0",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "vitest": "^4.0.3"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [

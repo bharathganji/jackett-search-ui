@@ -1,16 +1,6 @@
 import { useCallback, useRef } from "react";
 
-interface JackettSearchResult {
-  Title: string;
-  Link: string;
-  InfoHash: string;
-  Seeders: number;
-  Leechers: number;
-  Size: string;
-  IndexerId: string;
-  Year: number;
-  Details: string;
-}
+import type { JackettSearchResult } from "../lib/searchUtils";
 
 interface CacheEntry {
   results: JackettSearchResult[];

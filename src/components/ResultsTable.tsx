@@ -11,20 +11,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
-import { advancedFuzzySearch } from "../lib/searchUtils";
+import {
+  type JackettSearchResult,
+  advancedFuzzySearch,
+} from "../lib/searchUtils";
 import type { Indexer } from "../types/indexer";
-
-interface JackettSearchResult {
-  Title: string;
-  Link: string;
-  InfoHash: string;
-  Seeders: number;
-  Leechers: number;
-  Size: string;
-  IndexerId: string;
-  Year: number;
-  Details: string;
-}
 
 interface ResultsTableProps {
   results: JackettSearchResult[];
@@ -41,6 +32,7 @@ export function ResultsTable({ results, onCopy }: ResultsTableProps) {
   const [itemsPerPage, setItemsPerPage] = useState(100);
 
   const parentRef = useRef<HTMLDivElement>(null);
+  const rowRefs = useRef<Map<number, HTMLDivElement>>(new Map());
 
   // Helper function to convert size to GB
   const convertSizeToGB = (size: number): string => {
@@ -99,52 +91,67 @@ export function ResultsTable({ results, onCopy }: ResultsTableProps) {
     };
   }, [results, filter, sortField, sortDirection, currentPage, itemsPerPage]);
 
-  // Determine row height based on screen size
-  const rowHeight =
-    typeof window !== "undefined" && window.innerWidth < 640 ? 180 : 60; // Increased mobile height to account for buttons
+  // Dynamic row height measurement function
+  const measureElement = (element: HTMLElement | null | undefined): number => {
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
+
+    if (!element) {
+      // Fallback to estimated height if element not found
+      // Mobile: ~220px for 3-line title + stats + indexer + buttons
+      // Desktop: ~60px for single row (fixed, all content is truncated)
+      return isMobile ? 220 : 60;
+    }
+
+    // Desktop: Always use fixed height since all content is truncated
+    if (!isMobile) {
+      return 60;
+    }
+
+    // Mobile: Get the actual scrollHeight of the element to account for wrapped content
+    // Add a small buffer to ensure content doesn't get clipped
+    return Math.ceil(element.scrollHeight) + 2;
+  };
 
   const rowVirtualizer = useVirtualizer({
     count: paginatedResults.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => rowHeight,
+    estimateSize: (index) => {
+      // Get the ref for this row if it exists, otherwise use fallback
+      const element = rowRefs.current.get(index) || null;
+      return measureElement(element);
+    },
+    measureElement: (element) => {
+      return measureElement(element as HTMLElement | null);
+    },
     overscan: 5,
   });
 
-  // Ensure virtualizer updates when results change or window is resized
+  // Measure all visible rows after they render
   useEffect(() => {
-    rowVirtualizer?.measure?.();
-  }, [paginatedResults.length, rowVirtualizer]);
+    // Use requestAnimationFrame to ensure DOM is fully rendered before measuring
+    const measureTimer = requestAnimationFrame(() => {
+      rowVirtualizer.measure();
+    });
+    return () => cancelAnimationFrame(measureTimer);
+  }, [paginatedResults.length, paginatedResults, rowVirtualizer]);
 
   // Recalculate when window resizes
   useEffect(() => {
     const handleResize = () => {
-      // Update row height based on new window size
-      const newHeight = window.innerWidth < 640 ? 180 : 60;
-      if (newHeight !== rowHeight) {
-        setTimeout(() => {
-          rowVirtualizer?.measure?.();
-        }, 0);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [rowHeight, rowVirtualizer]);
-
-  // Reset to first page when filter changes
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [filter]);
-
-  // Recalculate virtualizer on window resize
-  useEffect(() => {
-    const handleResize = () => {
-      rowVirtualizer?.measure?.();
+      // Clear cached measurements and remeasure
+      setTimeout(() => {
+        rowVirtualizer.measure();
+      }, 0);
     };
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, [rowVirtualizer]);
+
+  // Reset to first page when filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filter]);
 
   const handleSort = (field: keyof JackettSearchResult) => {
     if (sortField === field) {
@@ -172,7 +179,7 @@ export function ResultsTable({ results, onCopy }: ResultsTableProps) {
   }
 
   return (
-    <Card className="w-full mx-2">
+    <Card className="w-full">
       <CardHeader className="pb-3">
         <CardTitle className="space-y-3">
           <div className="flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between">
@@ -183,18 +190,18 @@ export function ResultsTable({ results, onCopy }: ResultsTableProps) {
               Page {currentPage} of {totalPages}
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row gap-3 items-center">
-            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row gap-3 items-center overflow-hidden">
+            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto min-w-0">
               <select
                 value={itemsPerPage}
                 onChange={(e) => setItemsPerPage(Number(e.target.value))}
-                className="px-3 py-2 border rounded-md text-sm bg-background"
+                className="px-3 py-2 border rounded-md text-sm bg-background flex-shrink-0"
               >
                 <option value={25}>25 per page</option>
                 <option value={50}>50 per page</option>
                 <option value={100}>100 per page</option>
               </select>
-              <div className="relative w-full sm:w-64">
+              <div className="relative w-full sm:w-64 min-w-0">
                 <Input
                   placeholder="Fuzzy search (e.g. '720p season 1 complete')..."
                   value={filter}
@@ -205,7 +212,7 @@ export function ResultsTable({ results, onCopy }: ResultsTableProps) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 flex-shrink-0"
                     onClick={() => setFilter("")}
                   >
                     ×
@@ -214,7 +221,7 @@ export function ResultsTable({ results, onCopy }: ResultsTableProps) {
               </div>
             </div>
             {filter && (
-              <div className="text-xs text-muted-foreground self-start sm:self-center">
+              <div className="text-xs text-muted-foreground self-start sm:self-center flex-shrink-0">
                 {totalResults} of {results.length} results match "{filter}"
               </div>
             )}
@@ -223,31 +230,31 @@ export function ResultsTable({ results, onCopy }: ResultsTableProps) {
       </CardHeader>
       <CardContent>
         {/* Header - Desktop */}
-        <div className="hidden sm:grid grid-cols-12 gap-2 p-2 border-b font-medium text-sm">
+        <div className="hidden sm:grid grid-cols-12 gap-2 p-2 border-b font-medium text-sm overflow-hidden">
           <div
-            className="col-span-5 cursor-pointer hover:text-primary"
+            className="col-span-5 cursor-pointer hover:text-primary truncate"
             onClick={() => handleSort("Title")}
           >
             Title{" "}
             {sortField === "Title" && (sortDirection === "asc" ? "↑" : "↓")}
           </div>
           <div
-            className="col-span-1 cursor-pointer hover:text-primary text-center"
+            className="col-span-1 cursor-pointer hover:text-primary text-center flex-shrink-0"
             onClick={() => handleSort("Seeders")}
           >
             Seeds{" "}
             {sortField === "Seeders" && (sortDirection === "asc" ? "↑" : "↓")}
           </div>
           <div
-            className="col-span-1 cursor-pointer hover:text-primary text-center"
+            className="col-span-1 cursor-pointer hover:text-primary text-center flex-shrink-0"
             onClick={() => handleSort("Size")}
           >
             Size {sortField === "Size" && (sortDirection === "asc" ? "↑" : "↓")}
           </div>
-          <div className="col-span-1 text-center">Actions</div>
-          <div className="col-span-1 text-center">Link</div>
+          <div className="col-span-1 text-center flex-shrink-0">Actions</div>
+          <div className="col-span-1 text-center flex-shrink-0">Link</div>
           <div
-            className="col-span-3 cursor-pointer hover:text-primary"
+            className="col-span-3 cursor-pointer hover:text-primary truncate"
             onClick={() => handleSort("IndexerId")}
           >
             Indexer{" "}
@@ -271,7 +278,7 @@ export function ResultsTable({ results, onCopy }: ResultsTableProps) {
         {/* Virtualized List */}
         <div
           ref={parentRef}
-          className="h-[600px] sm:h-96 overflow-auto mt-2 will-change-transform box-border"
+          className="h-[600px] sm:h-96 overflow-auto mt-2 will-change-transform box-border overflow-x-hidden"
         >
           <div
             key={`virtual-list-${paginatedResults.length}`}
@@ -279,6 +286,7 @@ export function ResultsTable({ results, onCopy }: ResultsTableProps) {
               height: `${rowVirtualizer.getTotalSize()}px`,
               width: "100%",
               position: "relative",
+              overflow: "hidden",
             }}
           >
             {rowVirtualizer.getVirtualItems().map((virtualItem) => {
@@ -288,6 +296,13 @@ export function ResultsTable({ results, onCopy }: ResultsTableProps) {
                 <div
                   key={`${virtualItem.key}-${virtualItem.index}`}
                   data-index={virtualItem.index}
+                  ref={(el) => {
+                    if (el) {
+                      rowRefs.current.set(virtualItem.index, el);
+                    } else {
+                      rowRefs.current.delete(virtualItem.index);
+                    }
+                  }}
                   style={{
                     position: "absolute",
                     top: 0,
@@ -300,17 +315,20 @@ export function ResultsTable({ results, onCopy }: ResultsTableProps) {
                   className="overflow-hidden border-box"
                 >
                   {/* Desktop Layout */}
-                  <div className="hidden sm:grid grid-cols-12 gap-2 p-2 border-b hover:bg-muted/50 items-center text-sm h-full">
-                    <div className="col-span-5 truncate" title={result.Title}>
+                  <div className="hidden sm:grid grid-cols-12 gap-2 p-2 border-b hover:bg-muted/50 items-center text-sm h-[60px] overflow-hidden">
+                    <div
+                      className="col-span-5 truncate min-w-0"
+                      title={result.Title}
+                    >
                       {result.Title}
                     </div>
-                    <div className="col-span-1 text-center font-medium">
+                    <div className="col-span-1 text-center font-medium flex-shrink-0">
                       {result.Seeders}
                     </div>
-                    <div className="col-span-1 text-center">
+                    <div className="col-span-1 text-center flex-shrink-0">
                       {convertSizeToGB(Number(result.Size))}
                     </div>
-                    <div className="col-span-1 flex justify-center">
+                    <div className="col-span-1 flex justify-center flex-shrink-0">
                       <Button
                         variant="secondary"
                         size="icon"
@@ -327,7 +345,7 @@ export function ResultsTable({ results, onCopy }: ResultsTableProps) {
                         {renderMagetButton(result.Link)}
                       </Button>
                     </div>
-                    <div className="col-span-1 flex justify-center">
+                    <div className="col-span-1 flex justify-center flex-shrink-0">
                       <Button
                         variant="default"
                         size="icon"
@@ -340,7 +358,7 @@ export function ResultsTable({ results, onCopy }: ResultsTableProps) {
                         <ExternalLink className="h-3 w-3" />
                       </Button>
                     </div>
-                    <div className="col-span-3 flex items-center gap-2">
+                    <div className="col-span-3 flex items-center gap-2 min-w-0">
                       <span className="truncate" title={result.IndexerId}>
                         {result.IndexerId}
                       </span>
@@ -348,37 +366,42 @@ export function ResultsTable({ results, onCopy }: ResultsTableProps) {
                   </div>
 
                   {/* Mobile Layout - Card Format */}
-                  <div className="sm:hidden p-2 border-b hover:bg-muted/50 h-full">
-                    <div className="font-medium mb-2" title={result.Title}>
+                  <div className="sm:hidden p-3 border-b hover:bg-muted/50 flex flex-col gap-3">
+                    <div
+                      className="font-medium line-clamp-3 break-words"
+                      title={result.Title}
+                    >
                       {result.Title}
                     </div>
-                    <div className="flex justify-between text-sm text-muted-foreground mb-2">
-                      <span>
+                    <div className="flex justify-between text-sm text-muted-foreground gap-2 flex-wrap">
+                      <span className="flex-shrink-0">
                         <span className="font-medium">{result.Seeders}</span>{" "}
                         seeds
                       </span>
-                      <span>{convertSizeToGB(Number(result.Size))}</span>
+                      <span className="flex-shrink-0">
+                        {convertSizeToGB(Number(result.Size))}
+                      </span>
                     </div>
-                    <div className="text-xs text-muted-foreground mb-3">
+                    <div className="text-xs text-muted-foreground truncate min-w-0">
                       Indexer: {result.IndexerId}
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between gap-2 flex-wrap pt-1">
                       <Button
                         variant="default"
                         size="sm"
-                        className="h-9 px-3"
+                        className="h-9 px-3 flex-1 min-w-0"
                         onClick={() => {
                           onCopy("source", result.Details);
                           window.open(result.Details, "_blank");
                         }}
                       >
-                        <ExternalLink className="h-4 w-4" />
-                        <span className="ml-2">Source</span>
+                        <ExternalLink className="h-4 w-4 flex-shrink-0" />
+                        <span className="ml-2 truncate">Source</span>
                       </Button>
                       <Button
                         variant="secondary"
                         size="sm"
-                        className="h-9 px-3"
+                        className="h-9 px-3 flex-1 min-w-0"
                         onClick={() => {
                           if (result.Link?.startsWith("magnet:")) {
                             onCopy("magnet", result.Link);
@@ -389,7 +412,7 @@ export function ResultsTable({ results, onCopy }: ResultsTableProps) {
                         }}
                       >
                         {renderMagetButton(result.Link)}
-                        <span className="ml-2">Magnet</span>
+                        <span className="ml-2 truncate">Magnet</span>
                       </Button>
                     </div>
                   </div>

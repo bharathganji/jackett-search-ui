@@ -8,6 +8,7 @@ import { useLocalStorage } from "../hooks/usePersistentState";
 import { useResultBatching } from "../hooks/useResultBatching";
 import { useSearch } from "../hooks/useSearch";
 import { useSearchCache } from "../hooks/useSearchCache";
+import type { JackettSearchResult } from "../lib/searchUtils";
 import type { IndexerSelectionState } from "../types/indexer";
 import { ErrorDisplay } from "./ErrorDisplay";
 import { Header } from "./Header";
@@ -17,19 +18,6 @@ import { InfoDisplay } from "./InfoDisplay";
 import { ResultsTable } from "./ResultsTable";
 import { SearchForm } from "./SearchForm";
 import { SearchSuggestions } from "./SearchSuggestions";
-
-// Define the interface for Jackett search results
-interface JackettSearchResult {
-  Title: string;
-  Link: string;
-  InfoHash: string;
-  Seeders: number;
-  Leechers: number;
-  Size: string;
-  IndexerId: string;
-  Year: number;
-  Details: string;
-}
 
 // JackettSearch component for searching and displaying results
 const JackettSearch = memo(() => {
