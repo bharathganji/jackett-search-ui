@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.2](https://github.com/bharathganji/jackett-search-ui/compare/v1.3.1...v1.3.2) (2025-10-25)
+
+### Features
+
+- **ui:** Improve search form with clear button and enhance table performance ([0d7f3a2](https://github.com/bharathganji/jackett-search-ui/commit/0d7f3a2cba141b91cb46b8b0bec19639b93ebc2a))
+
 ### [1.3.1](https://github.com/bharathganji/jackett-search-ui/compare/v1.3.0...v1.3.1) (2025-10-25)
 
 ### Features
