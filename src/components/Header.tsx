@@ -12,7 +12,7 @@ export function Header() {
           <img
             src={jackettLogo}
             alt="jackett logo"
-            className="w-8 h-8 rounded-full flex-shrink-0"
+            className="w-8 h-8 rounded-full flex-shrink-0 dark:invert"
           />
           <h1 className="text-lg sm:text-xl font-semibold truncate">
             Jackett Search
