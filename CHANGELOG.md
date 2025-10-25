@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.1](https://github.com/bharathganji/jackett-search-ui/compare/v1.3.0...v1.3.1) (2025-10-25)
+
+### Features
+
+- **ui:** Add dark mode support to header logo ([#7](https://github.com/bharathganji/jackett-search-ui/issues/7)) ([21b4832](https://github.com/bharathganji/jackett-search-ui/commit/21b48321693275662bae54167bbdee6d86b24902))
+
 ## [1.3.0](https://github.com/bharathganji/jackett-search-ui/compare/v1.2.0...v1.3.0) (2025-10-25)
 
 ### Features
