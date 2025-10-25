@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/bharathganji/jackett-search-ui/compare/v1.2.0...v1.3.0) (2025-10-25)
+
+### Features
+
+- Add vitest testing framework and improve search utils ([#6](https://github.com/bharathganji/jackett-search-ui/issues/6)) ([54dba5b](https://github.com/bharathganji/jackett-search-ui/commit/54dba5b102e36eed784be5c9003dd8742844fb59))
+
 ## [1.2.0](https://github.com/bharathganji/jackett-search-ui/compare/v1.1.1...v1.2.0) (2025-10-13)
 
 ### Features
