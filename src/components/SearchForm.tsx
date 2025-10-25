@@ -1,6 +1,6 @@
 import { forwardRef, useState } from "react";
 
-import { Loader2, Search } from "lucide-react";
+import { Loader2, Search, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,10 +17,12 @@ interface SearchFormProps {
 export const SearchForm = forwardRef<HTMLInputElement, SearchFormProps>(
   ({ onSubmit, onCancel, loading, showSuggestions = false }, ref) => {
     const [showSuggestionsPanel, setShowSuggestionsPanel] = useState(false);
+    const [inputValue, setInputValue] = useState("");
 
     const handleSuggestionClick = (suggestion: string) => {
       if (ref && "current" in ref && ref.current) {
         ref.current.value = suggestion;
+        setInputValue(suggestion);
         setShowSuggestionsPanel(false);
         // Trigger form submission
         const form = ref.current.closest("form");
@@ -32,6 +34,15 @@ export const SearchForm = forwardRef<HTMLInputElement, SearchFormProps>(
       }
     };
 
+    const handleClear = () => {
+      if (ref && "current" in ref && ref.current) {
+        ref.current.value = "";
+        setInputValue("");
+        setShowSuggestionsPanel(false);
+        ref.current.focus();
+      }
+    };
+
     return (
       <div className="w-full">
         <form onSubmit={onSubmit} className="w-full">
@@ -39,14 +50,32 @@ export const SearchForm = forwardRef<HTMLInputElement, SearchFormProps>(
             <div className="flex-1 relative">
               <Input
                 ref={ref}
-                className="w-full"
+                className="w-full pr-10"
                 placeholder="Search for torrents..."
                 disabled={loading}
-                onFocus={() => showSuggestions && setShowSuggestionsPanel(true)}
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onFocus={() =>
+                  showSuggestions &&
+                  !inputValue &&
+                  setShowSuggestionsPanel(true)
+                }
                 onBlur={() =>
                   setTimeout(() => setShowSuggestionsPanel(false), 200)
                 }
               />
+              {inputValue && !loading && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 flex-shrink-0 hover:bg-muted"
+                  onClick={handleClear}
+                  title="Clear search"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
             </div>
             {loading ? (
               // Cancel state - show red cancel button with spinner when loading

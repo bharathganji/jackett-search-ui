@@ -108,8 +108,12 @@ export function ResultsTable({ results, onCopy }: ResultsTableProps) {
     }
 
     // Mobile: Get the actual scrollHeight of the element to account for wrapped content
-    // Add a small buffer to ensure content doesn't get clipped
-    return Math.ceil(element.scrollHeight) + 2;
+    // Use getBoundingClientRect for more accurate measurement
+    const rect = element.getBoundingClientRect();
+    const height = Math.ceil(rect.height);
+
+    // Ensure minimum height and add small buffer for safety
+    return Math.max(height, 180);
   };
 
   const rowVirtualizer = useVirtualizer({
@@ -128,9 +132,11 @@ export function ResultsTable({ results, onCopy }: ResultsTableProps) {
 
   // Measure all visible rows after they render
   useEffect(() => {
-    // Use requestAnimationFrame to ensure DOM is fully rendered before measuring
+    // Use multiple requestAnimationFrames to ensure DOM is fully rendered and laid out
     const measureTimer = requestAnimationFrame(() => {
-      rowVirtualizer.measure();
+      requestAnimationFrame(() => {
+        rowVirtualizer.measure();
+      });
     });
     return () => cancelAnimationFrame(measureTimer);
   }, [paginatedResults.length, paginatedResults, rowVirtualizer]);
@@ -312,7 +318,7 @@ export function ResultsTable({ results, onCopy }: ResultsTableProps) {
                     minHeight: `${virtualItem.size}px`,
                     transform: `translateY(${virtualItem.start}px)`,
                   }}
-                  className="overflow-hidden border-box"
+                  className="box-border"
                 >
                   {/* Desktop Layout */}
                   <div className="hidden sm:grid grid-cols-12 gap-2 p-2 border-b hover:bg-muted/50 items-center text-sm h-[60px] overflow-hidden">
@@ -366,7 +372,7 @@ export function ResultsTable({ results, onCopy }: ResultsTableProps) {
                   </div>
 
                   {/* Mobile Layout - Card Format */}
-                  <div className="sm:hidden p-3 border-b hover:bg-muted/50 flex flex-col gap-3">
+                  <div className="sm:hidden p-3 border-b hover:bg-muted/50 flex flex-col gap-3 h-full">
                     <div
                       className="font-medium line-clamp-3 break-words"
                       title={result.Title}
