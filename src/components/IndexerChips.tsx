@@ -3,19 +3,8 @@ import { ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
+import type { JackettSearchResult } from "../lib/searchUtils";
 import type { Indexer } from "../types/indexer";
-
-interface JackettSearchResult {
-  Title: string;
-  Link: string;
-  InfoHash: string;
-  Seeders: number;
-  Leechers: number;
-  Size: string;
-  IndexerId: string;
-  Year: number;
-  Details: string;
-}
 
 interface IndexerChipsProps {
   results: JackettSearchResult[];

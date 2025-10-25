@@ -5,12 +5,12 @@ import Fuse from "fuse.js";
 export interface JackettSearchResult {
   Title: string;
   Link: string;
-  InfoHash: string;
+  InfoHash: string | null;
   Seeders: number;
-  Leechers: number;
-  Size: string;
+  Leechers: number | null;
+  Size: string | number;
   IndexerId: string;
-  Year: number;
+  Year: number | null;
   Details: string;
 }
 
@@ -38,6 +38,100 @@ export function filterValidSearchResults(
   return results.filter(isValidSearchResult);
 }
 
+// Common abbreviation mappings for torrent search
+const ABBREVIATION_MAP: Record<string, string[]> = {
+  "720": ["720p"],
+  "1080": ["1080p"],
+  "2160": ["2160p"],
+  "4k": ["2160p", "4k"],
+  multi: ["multiple", "multi"],
+  dub: ["dubbed", "dub", "dual"],
+  dual: ["dual", "dub", "dubbed"],
+  eng: ["english", "eng"],
+  sub: ["subtitle", "sub", "subs"],
+  hevc: ["hevc", "h265", "h.265"],
+  h264: ["h264", "h.264", "avc"],
+  avc: ["avc", "h264", "h.264"],
+  web: ["web-dl", "webrip", "web"],
+  bluray: ["bluray", "blu-ray", "bdrip", "bd"],
+  bdrip: ["bdrip", "bluray", "blu-ray"],
+  remux: ["remux"],
+  x265: ["x265", "hevc"],
+  x264: ["x264", "avc"],
+  aac: ["aac", "ac3"],
+  ac3: ["ac3", "aac"],
+  flac: ["flac"],
+  dts: ["dts"],
+  atmos: ["atmos"],
+  hdr: ["hdr", "hdr10"],
+  dv: ["dv", "dolby vision"],
+};
+
+// Helper function to expand search term with abbreviations
+function expandSearchTerm(term: string): string[] {
+  const termLower = term.toLowerCase();
+
+  // If term is in abbreviation map, return all variations
+  if (ABBREVIATION_MAP[termLower]) {
+    return [termLower, ...ABBREVIATION_MAP[termLower]];
+  }
+
+  // Check if term is a prefix of any abbreviation key
+  const matchingAbbreviations = Object.entries(ABBREVIATION_MAP)
+    .filter(([key]) => key.startsWith(termLower) || termLower.startsWith(key))
+    .flatMap(([, values]) => values);
+
+  if (matchingAbbreviations.length > 0) {
+    return [termLower, ...matchingAbbreviations];
+  }
+
+  return [termLower];
+}
+
+// Helper function to calculate match score for a single term
+function calculateTermScore(title: string, term: string): number | null {
+  const titleLower = title.toLowerCase();
+  const termLower = term.toLowerCase();
+
+  // Get all variations of the search term
+  const termVariations = expandSearchTerm(termLower);
+
+  // Check each variation
+  for (const variation of termVariations) {
+    // Exact substring match - highest priority
+    if (titleLower.includes(variation)) {
+      return 0; // Lower score is better
+    }
+
+    // Word boundary match (e.g., "Batman" matches "Batman Ninja")
+    const wordBoundaryRegex = new RegExp(
+      `\\b${variation.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`,
+      "i"
+    );
+    if (wordBoundaryRegex.test(title)) {
+      return 0.1;
+    }
+  }
+
+  // Use Fuse.js for fuzzy matching with all variations
+  const fuse = new Fuse([{ Title: title }], {
+    keys: ["Title"],
+    threshold: 0.3,
+    includeScore: true,
+    minMatchCharLength: Math.max(2, Math.floor(termLower.length * 0.6)),
+  });
+
+  // Try fuzzy matching with original term and variations
+  for (const variation of termVariations) {
+    const fuseResults = fuse.search(variation);
+    if (fuseResults.length > 0 && fuseResults[0]?.score != null) {
+      return fuseResults[0].score;
+    }
+  }
+
+  return null; // No match
+}
+
 // Function to perform advanced fuzzy search with multi-term matching
 export function advancedFuzzySearch(
   results: JackettSearchResult[],
@@ -45,120 +139,46 @@ export function advancedFuzzySearch(
 ): JackettSearchResult[] {
   if (!filter) return results;
 
-  // Split the filter into multiple terms for multiple matches
-  const filterTerms = filter.split(/\s+/).filter((term) => term.trim() !== "");
+  // Split the filter into multiple terms
+  const filterTerms = filter
+    .split(/\s+/)
+    .filter((term) => term.trim().length > 0);
 
-  if (filterTerms.length > 1) {
-    // For multiple terms, use an approach that prioritizes results with ALL terms
-    // but still allows for some flexibility with fuzzy matching
-    const matchingResults: FilteredResult[] = [];
+  if (filterTerms.length === 0) return results;
 
-    for (const result of results) {
-      let matchedTermsCount = 0;
-      let totalScore = 0;
-      let hasAllTerms = true;
+  // Score each result based on how well it matches all terms
+  const scoredResults: FilteredResult[] = [];
 
-      // Check each filter term against the result
-      for (const term of filterTerms) {
-        // First try exact match (case-insensitive)
-        const exactMatch =
-          result.Title.toLowerCase().includes(term.toLowerCase()) ||
-          (/\d+/.test(term) &&
-            new RegExp(`\\b${term}\\b`, "i").test(result.Title));
+  for (const result of results) {
+    const scores: number[] = [];
+    let matchedAllTerms = true;
 
-        if (exactMatch) {
-          matchedTermsCount++;
-          totalScore += 0.1; // Give a good score for exact matches
-        } else {
-          // If no exact match, try fuzzy match using Fuse with enhanced options
-          const fuse = new Fuse([result], {
-            keys: ["Title"],
-            threshold: 0.4, // Slightly more permissive threshold
-            includeScore: true,
-            minMatchCharLength: 1,
-            // Use more permissive matching options
-            ignoreLocation: true, // Ignore position when matching
-            ignoreFieldNorm: true, // Don't normalize field length
-          });
+    // Calculate score for each term
+    for (const term of filterTerms) {
+      const score = calculateTermScore(result.Title, term);
 
-          const termResults = fuse.search(term);
-          if (
-            termResults.length > 0 &&
-            termResults[0]?.score != null &&
-            termResults[0].score < 0.4
-          ) {
-            // Fuzzy match found
-            matchedTermsCount++;
-            totalScore += termResults[0].score || 0.5; // Add the fuzzy score
-          } else {
-            // For cases where simple fuzzy matching doesn't work, try a more permissive approach
-            // This helps with variations like "duL" vs "duaL" by checking for character sequence
-            const titleLower = result.Title.toLowerCase();
-            const termLower = term.toLowerCase();
-
-            // Check if the term characters appear in sequence (allowing for some insertions)
-            let sequenceMatch = false;
-            if (termLower.length >= 2) {
-              // Create a regex pattern that allows for some character insertions between letters
-              const escapedTerm = termLower.replace(
-                /[.*+?^${}()|[\]\\]/g,
-                "\\$&"
-              );
-              // Create pattern that allows for 0-2 characters between each character of the term
-              const pattern = escapedTerm.split("").join(".{0,2}");
-              const sequenceRegex = new RegExp(pattern, "i");
-              sequenceMatch = sequenceRegex.test(titleLower);
-            }
-
-            if (sequenceMatch) {
-              matchedTermsCount++;
-              totalScore += 0.6; // Medium score for sequence matches
-            } else {
-              // No match for this term
-              hasAllTerms = false;
-              break; // No need to check other terms if one doesn't match
-            }
-          }
-        }
+      if (score === null) {
+        // Term didn't match
+        matchedAllTerms = false;
+        break;
       }
 
-      // Only include results that match ALL terms (either exact or fuzzy)
-      if (hasAllTerms && matchedTermsCount === filterTerms.length) {
-        matchingResults.push({
-          item: result,
-          score: totalScore / matchedTermsCount, // Average score
-          matchCount: matchedTermsCount,
-        });
-      }
+      scores.push(score);
     }
 
-    // Sort results by match count (descending) then by average score (ascending, better matches first)
-    matchingResults.sort((a, b) => {
-      if (b.matchCount !== a.matchCount) {
-        return b.matchCount - a.matchCount; // More matches first
-      }
-      if (a.score != null && b.score != null) {
-        return (a.score || 1) - (b.score || 1); // Better score first
-      }
-      return 0;
-    });
-
-    return matchingResults.map((result) => result.item);
-  } else {
-    // For single term, use regular fuzzy search
-    const fuse = new Fuse(results, {
-      keys: [
-        { name: "Title", weight: 0.5 },
-        { name: "IndexerId", weight: 0.2 },
-      ],
-      threshold: 0.3, // Adjust threshold for fuzzy matching (0.0 = exact match, 1.0 = match anything)
-      includeScore: true,
-      minMatchCharLength: 1,
-    });
-
-    const searchResults = fuse.search(filter);
-    return searchResults.map(
-      (result: { item: JackettSearchResult }) => result.item
-    );
+    // Only include results that match ALL terms
+    if (matchedAllTerms && scores.length === filterTerms.length) {
+      const averageScore = scores.reduce((a, b) => a + b, 0) / scores.length;
+      scoredResults.push({
+        item: result,
+        score: averageScore,
+        matchCount: filterTerms.length,
+      });
+    }
   }
+
+  // Sort by score (ascending - lower is better)
+  scoredResults.sort((a, b) => (a.score || 0) - (b.score || 0));
+
+  return scoredResults.map((result) => result.item);
 }
