@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-
 import { Clock, Search, X } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+
+import { useRecentSearches } from "../hooks/useRecentSearches";
 
 interface SearchSuggestionsProps {
   onSuggestionClick: (suggestion: string) => void;
@@ -15,7 +15,7 @@ export function SearchSuggestions({
   onSuggestionClick,
   className = "",
 }: SearchSuggestionsProps) {
-  const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const { recentSearches, removeFromRecentSearches } = useRecentSearches();
 
   // Popular search suggestions
   const popularSuggestions = [
@@ -31,36 +31,7 @@ export function SearchSuggestions({
     "REMUX",
   ];
 
-  useEffect(() => {
-    // Load recent searches from localStorage
-    const stored = localStorage.getItem("jackett-recent-searches");
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        setRecentSearches(Array.isArray(parsed) ? parsed.slice(0, 5) : []);
-      } catch (error) {
-        console.error("Error parsing recent searches:", error);
-      }
-    }
-  }, []);
-
-  const addToRecentSearches = (query: string) => {
-    const updated = [query, ...recentSearches.filter((s) => s !== query)].slice(
-      0,
-      5
-    );
-    setRecentSearches(updated);
-    localStorage.setItem("jackett-recent-searches", JSON.stringify(updated));
-  };
-
-  const removeFromRecentSearches = (query: string) => {
-    const updated = recentSearches.filter((s) => s !== query);
-    setRecentSearches(updated);
-    localStorage.setItem("jackett-recent-searches", JSON.stringify(updated));
-  };
-
   const handleSuggestionClick = (suggestion: string) => {
-    addToRecentSearches(suggestion);
     onSuggestionClick(suggestion);
   };
 
