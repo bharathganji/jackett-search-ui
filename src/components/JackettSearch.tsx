@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { useEventSource } from "../hooks/useEventSource";
 import { useIndexers } from "../hooks/useIndexers";
 import { useLocalStorage } from "../hooks/usePersistentState";
+import { useRecentSearches } from "../hooks/useRecentSearches";
 import { useResultBatching } from "../hooks/useResultBatching";
 import { useSearch } from "../hooks/useSearch";
 import { useSearchCache } from "../hooks/useSearchCache";
@@ -29,6 +30,9 @@ const JackettSearch = memo(() => {
 
   // Search cache
   const { getCachedResults, setCachedResults } = useSearchCache();
+
+  // Recent searches
+  const { addToRecentSearches } = useRecentSearches();
 
   // Indexer management
   const {
@@ -70,6 +74,9 @@ const JackettSearch = memo(() => {
   // Wrapper function to match the expected signature
   const fetchDataJackettWrapper = () => {
     const query = inputRef.current?.value || "";
+    if (query.trim()) {
+      addToRecentSearches(query.trim());
+    }
     fetchDataJackett(query);
   };
 
