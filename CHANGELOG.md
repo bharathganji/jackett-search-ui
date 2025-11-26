@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.3](https://github.com/bharathganji/jackett-search-ui/compare/v1.3.2...v1.3.3) (2025-11-26)
+
+### Features
+
+- **search:** Add recent searches functionality with dedicated hook ([#8](https://github.com/bharathganji/jackett-search-ui/issues/8)) ([606c45e](https://github.com/bharathganji/jackett-search-ui/commit/606c45e5226e11e8a42495546ae4633fa8d21a3a))
+
 ### [1.3.2](https://github.com/bharathganji/jackett-search-ui/compare/v1.3.1...v1.3.2) (2025-10-25)
 
 ### Features
