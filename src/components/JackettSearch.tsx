@@ -19,6 +19,7 @@ import { InfoDisplay } from "./InfoDisplay";
 import { ResultsTable } from "./ResultsTable";
 import { SearchForm } from "./SearchForm";
 import { SearchSuggestions } from "./SearchSuggestions";
+import { SkeletonLoader } from "./SkeletonLoader";
 
 // JackettSearch component for searching and displaying results
 const JackettSearch = memo(() => {
@@ -110,7 +111,7 @@ const JackettSearch = memo(() => {
 
   return (
     <>
-      <div className="flex flex-col w-full gap-4 p-2 sm:p-4">
+      <div className="flex flex-col w-full gap-4 p-2 sm:p-4 animate-fadeIn">
         <Header />
 
         <SearchForm
@@ -139,6 +140,12 @@ const JackettSearch = memo(() => {
         />
       </div>
 
+      {loading && results.length === 0 && (
+        <div className="p-2 sm:p-4 animate-fadeIn">
+          <SkeletonLoader rows={10} />
+        </div>
+      )}
+
       {results.length > 0 ? (
         <>
           <ResultsTable
@@ -150,7 +157,7 @@ const JackettSearch = memo(() => {
         </>
       ) : (
         !loading && (
-          <div className="p-4">
+          <div className="p-4 animate-fadeIn">
             <SearchSuggestions
               onSuggestionClick={(suggestion: string) => {
                 if (inputRef.current) {

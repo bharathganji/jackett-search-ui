@@ -77,20 +77,21 @@ export function IndexerSelector({
   }
 
   return (
-    <Card className="w-full">
+    <Card className="w-full animate-fadeIn">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Globe className="h-5 w-5" />
+            <Globe className="h-5 w-5 text-primary" />
             <span>Indexers ({indexers.length})</span>
           </div>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setIsExpanded(!isExpanded)}
+            className="hover:bg-primary/10 transition-colors"
           >
             <ChevronDown
-              className={`h-4 w-4 transition-transform ${
+              className={`h-4 w-4 transition-transform duration-300 ${
                 isExpanded ? "rotate-180" : ""
               }`}
             />
@@ -105,7 +106,11 @@ export function IndexerSelector({
             }
             size="sm"
             onClick={() => handleModeChange("all")}
-            className="flex items-center gap-1"
+            className={`flex items-center gap-1 transition-all duration-200 ${
+              selectionState.searchMode === "all"
+                ? "bg-primary shadow-md hover:scale-105"
+                : "hover:bg-primary/5"
+            }`}
           >
             <Search className="h-3 w-3" />
             All Indexers
@@ -116,7 +121,11 @@ export function IndexerSelector({
             }
             size="sm"
             onClick={() => handleModeChange("selected")}
-            className="flex items-center gap-1"
+            className={`flex items-center gap-1 transition-all duration-200 ${
+              selectionState.searchMode === "selected"
+                ? "bg-primary shadow-md hover:scale-105"
+                : "hover:bg-primary/5"
+            }`}
             disabled={selectionState.selectedIndexers.length === 0}
           >
             <Check className="h-3 w-3" />
@@ -125,7 +134,11 @@ export function IndexerSelector({
         </div>
       </CardHeader>
 
-      {isExpanded && (
+      <div
+        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+          isExpanded ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
         <CardContent className="pt-0">
           <div className="space-y-4">
             {/* Search and Controls */}
@@ -134,20 +147,30 @@ export function IndexerSelector({
                 placeholder="Filter indexers..."
                 value={searchFilter}
                 onChange={(e) => setSearchFilter(e.target.value)}
-                className="flex-1"
+                className="flex-1 focus:ring-2 focus:ring-primary/20 transition-all"
               />
               <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={handleSelectAll}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleSelectAll}
+                  className="hover:bg-primary/10 transition-colors"
+                >
                   Select All
                 </Button>
-                <Button variant="outline" size="sm" onClick={handleSelectNone}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleSelectNone}
+                  className="hover:bg-primary/10 transition-colors"
+                >
                   Select None
                 </Button>
               </div>
             </div>
 
             {/* Indexer List */}
-            <div className="max-h-60 overflow-y-auto">
+            <div className="max-h-60 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                 {filteredIndexers.map((indexer) => {
                   const isSelected = selectionState.selectedIndexers.includes(
@@ -156,23 +179,31 @@ export function IndexerSelector({
                   return (
                     <div
                       key={indexer.id}
-                      className={`flex items-center justify-between p-2 rounded border cursor-pointer transition-colors ${
+                      role="button"
+                      tabIndex={0}
+                      className={`flex items-center justify-between p-2 rounded border cursor-pointer transition-all duration-200 ${
                         isSelected
-                          ? "bg-primary/10 border-primary"
-                          : "hover:bg-muted/50"
+                          ? "bg-primary/10 border-primary shadow-sm scale-[1.02]"
+                          : "hover:bg-muted/50 hover:border-primary/30"
                       }`}
                       onClick={() => handleIndexerToggle(indexer.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          handleIndexerToggle(indexer.id);
+                        }
+                      }}
                     >
                       <div className="flex items-center gap-2 flex-1 min-w-0">
                         <div
-                          className={`w-4 h-4 rounded border-2 flex items-center justify-center ${
+                          className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors duration-200 ${
                             isSelected
                               ? "bg-primary border-primary"
-                              : "border-muted-foreground"
+                              : "border-muted-foreground group-hover:border-primary"
                           }`}
                         >
                           {isSelected && (
-                            <Check className="h-3 w-3 text-primary-foreground" />
+                            <Check className="h-3 w-3 text-primary-foreground animate-scaleIn" />
                           )}
                         </div>
                         <span className="text-sm truncate" title={indexer.id}>
@@ -184,7 +215,7 @@ export function IndexerSelector({
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
-                        className="text-muted-foreground hover:text-primary"
+                        className="text-muted-foreground hover:text-primary transition-colors p-1 hover:bg-primary/10 rounded-full"
                       >
                         <Globe className="h-3 w-3" />
                       </a>
@@ -196,10 +227,14 @@ export function IndexerSelector({
 
             {/* Selected Summary */}
             {selectionState.selectedIndexers.length > 0 && (
-              <div className="pt-2 border-t">
+              <div className="pt-2 border-t animate-slideUp">
                 <div className="flex flex-wrap gap-1">
                   {selectionState.selectedIndexers.slice(0, 10).map((id) => (
-                    <Badge key={id} variant="secondary" className="text-xs">
+                    <Badge
+                      key={id}
+                      variant="secondary"
+                      className="text-xs bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                    >
                       {id}
                     </Badge>
                   ))}
@@ -213,7 +248,7 @@ export function IndexerSelector({
             )}
           </div>
         </CardContent>
-      )}
+      </div>
     </Card>
   );
 }
