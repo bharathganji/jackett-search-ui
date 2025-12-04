@@ -47,10 +47,10 @@ export const SearchForm = forwardRef<HTMLInputElement, SearchFormProps>(
       <div className="w-full">
         <form onSubmit={onSubmit} className="w-full">
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-2">
-            <div className="flex-1 relative">
+            <div className="flex-1 relative group">
               <Input
                 ref={ref}
-                className="w-full pr-10"
+                className="w-full pr-10 transition-all duration-300 focus:ring-2 focus:ring-primary/20 focus:border-primary hover:border-primary/50"
                 placeholder="Search for torrents..."
                 disabled={loading}
                 value={inputValue}
@@ -69,7 +69,7 @@ export const SearchForm = forwardRef<HTMLInputElement, SearchFormProps>(
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 flex-shrink-0 hover:bg-muted"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 flex-shrink-0 hover:bg-destructive/10 hover:text-destructive transition-colors duration-200"
                   onClick={handleClear}
                   title="Clear search"
                 >
@@ -78,24 +78,24 @@ export const SearchForm = forwardRef<HTMLInputElement, SearchFormProps>(
               )}
             </div>
             {loading ? (
-              // Cancel state - show red cancel button with spinner when loading
+              // Cancel state - show subtle red outline button with spinner
               <Button
-                variant="destructive"
+                variant="outline"
                 onClick={(e) => {
                   e.preventDefault();
                   onCancel();
                 }}
-                className="w-full sm:w-auto sm:min-w-[100px] h-10"
+                className="w-full sm:w-auto sm:min-w-[100px] h-10 border-destructive/50 text-destructive hover:bg-destructive/10 hover:text-destructive hover:border-destructive transition-all duration-300"
               >
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 Cancel
               </Button>
             ) : (
-              // Default state - show search button
+              // Default state - show search button with premium gradient
               <Button
                 variant="default"
                 type="submit"
-                className="w-full sm:w-auto sm:min-w-[100px] h-10"
+                className="w-full sm:w-auto sm:min-w-[100px] h-10 transition-all duration-300 hover:shadow-lg hover:scale-105 active:scale-95 bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 text-white font-medium"
               >
                 <Search className="w-4 h-4 mr-2" />
                 Search

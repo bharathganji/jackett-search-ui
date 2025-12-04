@@ -182,3 +182,11 @@ export function advancedFuzzySearch(
 
   return scoredResults.map((result) => result.item);
 }
+
+// Helper function to convert size to GB
+export const convertSizeToGB = (size: number | string): string => {
+  if (!size) return "N/A";
+  const sizeInBytes = parseFloat(size.toString());
+  const sizeInGB = sizeInBytes / (1024 * 1024 * 1024);
+  return `${sizeInGB.toFixed(2)} GB`;
+};
