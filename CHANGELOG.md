@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.5](https://github.com/bharathganji/jackett-search-ui/compare/v1.3.4...v1.3.5) (2025-12-24)
+
+### ⚠ BREAKING CHANGES
+
+- **ui:** search result interface now includes Relevance field for scoring
+
+- fix(types): updated import paths
+- **ui:** The ResultsTable component has been refactored into smaller,
+  more focused components. If you were importing or extending ResultsTable directly,
+  you'll need to update your imports to use the new component structure.
+
+- config: replace body line length limit rule with a disabled footer line length limit rule.
+
+### Features
+
+- **ui:** Enhance visual design with animations and premium styling ([#9](https://github.com/bharathganji/jackett-search-ui/issues/9)) ([7a1b613](https://github.com/bharathganji/jackett-search-ui/commit/7a1b613c2f9e21ec9a7237ccbfb86d353e3ca15b))
+- **ui:** implement advanced filtering and relevance-based search system ([#10](https://github.com/bharathganji/jackett-search-ui/issues/10)) ([bc2adb1](https://github.com/bharathganji/jackett-search-ui/commit/bc2adb1ea71eee84e6cce72ea278a99c68a0e93e))
+
 ### [1.3.4](https://github.com/bharathganji/jackett-search-ui/compare/v1.3.3...v1.3.4) (2025-11-26)
 
 ### Features

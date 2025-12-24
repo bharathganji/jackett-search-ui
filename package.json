@@ -1,7 +1,7 @@
 {
   "name": "jackett-search-ui",
   "private": true,
-  "version": "1.3.4",
+  "version": "1.3.5",
   "type": "module",
   "description": "Modern React-based UI for Jackett torrent search with real-time streaming results, advanced filtering, mobile-responsive design, and efficient caching",
   "keywords": [
