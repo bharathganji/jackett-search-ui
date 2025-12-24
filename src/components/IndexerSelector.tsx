@@ -4,7 +4,7 @@ import { Check, ChevronDown, Globe, Search } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
 import type { Indexer, IndexerSelectionState } from "../types/indexer";
@@ -77,26 +77,30 @@ export function IndexerSelector({
   }
 
   return (
-    <Card className="w-full animate-fadeIn">
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Globe className="h-5 w-5 text-primary" />
-            <span>Indexers ({indexers.length})</span>
+    <Card className="border-border bg-background/40 backdrop-blur-xl shadow-sm rounded-2xl overflow-hidden transition-all duration-500 animate-fadeIn">
+      <CardHeader className="pb-3 border-b border-border/20">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <Globe className="h-4 w-4 text-primary" />
+            </div>
+            <span className="text-sm font-bold tracking-tight text-foreground/80 uppercase text-[11px]">
+              Indexers ({indexers.length})
+            </span>
           </div>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setIsExpanded(!isExpanded)}
-            className="hover:bg-primary/10 transition-colors"
+            className="h-8 w-8 p-0 rounded-full hover:bg-primary/10 transition-colors"
           >
             <ChevronDown
-              className={`h-4 w-4 transition-transform duration-300 ${
+              className={`h-4 w-4 transition-transform duration-500 ${
                 isExpanded ? "rotate-180" : ""
               }`}
             />
           </Button>
-        </CardTitle>
+        </div>
 
         {/* Search Mode Toggle */}
         <div className="flex gap-2">
@@ -106,14 +110,14 @@ export function IndexerSelector({
             }
             size="sm"
             onClick={() => handleModeChange("all")}
-            className={`flex items-center gap-1 transition-all duration-200 ${
+            className={`flex-1 flex items-center justify-center gap-2 h-9 rounded-xl transition-all duration-300 ${
               selectionState.searchMode === "all"
-                ? "bg-primary shadow-md hover:scale-105"
-                : "hover:bg-primary/5"
+                ? "bg-gradient-to-r from-primary to-cyan-600 border-none text-white font-semibold"
+                : "border-border/50 hover:border-primary/30 hover:bg-primary/5"
             }`}
           >
-            <Search className="h-3 w-3" />
-            All Indexers
+            <Search className="h-3.5 w-3.5" />
+            <span className="text-xs">All Indexers</span>
           </Button>
           <Button
             variant={
@@ -121,57 +125,62 @@ export function IndexerSelector({
             }
             size="sm"
             onClick={() => handleModeChange("selected")}
-            className={`flex items-center gap-1 transition-all duration-200 ${
+            className={`flex-1 flex items-center justify-center gap-2 h-9 rounded-xl transition-all duration-300 ${
               selectionState.searchMode === "selected"
-                ? "bg-primary shadow-md hover:scale-105"
-                : "hover:bg-primary/5"
+                ? "bg-gradient-to-r from-primary to-cyan-600 border-none text-white font-semibold"
+                : "border-border/50 hover:border-primary/30 hover:bg-primary/5"
             }`}
             disabled={selectionState.selectedIndexers.length === 0}
           >
-            <Check className="h-3 w-3" />
-            Selected ({selectionState.selectedIndexers.length})
+            <Check className="h-3.5 w-3.5" />
+            <span className="text-xs">
+              Selected ({selectionState.selectedIndexers.length})
+            </span>
           </Button>
         </div>
       </CardHeader>
 
       <div
-        className={`overflow-hidden transition-all duration-300 ease-in-out ${
-          isExpanded ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+        className={`overflow-hidden transition-all duration-500 ease-in-out ${
+          isExpanded ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        <CardContent className="pt-0">
-          <div className="space-y-4">
+        <CardContent className="pt-6">
+          <div className="space-y-6">
             {/* Search and Controls */}
-            <div className="flex flex-col sm:flex-row gap-2">
-              <Input
-                placeholder="Filter indexers..."
-                value={searchFilter}
-                onChange={(e) => setSearchFilter(e.target.value)}
-                className="flex-1 focus:ring-2 focus:ring-primary/20 transition-all"
-              />
+            <div className="flex flex-col sm:flex-row gap-3">
+              <div className="relative flex-1 group">
+                <Input
+                  placeholder="Filter indexers..."
+                  value={searchFilter}
+                  onChange={(e) => setSearchFilter(e.target.value)}
+                  className="h-10 pl-10 bg-secondary/20 border-border/40 focus:border-primary/50 focus:ring-primary/10 transition-all rounded-xl"
+                />
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+              </div>
               <div className="flex gap-2">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={handleSelectAll}
-                  className="hover:bg-primary/10 transition-colors"
+                  className="px-4 bg-secondary/10 border-border/40 hover:border-primary/30 hover:bg-primary/10 rounded-xl transition-all font-medium text-xs"
                 >
-                  Select All
+                  All
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={handleSelectNone}
-                  className="hover:bg-primary/10 transition-colors"
+                  className="px-4 bg-secondary/10 border-border/40 hover:border-primary/30 hover:bg-primary/10 rounded-xl transition-all font-medium text-xs"
                 >
-                  Select None
+                  None
                 </Button>
               </div>
             </div>
 
             {/* Indexer List */}
-            <div className="max-h-60 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+            <div className="max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
                 {filteredIndexers.map((indexer) => {
                   const isSelected = selectionState.selectedIndexers.includes(
                     indexer.id
@@ -181,10 +190,10 @@ export function IndexerSelector({
                       key={indexer.id}
                       role="button"
                       tabIndex={0}
-                      className={`flex items-center justify-between p-2 rounded border cursor-pointer transition-all duration-200 ${
+                      className={`flex items-center justify-between p-3 rounded-xl border transition-all duration-300 ${
                         isSelected
-                          ? "bg-primary/10 border-primary shadow-sm scale-[1.02]"
-                          : "hover:bg-muted/50 hover:border-primary/30"
+                          ? "bg-primary/10 border-primary/40 scale-[1.01]"
+                          : "bg-secondary/10 border-transparent hover:border-primary/30 hover:bg-secondary/20"
                       }`}
                       onClick={() => handleIndexerToggle(indexer.id)}
                       onKeyDown={(e) => {
@@ -194,19 +203,21 @@ export function IndexerSelector({
                         }
                       }}
                     >
-                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
                         <div
-                          className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors duration-200 ${
+                          className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all duration-300 ${
                             isSelected
                               ? "bg-primary border-primary"
-                              : "border-muted-foreground group-hover:border-primary"
+                              : "border-muted-foreground/30"
                           }`}
                         >
                           {isSelected && (
-                            <Check className="h-3 w-3 text-primary-foreground animate-scaleIn" />
+                            <Check className="h-3.5 w-3.5 text-primary-foreground stroke-[3px] animate-scaleIn" />
                           )}
                         </div>
-                        <span className="text-sm truncate" title={indexer.id}>
+                        <span
+                          className={`text-sm font-medium truncate transition-colors ${isSelected ? "text-primary" : "text-foreground/90"}`}
+                        >
                           {indexer.id}
                         </span>
                       </div>
@@ -215,9 +226,9 @@ export function IndexerSelector({
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
-                        className="text-muted-foreground hover:text-primary transition-colors p-1 hover:bg-primary/10 rounded-full"
+                        className="text-muted-foreground hover:text-primary hover:bg-primary/10 p-1.5 rounded-full transition-all"
                       >
-                        <Globe className="h-3 w-3" />
+                        <Globe className="h-3.5 w-3.5" />
                       </a>
                     </div>
                   );
@@ -227,20 +238,23 @@ export function IndexerSelector({
 
             {/* Selected Summary */}
             {selectionState.selectedIndexers.length > 0 && (
-              <div className="pt-2 border-t animate-slideUp">
-                <div className="flex flex-wrap gap-1">
-                  {selectionState.selectedIndexers.slice(0, 10).map((id) => (
+              <div className="pt-4 border-t border-border/20">
+                <div className="flex flex-wrap gap-2">
+                  {selectionState.selectedIndexers.slice(0, 15).map((id) => (
                     <Badge
                       key={id}
-                      variant="secondary"
-                      className="text-xs bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                      variant="outline"
+                      className="px-3 py-1 bg-primary/10 border-primary/20 text-primary font-bold text-[10px] hover:bg-primary/20 transition-all rounded-full"
                     >
                       {id}
                     </Badge>
                   ))}
-                  {selectionState.selectedIndexers.length > 10 && (
-                    <Badge variant="secondary" className="text-xs">
-                      +{selectionState.selectedIndexers.length - 10} more
+                  {selectionState.selectedIndexers.length > 15 && (
+                    <Badge
+                      variant="outline"
+                      className="px-3 py-1 bg-secondary/20 border-border/50 text-[10px] font-bold text-muted-foreground rounded-full"
+                    >
+                      +{selectionState.selectedIndexers.length - 15} MORE
                     </Badge>
                   )}
                 </div>

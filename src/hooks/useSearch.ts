@@ -1,5 +1,5 @@
-import type { JackettSearchResult } from "../lib/searchUtils";
 import type { IndexerSelectionState } from "../types/indexer";
+import type { JackettSearchResult } from "../types/search";
 import { useEventSource } from "./useEventSource";
 
 interface UseSearchProps {

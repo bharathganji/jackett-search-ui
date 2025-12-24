@@ -2,6 +2,8 @@ import { memo, useEffect, useRef, useState } from "react";
 
 import { toast } from "sonner";
 
+import type { JackettSearchResult } from "@/types/search";
+
 import { useEventSource } from "../hooks/useEventSource";
 import { useIndexers } from "../hooks/useIndexers";
 import { useLocalStorage } from "../hooks/usePersistentState";
@@ -9,7 +11,6 @@ import { useRecentSearches } from "../hooks/useRecentSearches";
 import { useResultBatching } from "../hooks/useResultBatching";
 import { useSearch } from "../hooks/useSearch";
 import { useSearchCache } from "../hooks/useSearchCache";
-import type { JackettSearchResult } from "../lib/searchUtils";
 import type { IndexerSelectionState } from "../types/indexer";
 import { ErrorDisplay } from "./ErrorDisplay";
 import { Header } from "./Header";
@@ -48,6 +49,27 @@ const JackettSearch = memo(() => {
       searchMode: "all",
     });
 
+  // State for post-search indexer filtering
+  const [selectedIndexerFilters, setSelectedIndexerFilters] = useState<
+    string[]
+  >([]);
+
+  // Search query state for the search bar
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Toggle indexer filter
+  const handleIndexerFilterToggle = (indexerId: string) => {
+    setSelectedIndexerFilters((prev) =>
+      prev.includes(indexerId)
+        ? prev.filter((id) => id !== indexerId)
+        : [...prev, indexerId]
+    );
+  };
+
+  const handleClearIndexerFilters = () => {
+    setSelectedIndexerFilters([]);
+  };
+
   // Use the EventSource hook
   const { cleanupEventSource } = useEventSource();
   // Ref for the input element
@@ -73,8 +95,8 @@ const JackettSearch = memo(() => {
   });
 
   // Wrapper function to match the expected signature
-  const fetchDataJackettWrapper = () => {
-    const query = inputRef.current?.value || "";
+  const fetchDataJackettWrapper = (queryOverride?: string) => {
+    const query = queryOverride !== undefined ? queryOverride : searchQuery;
     if (query.trim()) {
       addToRecentSearches(query.trim());
     }
@@ -110,66 +132,85 @@ const JackettSearch = memo(() => {
   }, []);
 
   return (
-    <>
-      <div className="flex flex-col w-full gap-4 p-2 sm:p-4 animate-fadeIn">
-        <Header />
+    <div className="min-h-screen bg-background selection:bg-primary/20">
+      <div className="flex flex-col w-full max-w-7xl mx-auto gap-12 p-4 sm:p-8 animate-fadeIn">
+        {/* Unified Search Console */}
+        <div className="flex flex-col w-full max-w-4xl mx-auto gap-6 sm:gap-8">
+          <Header />
 
-        <SearchForm
-          ref={inputRef}
-          onSubmit={(e: React.FormEvent) => {
-            e.preventDefault();
-            fetchDataJackettWrapper();
-          }}
-          onCancel={cancelSearch}
-          loading={loading}
-          showSuggestions={results.length === 0 && !loading}
-        />
-
-        {error && (
-          <ErrorDisplay error={error} onRetry={fetchDataJackettWrapper} />
-        )}
-        {info && <InfoDisplay message={info} variant="info" />}
-
-        <IndexerSelector
-          indexers={indexers}
-          loading={indexersLoading}
-          error={indexersError}
-          selectionState={indexerSelection}
-          onSelectionChange={setIndexerSelection}
-          onRefetch={refetchIndexers}
-        />
-      </div>
-
-      {loading && results.length === 0 && (
-        <div className="p-2 sm:p-4 animate-fadeIn">
-          <SkeletonLoader rows={10} />
-        </div>
-      )}
-
-      {results.length > 0 ? (
-        <>
-          <ResultsTable
-            results={results}
-            onCopy={handleCopy}
-            indexers={indexers}
+          <SearchForm
+            ref={inputRef}
+            onSubmit={(e: React.FormEvent) => {
+              e.preventDefault();
+              fetchDataJackettWrapper();
+            }}
+            onCancel={cancelSearch}
+            loading={loading}
+            showSuggestions={results.length === 0 && !loading}
+            value={searchQuery}
+            onChange={setSearchQuery}
           />
-          <IndexerChips results={results} indexers={indexers} />
-        </>
-      ) : (
-        !loading && (
-          <div className="p-4 animate-fadeIn">
-            <SearchSuggestions
-              onSuggestionClick={(suggestion: string) => {
-                if (inputRef.current) {
-                  inputRef.current.value = suggestion;
-                  fetchDataJackettWrapper();
-                }
-              }}
-            />
+
+          {error && (
+            <div className="w-full">
+              <ErrorDisplay error={error} onRetry={fetchDataJackettWrapper} />
+            </div>
+          )}
+          {info && (
+            <div className="w-full">
+              <InfoDisplay message={info} variant="info" />
+            </div>
+          )}
+
+          <IndexerSelector
+            indexers={indexers}
+            loading={indexersLoading}
+            error={indexersError}
+            selectionState={indexerSelection}
+            onSelectionChange={setIndexerSelection}
+            onRefetch={refetchIndexers}
+          />
+        </div>
+
+        {loading && results.length === 0 && (
+          <div className="p-2 sm:p-4 animate-fadeIn">
+            <SkeletonLoader rows={10} />
           </div>
-        )
-      )}
-    </>
+        )}
+
+        {results.length > 0 ? (
+          <div className="space-y-8">
+            <ResultsTable
+              results={results}
+              onCopy={handleCopy}
+              indexers={indexers}
+              selectedIndexerFilters={selectedIndexerFilters}
+              searchQuery={searchQuery}
+            />
+            <div className="max-w-4xl mx-auto w-full">
+              <IndexerChips
+                results={results}
+                indexers={indexers}
+                selectedIndexerFilters={selectedIndexerFilters}
+                onToggleFilter={handleIndexerFilterToggle}
+                onClearFilters={handleClearIndexerFilters}
+              />
+            </div>
+          </div>
+        ) : (
+          !loading && (
+            <div className="max-w-4xl mx-auto w-full animate-fadeIn">
+              <SearchSuggestions
+                onSuggestionClick={(suggestion: string) => {
+                  setSearchQuery(suggestion);
+                  fetchDataJackettWrapper(suggestion);
+                }}
+              />
+            </div>
+          )
+        )}
+      </div>
+    </div>
   );
 });
 
