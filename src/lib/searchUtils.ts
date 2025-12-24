@@ -1,192 +1,144 @@
-// Import Fuse.js at the top of the file
 import Fuse from "fuse.js";
 
-// Define the interface for Jackett search results
-export interface JackettSearchResult {
-  Title: string;
-  Link: string;
-  InfoHash: string | null;
-  Seeders: number;
-  Leechers: number | null;
-  Size: string | number;
-  IndexerId: string;
-  Year: number | null;
-  Details: string;
-}
+import type { JackettSearchResult } from "../types/search";
 
-// Define the type for our intermediate results with match counts
-interface FilteredResult {
-  item: JackettSearchResult;
-  score: number | undefined;
-  matchCount: number;
-}
-
-// Function to validate Jackett search results
+/**
+ * Validates basic structure of a search result
+ */
 export function isValidSearchResult(result: JackettSearchResult): boolean {
-  // Check if Title exists and is not empty
   return !!(
     result.Title &&
     typeof result.Title === "string" &&
-    result.Title.trim().length > 0
+    result.Title.trim()
   );
 }
 
-// Function to filter valid search results
+/**
+ * Function to filter valid search results
+ */
 export function filterValidSearchResults(
   results: JackettSearchResult[]
 ): JackettSearchResult[] {
   return results.filter(isValidSearchResult);
 }
 
-// Common abbreviation mappings for torrent search
-const ABBREVIATION_MAP: Record<string, string[]> = {
-  "720": ["720p"],
-  "1080": ["1080p"],
-  "2160": ["2160p"],
-  "4k": ["2160p", "4k"],
-  multi: ["multiple", "multi"],
-  dub: ["dubbed", "dub", "dual"],
-  dual: ["dual", "dub", "dubbed"],
-  eng: ["english", "eng"],
-  sub: ["subtitle", "sub", "subs"],
-  hevc: ["hevc", "h265", "h.265"],
-  h264: ["h264", "h.264", "avc"],
-  avc: ["avc", "h264", "h.264"],
-  web: ["web-dl", "webrip", "web"],
-  bluray: ["bluray", "blu-ray", "bdrip", "bd"],
-  bdrip: ["bdrip", "bluray", "blu-ray"],
-  remux: ["remux"],
-  x265: ["x265", "hevc"],
-  x264: ["x264", "avc"],
-  aac: ["aac", "ac3"],
-  ac3: ["ac3", "aac"],
-  flac: ["flac"],
-  dts: ["dts"],
-  atmos: ["atmos"],
-  hdr: ["hdr", "hdr10"],
-  dv: ["dv", "dolby vision"],
-};
-
-// Helper function to expand search term with abbreviations
-function expandSearchTerm(term: string): string[] {
-  const termLower = term.toLowerCase();
-
-  // If term is in abbreviation map, return all variations
-  if (ABBREVIATION_MAP[termLower]) {
-    return [termLower, ...ABBREVIATION_MAP[termLower]];
-  }
-
-  // Check if term is a prefix of any abbreviation key
-  const matchingAbbreviations = Object.entries(ABBREVIATION_MAP)
-    .filter(([key]) => key.startsWith(termLower) || termLower.startsWith(key))
-    .flatMap(([, values]) => values);
-
-  if (matchingAbbreviations.length > 0) {
-    return [termLower, ...matchingAbbreviations];
-  }
-
-  return [termLower];
-}
-
-// Helper function to calculate match score for a single term
-function calculateTermScore(title: string, term: string): number | null {
+/**
+ * Calculates a relevance boost for media-specific patterns (Season/Episode)
+ */
+function getPatternBoost(title: string, term: string): number {
   const titleLower = title.toLowerCase();
   const termLower = term.toLowerCase();
 
-  // Get all variations of the search term
-  const termVariations = expandSearchTerm(termLower);
+  // Season/Episode pattern (e.g. S01E05)
+  const sePattern = /s\d{1,2}e\d{1,2}/i;
+  if (sePattern.test(term) && titleLower.includes(termLower)) return 0.5;
 
-  // Check each variation
-  for (const variation of termVariations) {
-    // Exact substring match - highest priority
-    if (titleLower.includes(variation)) {
-      return 0; // Lower score is better
-    }
+  // Year pattern
+  const yearPattern = /\b(19|20)\d{2}\b/;
+  if (yearPattern.test(term) && titleLower.includes(termLower)) return 0.3;
 
-    // Word boundary match (e.g., "Batman" matches "Batman Ninja")
-    const wordBoundaryRegex = new RegExp(
-      `\\b${variation.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`,
-      "i"
-    );
-    if (wordBoundaryRegex.test(title)) {
-      return 0.1;
-    }
+  return 0;
+}
+
+/**
+ * Core relevance scoring logic
+ */
+function calculateRelevance(
+  result: JackettSearchResult,
+  terms: string[],
+  fuseScore: number = 1
+): number {
+  const titleLower = result.Title.toLowerCase();
+  let bonus = 0;
+
+  // 1. Exact phrase start bonus
+  const firstTerm = terms[0];
+  if (firstTerm && titleLower.startsWith(firstTerm.toLowerCase())) {
+    bonus += 0.4;
   }
 
-  // Use Fuse.js for fuzzy matching with all variations
-  const fuse = new Fuse([{ Title: title }], {
-    keys: ["Title"],
-    threshold: 0.3,
-    includeScore: true,
-    minMatchCharLength: Math.max(2, Math.floor(termLower.length * 0.6)),
+  // 2. Term-specific boosts
+  terms.forEach((term) => {
+    // Exact match in word boundaries
+    const regex = new RegExp(`\\b${term}\\b`, "i");
+    if (regex.test(result.Title)) bonus += 0.2;
+
+    // Pattern specific boosts (Seasons, Years)
+    bonus += getPatternBoost(result.Title, term);
   });
 
-  // Try fuzzy matching with original term and variations
-  for (const variation of termVariations) {
-    const fuseResults = fuse.search(variation);
-    if (fuseResults.length > 0 && fuseResults[0]?.score != null) {
-      return fuseResults[0].score;
-    }
-  }
+  // 3. Health bonus (Seeds) - capped to avoid popularity overriding relevance
+  const healthBonus = Math.min(0.2, (result.Seeders || 0) / 2000);
 
-  return null; // No match
+  // Combine: (Fuzzy Base) + (Pattern/Exact Bonuses) + (Health)
+  // Fuse score is 0 (best) to 1 (worst)
+  return 1 - fuseScore + bonus + healthBonus;
 }
 
-// Function to perform advanced fuzzy search with multi-term matching
+/**
+ * Perform high-performance fuzzy search and relevance ranking
+ */
 export function advancedFuzzySearch(
   results: JackettSearchResult[],
-  filter: string
+  filter: string,
+  scoringQuery?: string
 ): JackettSearchResult[] {
-  if (!filter) return results;
-
-  // Split the filter into multiple terms
-  const filterTerms = filter
-    .split(/\s+/)
-    .filter((term) => term.trim().length > 0);
-
-  if (filterTerms.length === 0) return results;
-
-  // Score each result based on how well it matches all terms
-  const scoredResults: FilteredResult[] = [];
-
-  for (const result of results) {
-    const scores: number[] = [];
-    let matchedAllTerms = true;
-
-    // Calculate score for each term
-    for (const term of filterTerms) {
-      const score = calculateTermScore(result.Title, term);
-
-      if (score === null) {
-        // Term didn't match
-        matchedAllTerms = false;
-        break;
-      }
-
-      scores.push(score);
-    }
-
-    // Only include results that match ALL terms
-    if (matchedAllTerms && scores.length === filterTerms.length) {
-      const averageScore = scores.reduce((a, b) => a + b, 0) / scores.length;
-      scoredResults.push({
-        item: result,
-        score: averageScore,
-        matchCount: filterTerms.length,
-      });
-    }
+  const query = (filter || scoringQuery || "").trim();
+  if (!query) {
+    return results.map((r) => ({
+      ...r,
+      Relevance: Math.min(1, r.Seeders / 1000),
+    }));
   }
 
-  // Sort by score (ascending - lower is better)
-  scoredResults.sort((a, b) => (a.score || 0) - (b.score || 0));
+  const terms = query.split(/\s+/).filter((t) => t.length > 1);
 
-  return scoredResults.map((result) => result.item);
+  // Initialize Fuse one time for the entire batch
+  const fuse = new Fuse(results, {
+    keys: ["Title"],
+    threshold: 0.4,
+    includeScore: true,
+    useExtendedSearch: true,
+  });
+
+  // Search using the full query
+  const fuseResults = fuse.search(query);
+
+  // If we have fuzzy results, process them
+  if (fuseResults.length > 0) {
+    return fuseResults
+      .map((fr) => ({
+        ...fr.item,
+        Relevance: calculateRelevance(fr.item, terms, fr.score),
+      }))
+      .sort((a, b) => (b.Relevance || 0) - (a.Relevance || 0));
+  }
+
+  // Fallback: If Fuse finds nothing, try basic inclusion for each term
+  return results
+    .map((r) => {
+      const matchedTerms = terms.filter((t) =>
+        r.Title.toLowerCase().includes(t.toLowerCase())
+      );
+      const score = matchedTerms.length / terms.length;
+      return {
+        ...r,
+        Relevance: score > 0 ? calculateRelevance(r, terms, 1 - score) : 0,
+      };
+    })
+    .filter((r) => (r.Relevance || 0) > 0.1)
+    .sort((a, b) => (b.Relevance || 0) - (a.Relevance || 0));
 }
 
-// Helper function to convert size to GB
+/**
+ * Utility: Pretty format file size
+ */
 export const convertSizeToGB = (size: number | string): string => {
   if (!size) return "N/A";
-  const sizeInBytes = parseFloat(size.toString());
-  const sizeInGB = sizeInBytes / (1024 * 1024 * 1024);
-  return `${sizeInGB.toFixed(2)} GB`;
+  const bytes = typeof size === "string" ? parseFloat(size) : size;
+  if (isNaN(bytes)) return "N/A";
+
+  if (bytes > 1024 * 1024 * 1024) return `${(bytes / 1024 ** 3).toFixed(2)} GB`;
+  if (bytes > 1024 * 1024) return `${(bytes / 1024 ** 2).toFixed(2)} MB`;
+  return `${(bytes / 1024).toFixed(2)} KB`;
 };

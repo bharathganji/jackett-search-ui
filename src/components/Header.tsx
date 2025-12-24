@@ -5,22 +5,31 @@ import { ThemeToggle } from "./ThemeToggle";
 
 export function Header() {
   return (
-    <div className="flex flex-col gap-3 sm:gap-4 animate-fadeIn">
+    <div className="flex flex-col gap-6 sm:gap-8 animate-fadeIn mb-8">
       {/* Main header row */}
-      <div className="flex items-center justify-between">
-        <div className="flex gap-2 items-center min-w-0 flex-1 group cursor-default">
-          <img
-            src={jackettLogo}
-            alt="jackett logo"
-            className="w-8 h-8 rounded-full flex-shrink-0 dark:invert transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12"
-          />
-          <h1 className="text-lg sm:text-xl font-bold truncate bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/60 dark:from-white dark:to-white/60 transition-all duration-300 group-hover:tracking-wide">
-            Jackett Search
-          </h1>
+      <div className="flex items-center justify-between max-w-5xl mx-auto w-full px-2">
+        <div className="flex gap-4 items-center min-w-0 flex-1 group cursor-default">
+          <div className="relative">
+            <div className="absolute -inset-1 bg-gradient-to-r from-primary to-cyan-600 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-500"></div>
+            <img
+              src={jackettLogo}
+              alt="jackett logo"
+              className="relative w-10 h-10 rounded-full flex-shrink-0 dark:invert transition-all duration-500 group-hover:scale-110 group-hover:rotate-12"
+            />
+          </div>
+          <div className="flex flex-col">
+            <h1 className="text-xl sm:text-2xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-cyan-600 dark:from-white dark:to-primary/50 transition-all duration-300">
+              Jackett Search
+            </h1>
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">
+              Enhanced Torrent Search
+            </p>
+          </div>
         </div>
+
         {/* Secondary info row */}
-        <div className="flex items-center gap-3">
-          <div className="transition-transform duration-200 hover:scale-105">
+        <div className="flex items-center gap-4">
+          <div className="transition-all duration-300 hover:scale-105 opacity-80 hover:opacity-100">
             <GitHubButton
               href="https://github.com/bharathganji/jackett-search-ui"
               data-color-scheme="no-preference: light; light: light; dark: dark;"

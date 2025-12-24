@@ -1,8 +1,8 @@
 import { ExternalLink, Magnet } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import type { JackettSearchResult } from "@/lib/searchUtils";
 import { convertSizeToGB } from "@/lib/searchUtils";
+import type { JackettSearchResult } from "@/types/search";
 
 interface ResultsMobileCardProps {
   result: JackettSearchResult;

@@ -1,11 +1,9 @@
 import { describe, expect, it } from "vitest";
 
+import type { JackettSearchResult } from "@/types/search";
+
 import { testData } from "../test-data";
-import {
-  type JackettSearchResult,
-  advancedFuzzySearch,
-  filterValidSearchResults,
-} from "./searchUtils";
+import { advancedFuzzySearch, filterValidSearchResults } from "./searchUtils";
 
 // Type assertion for test data to match interface
 const typedTestData = testData as JackettSearchResult[];

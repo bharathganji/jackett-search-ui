@@ -1,8 +1,8 @@
 import { ExternalLink, Magnet } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import type { JackettSearchResult } from "@/lib/searchUtils";
 import { convertSizeToGB } from "@/lib/searchUtils";
+import type { JackettSearchResult } from "@/types/search";
 
 interface ResultsTableRowProps {
   result: JackettSearchResult;
@@ -24,7 +24,7 @@ export function ResultsTableRow({
   return (
     <div className="grid grid-cols-12 gap-2 p-2 border-b hover:bg-muted/50 items-center text-sm min-h-[60px] transition-colors duration-200 group animate-slideUp">
       <div
-        className="col-span-5 font-medium text-foreground/90 break-all"
+        className="col-span-6 font-medium text-foreground/90 break-all"
         title={result.Title}
       >
         {result.Title}
@@ -65,9 +65,9 @@ export function ResultsTableRow({
           <ExternalLink className="h-3 w-3" />
         </Button>
       </div>
-      <div className="col-span-3 flex items-center gap-2 min-w-0">
+      <div className="col-span-2 flex items-center gap-2 min-w-0 pr-2">
         <span
-          className="truncate text-muted-foreground group-hover:text-foreground transition-colors"
+          className="truncate text-muted-foreground group-hover:text-foreground transition-colors text-right w-full"
           title={result.IndexerId}
         >
           {result.IndexerId}

@@ -1,6 +1,7 @@
 import { useCallback, useRef } from "react";
 
-import type { JackettSearchResult } from "../lib/searchUtils";
+import type { JackettSearchResult } from "@/types/search";
+
 import {
   filterValidSearchResults,
   isValidSearchResult,

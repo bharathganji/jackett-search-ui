@@ -1,4 +1,4 @@
-import type { JackettSearchResult } from "@/lib/searchUtils";
+import type { JackettSearchResult } from "@/types/search";
 
 interface ResultsTableHeaderProps {
   sortField: keyof JackettSearchResult;
@@ -26,6 +26,20 @@ export function ResultsTableHeader({
         }}
       >
         Title {sortField === "Title" && (sortDirection === "asc" ? "↑" : "↓")}
+      </div>
+      <div
+        className="col-span-1 cursor-pointer hover:text-primary text-center flex-shrink-0 transition-colors"
+        onClick={() => onSort("Relevance")}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onSort("Relevance");
+          }
+        }}
+      >
+        Rel {sortField === "Relevance" && (sortDirection === "asc" ? "↑" : "↓")}
       </div>
       <div
         className="col-span-1 cursor-pointer hover:text-primary text-center flex-shrink-0 transition-colors"
@@ -58,7 +72,7 @@ export function ResultsTableHeader({
       <div className="col-span-1 text-center flex-shrink-0">Actions</div>
       <div className="col-span-1 text-center flex-shrink-0">Link</div>
       <div
-        className="col-span-3 cursor-pointer hover:text-primary truncate transition-colors"
+        className="col-span-2 cursor-pointer hover:text-primary truncate transition-colors text-right pr-2"
         onClick={() => onSort("IndexerId")}
         role="button"
         tabIndex={0}
