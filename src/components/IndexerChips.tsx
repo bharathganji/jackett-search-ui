@@ -1,9 +1,8 @@
 import { ExternalLink } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-
-import type { JackettSearchResult } from "../lib/searchUtils";
-import type { Indexer } from "../types/indexer";
+import type { Indexer } from "@/types/indexer";
+import type { JackettSearchResult } from "@/types/search";
 
 interface IndexerChipsProps {
   results: JackettSearchResult[];
