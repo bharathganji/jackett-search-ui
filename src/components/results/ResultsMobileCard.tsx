@@ -19,7 +19,7 @@ export function ResultsMobileCard({ result, onCopy }: ResultsMobileCardProps) {
   };
 
   return (
-    <div className="p-2.5 border-b hover:bg-muted/50 flex flex-col gap-1.5 transition-colors active:bg-muted/30 animate-slideUp">
+    <div className="p-2.5 border-b hover:bg-muted/50 flex flex-col gap-1.5 transition-colors active:bg-muted/30">
       <div
         className="font-medium text-foreground/90 break-all leading-snug text-sm"
         title={result.Title}

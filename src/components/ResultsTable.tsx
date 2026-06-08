@@ -122,7 +122,7 @@ export function ResultsTable({
   if (results.length === 0) return null;
 
   return (
-    <Card className="border-border bg-background/40 backdrop-blur-xl shadow-sm rounded-2xl overflow-hidden animate-fadeIn">
+    <Card className="border-border bg-background shadow-sm rounded-lg overflow-hidden">
       <CardHeader className="pb-3 border-b border-border/20">
         <div className="flex flex-col gap-6">
           <div className="flex items-center justify-between">
@@ -143,7 +143,7 @@ export function ResultsTable({
             <select
               value={itemsPerPage}
               onChange={(e) => setItemsPerPage(Number(e.target.value))}
-              className="h-10 px-4 bg-secondary/20 border-border/40 text-sm font-medium rounded-xl hover:bg-secondary/30 transition-all focus:ring-primary/20 cursor-pointer w-full sm:w-auto"
+              className="h-10 px-4 bg-secondary/20 border-border text-sm font-medium rounded-lg hover:bg-secondary/30 transition-all focus:ring-ring cursor-pointer w-full sm:w-auto"
             >
               {[25, 50, 100, 200].map((val) => (
                 <option key={val} value={val}>
@@ -157,7 +157,7 @@ export function ResultsTable({
                 placeholder="Fuzzy filter results (e.g. '720p season 1')..."
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
-                className="h-10 pl-10 bg-secondary/20 border-border/80 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-primary/20 focus:border-primary/50 text-lg shadow-sm"
+                className="h-10 pl-10 bg-secondary/20 border-border rounded-md transition-all duration-300 focus:ring-2 focus:ring-ring focus:border-ring"
               />
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
               {filter && (

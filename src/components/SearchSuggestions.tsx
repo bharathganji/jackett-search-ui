@@ -36,13 +36,13 @@ export function SearchSuggestions({
 
   return (
     <Card
-      className={`border-border/40 bg-background/40 backdrop-blur-xl shadow-2xl rounded-2xl overflow-hidden transition-all duration-500 ${className}`}
+      className={`border-border bg-background shadow rounded-lg overflow-hidden ${className}`}
     >
       <CardContent className="p-6">
         <div className="space-y-8">
           {/* Recent Searches section */}
           {recentSearches.length > 0 && (
-            <div className="animate-slideDown">
+            <div>
               <div className="flex items-center gap-3 mb-4 group/header">
                 <div className="p-2 bg-primary/10 rounded-lg group-hover/header:bg-primary/20 transition-colors duration-300">
                   <Clock className="h-4 w-4 text-primary" />
@@ -81,10 +81,10 @@ export function SearchSuggestions({
           )}
 
           {/* Popular Suggestions section */}
-          <div className="animate-slideUp">
+          <div>
             <div className="flex items-center gap-3 mb-4 group/header">
-              <div className="p-2 bg-cyan-600/10 rounded-lg group-hover/header:bg-cyan-600/20 transition-colors duration-300">
-                <Search className="h-4 w-4 text-cyan-600" />
+              <div className="p-2 bg-primary/10 rounded-lg group-hover/header:bg-primary/20 transition-colors duration-300">
+                <Search className="h-4 w-4 text-primary" />
               </div>
               <span className="text-sm font-bold tracking-tight text-foreground/80 uppercase text-[11px]">
                 Trending Topics

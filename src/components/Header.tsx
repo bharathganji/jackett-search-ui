@@ -5,12 +5,12 @@ import { ThemeToggle } from "./ThemeToggle";
 
 export function Header() {
   return (
-    <div className="flex flex-col gap-6 sm:gap-8 animate-fadeIn mb-8">
+    <div className="flex flex-col gap-6 sm:gap-8 mb-8">
       {/* Main header row */}
       <div className="flex items-center justify-between max-w-5xl mx-auto w-full px-2">
         <div className="flex gap-4 items-center min-w-0 flex-1 group cursor-default">
           <div className="relative">
-            <div className="absolute -inset-1 bg-gradient-to-r from-primary to-cyan-600 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-500"></div>
+            <div className="absolute -inset-1 bg-primary/20 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-500"></div>
             <img
               src={jackettLogo}
               alt="jackett logo"
@@ -18,7 +18,7 @@ export function Header() {
             />
           </div>
           <div className="flex flex-col">
-            <h1 className="text-xl sm:text-2xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-cyan-600 dark:from-white dark:to-primary/50 transition-all duration-300">
+            <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground transition-all duration-300">
               Jackett Search
             </h1>
             <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">
