@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.7](https://github.com/bharathganji/jackett-search-ui/compare/v1.3.6...v1.3.7) (2026-06-08)
+
+### Bug Fixes
+
+- Release workflow changelog and release creation ([#14](https://github.com/bharathganji/jackett-search-ui/issues/14)) ([31251bb](https://github.com/bharathganji/jackett-search-ui/commit/31251bb7f1393e5608f6b1f2713f5ddae0dc35c4))
+- **release:** remove persist-credentials to enable git push authentication ([#15](https://github.com/bharathganji/jackett-search-ui/issues/15)) ([4ae0299](https://github.com/bharathganji/jackett-search-ui/commit/4ae0299805b0e9e9f0f540f676f142c3caee74f6))
+
 ### [1.3.6](https://github.com/bharathganji/jackett-search-ui/compare/v1.3.5...v1.3.6) (2026-06-08)
 
 ### Bug Fixes
