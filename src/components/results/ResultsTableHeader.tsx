@@ -27,65 +27,13 @@ export function ResultsTableHeader({
       >
         Title {sortField === "Title" && (sortDirection === "asc" ? "↑" : "↓")}
       </div>
-      <div
-        className="col-span-1 cursor-pointer hover:text-primary text-center flex-shrink-0 transition-colors"
-        onClick={() => onSort("Relevance")}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            onSort("Relevance");
-          }
-        }}
-      >
-        Rel {sortField === "Relevance" && (sortDirection === "asc" ? "↑" : "↓")}
-      </div>
-      <div
-        className="col-span-1 cursor-pointer hover:text-primary text-center flex-shrink-0 transition-colors"
-        onClick={() => onSort("Seeders")}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            onSort("Seeders");
-          }
-        }}
-      >
-        Seeds {sortField === "Seeders" && (sortDirection === "asc" ? "↑" : "↓")}
-      </div>
-      <div
-        className="col-span-1 cursor-pointer hover:text-primary text-center flex-shrink-0 transition-colors"
-        onClick={() => onSort("Size")}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            onSort("Size");
-          }
-        }}
-      >
-        Size {sortField === "Size" && (sortDirection === "asc" ? "↑" : "↓")}
-      </div>
-      <div className="col-span-1 text-center flex-shrink-0">Actions</div>
-      <div className="col-span-1 text-center flex-shrink-0">Link</div>
-      <div
-        className="col-span-2 cursor-pointer hover:text-primary truncate transition-colors text-right pr-2"
-        onClick={() => onSort("IndexerId")}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            onSort("IndexerId");
-          }
-        }}
-      >
-        Indexer{" "}
-        {sortField === "IndexerId" && (sortDirection === "asc" ? "↑" : "↓")}
-      </div>
+      <div className="col-span-1 text-center flex-shrink-0">Seeds</div>
+      <div className="col-span-1 text-center flex-shrink-0">Size</div>
+      <div className="col-span-1 text-center flex-shrink-0">Copy</div>
+      <div className="col-span-1 text-center flex-shrink-0">Open</div>
+      <div className="col-span-1 text-center flex-shrink-0">Copy</div>
+      <div className="col-span-1 text-center flex-shrink-0">Open</div>
+      <div className="col-span-1 text-right flex-shrink-0 pr-2">Indexer</div>
     </div>
   );
 }
