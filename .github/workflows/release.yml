@@ -13,110 +13,63 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-    
+
     steps:
-    - name: Checkout code
+- name: Checkout code
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
-        
-    - name: Setup Git user
-      run: |
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git config --global user.name "github-actions[bot]"
-        
+        persist-credentials: false
+
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20.x'
         cache: 'npm'
-        
+
     - name: Install dependencies
       run: npm ci
-      
+
     - name: Run tests
       run: |
         npm run lint
         npx tsc --noEmit
         npm run format:check
-        
-    # This section only runs when pushing to main branch (not tags)
+
     - name: Determine version bump and create release
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        # Get the latest tag or set to 0.0 if none exists
-        if git describe --tags --abbrev=0 >/dev/null 2>&1; then
-          LATEST_TAG=$(git describe --tags --abbrev=0)
-        else
-          LATEST_TAG="v0.0.0"
-        fi
+        LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
         
-        echo "Latest tag: $LATEST_TAG"
-        
-        # Analyze commits since last tag to determine version bump
-        if git log --oneline $LATEST_TAG..HEAD | grep -q "feat:"; then
+        if git log --oneline ${LATEST_TAG}..HEAD | grep -qE "(feat|Feature):"; then
           BUMP="minor"
-        elif git log --oneline $LATEST_TAG..HEAD | grep -q "fix:"; then
+        elif git log --oneline ${LATEST_TAG}..HEAD | grep -qE "(fix|Fix):"; then
           BUMP="patch"
-        elif git log --oneline $LATEST_TAG..HEAD | grep -q "perf:"; then
+        elif git log --oneline ${LATEST_TAG}..HEAD | grep -qE "(perf|Perf):"; then
           BUMP="patch"
         else
-          BUMP="patch"  # Default to patch if no conventional commits found
+          BUMP="patch"
         fi
         
         echo "Bump type: $BUMP"
         
-        # Create new version and tag
         npm run release:$BUMP
-        
-        # Push changes and tags
         git push --follow-tags origin main
-        
-        # Exit early as the tag push will trigger this workflow again
-        exit 0
-        
-    # This section only runs when pushing tags
+
     - name: Build project
       if: startsWith(github.ref, 'refs/tags/')
       run: npm run build
-      
-    - name: Generate changelog
-      if: startsWith(github.ref, 'refs/tags/')
-      id: changelog
-      run: |
-        # Get the tag name
-        TAG_NAME=${GITHUB_REF#refs/tags/}
-        echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
-        
-        # Generate changelog from git commits
-        if git describe --tags --abbrev=0 HEAD^ >/dev/null 2>&1; then
-          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^)
-          echo "## Changes since $PREV_TAG" > CHANGELOG.md
-          git log --pretty=format:"- %s (%h)" $PREV_TAG..HEAD >> CHANGELOG.md
-        else
-          echo "## Initial Release" > CHANGELOG.md
-          git log --pretty=format:"- %s (%h)" >> CHANGELOG.md
-        fi
-        
+
     - name: Create Release
       if: startsWith(github.ref, 'refs/tags/')
-      uses: actions/create-release@v1
+      uses: softprops/action-gh-release@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ steps.changelog.outputs.tag_name }}
-        release_name: Release ${{ steps.changelog.outputs.tag_name }}
+        name: Release ${{ github.ref_name }}
         body_path: CHANGELOG.md
         draft: false
         prerelease: false
-        
-    - name: Upload Release Assets
-      if: startsWith(github.ref, 'refs/tags/')
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./dist
-        asset_name: jackett-search-ui-${{ steps.changelog.outputs.tag_name }}.zip
-        asset_content_type: application/zip
+        files: ./dist
