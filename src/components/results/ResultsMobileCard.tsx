@@ -1,4 +1,4 @@
-import { Copy, ExternalLink, Magnet } from "lucide-react";
+import { ExternalLink, Magnet } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { convertSizeToGB } from "@/lib/searchUtils";
@@ -39,42 +39,26 @@ export function ResultsMobileCard({ result, onCopy }: ResultsMobileCardProps) {
         <Button
           variant="default"
           size="sm"
-          className="h-8 px-2 flex-1 min-w-0 shadow-sm hover:scale-[1.02] transition-transform text-xs"
-          onClick={() => onCopy("source", result.Details)}
-          title="Copy source link"
-        >
-          <Copy className="h-3 w-3 flex-shrink-0 mr-1" />
-          <span className="truncate">Copy</span>
-        </Button>
-        <Button
-          variant="default"
-          size="sm"
-          className="h-8 px-2 flex-1 min-w-0 shadow-sm hover:scale-[1.02] transition-transform text-xs"
+          className="h-8 px-3 flex-1 min-w-0 shadow-sm hover:scale-[1.02] transition-transform text-xs"
           onClick={() => window.open(result.Details, "_blank")}
-          title="Open source"
         >
-          <ExternalLink className="h-3 w-3 flex-shrink-0 mr-1" />
-          <span className="truncate">Open</span>
+          <ExternalLink className="h-3 w-3 flex-shrink-0 mr-1.5" />
+          <span className="truncate">Source</span>
         </Button>
         <Button
           variant="secondary"
           size="sm"
-          className="h-8 px-2 flex-1 min-w-0 shadow-sm hover:scale-[1.02] transition-transform hover:bg-primary hover:text-primary-foreground text-xs"
-          onClick={() => onCopy("magnet", result.Link)}
-          title="Copy magnet link"
-        >
-          <Copy className="h-4 w-4 flex-shrink-0 mr-1" />
-          <span className="truncate">Copy</span>
-        </Button>
-        <Button
-          variant="secondary"
-          size="sm"
-          className="h-8 px-2 flex-1 min-w-0 shadow-sm hover:scale-[1.02] transition-transform hover:bg-primary hover:text-primary-foreground text-xs"
-          onClick={() => window.open(result.Link, "_blank")}
-          title={result.Link?.startsWith("magnet:") ? "Open magnet" : "Open link"}
+          className="h-8 px-3 flex-1 min-w-0 shadow-sm hover:scale-[1.02] transition-transform hover:bg-primary hover:text-primary-foreground text-xs"
+          onClick={() => {
+            if (result.Link?.startsWith("magnet:")) {
+              onCopy("magnet", result.Link);
+            } else {
+              window.open(result.Link, "_blank");
+            }
+          }}
         >
           {renderMagetButton(result.Link)}
-          <span className="truncate ml-1">Open</span>
+          <span className="ml-1.5 truncate">Magnet</span>
         </Button>
       </div>
     </div>
