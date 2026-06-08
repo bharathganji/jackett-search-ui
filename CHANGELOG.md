@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.6](https://github.com/bharathganji/jackett-search-ui/compare/v1.3.5...v1.3.6) (2026-06-08)
+
+### Bug Fixes
+
+- resolve npm audit vulnerabilities via auto-fix ([#11](https://github.com/bharathganji/jackett-search-ui/issues/11)) ([e24751b](https://github.com/bharathganji/jackett-search-ui/commit/e24751b310c3c21d47b27c8356fa6801e1ecdd16))
+
 ### [1.3.5](https://github.com/bharathganji/jackett-search-ui/compare/v1.3.4...v1.3.5) (2025-12-24)
 
 ### ⚠ BREAKING CHANGES
