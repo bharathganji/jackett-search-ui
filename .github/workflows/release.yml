@@ -15,7 +15,7 @@ jobs:
       pull-requests: write
 
     steps:
-- name: Checkout code
+    - name: Checkout code
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
@@ -41,6 +41,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git config --global user.name "github-actions[bot]"
+        
         LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
         
         if git log --oneline ${LATEST_TAG}..HEAD | grep -qE "(feat|Feature):"; then
