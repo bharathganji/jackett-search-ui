@@ -36,30 +36,30 @@ export function SearchSuggestions({
 
   return (
     <Card
-      className={`border-border/40 bg-background/40 backdrop-blur-xl shadow-2xl rounded-2xl overflow-hidden transition-all duration-500 ${className}`}
+      className={`border-border bg-background shadow rounded-lg overflow-hidden ${className}`}
     >
       <CardContent className="p-6">
         <div className="space-y-8">
           {/* Recent Searches section */}
           {recentSearches.length > 0 && (
-            <div className="animate-slideDown">
+            <div>
               <div className="flex items-center gap-3 mb-4 group/header">
-                <div className="p-2 bg-primary/10 rounded-lg group-hover/header:bg-primary/20 transition-colors duration-300">
-                  <Clock className="h-4 w-4 text-primary" />
+                <div className="p-2 bg-muted rounded-lg group-hover/header:bg-muted transition-colors duration-300">
+                  <Clock className="h-4 w-4 text-foreground" />
                 </div>
                 <span className="text-sm font-bold tracking-tight text-foreground/80 uppercase text-[11px]">
                   Recent Activity
                 </span>
-                <div className="h-[1px] flex-1 bg-gradient-to-r from-border/50 to-transparent"></div>
+                <div className="h-[1px] flex-1 bg-border" />
               </div>
               <div className="flex flex-wrap gap-2.5">
                 {recentSearches.map((search, index) => (
                   <div key={index} className="group relative">
                     <div
-                      className="flex items-center gap-2 pl-4 pr-2 py-2 bg-secondary/30 hover:bg-secondary/60 backdrop-blur-md border border-border/50 rounded-full cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg hover:border-primary/30"
+                      className="flex items-center gap-2 pl-4 pr-2 py-2 bg-muted/50 hover:bg-muted border border-border rounded-full cursor-pointer transition-all duration-300"
                       onClick={() => handleSuggestionClick(search)}
                     >
-                      <span className="text-sm font-medium text-foreground/90 max-w-[150px] truncate">
+                      <span className="text-sm font-medium text-foreground max-w-[150px] truncate">
                         {search}
                       </span>
                       <Button
@@ -81,21 +81,21 @@ export function SearchSuggestions({
           )}
 
           {/* Popular Suggestions section */}
-          <div className="animate-slideUp">
+          <div>
             <div className="flex items-center gap-3 mb-4 group/header">
-              <div className="p-2 bg-cyan-600/10 rounded-lg group-hover/header:bg-cyan-600/20 transition-colors duration-300">
-                <Search className="h-4 w-4 text-cyan-600" />
+              <div className="p-2 bg-muted rounded-lg group-hover/header:bg-muted transition-colors duration-300">
+                <Search className="h-4 w-4 text-foreground" />
               </div>
               <span className="text-sm font-bold tracking-tight text-foreground/80 uppercase text-[11px]">
                 Trending Topics
               </span>
-              <div className="h-[1px] flex-1 bg-gradient-to-r from-border/50 to-transparent"></div>
+              <div className="h-[1px] flex-1 bg-border" />
             </div>
             <div className="flex flex-wrap gap-2.5">
               {popularSuggestions.map((suggestion, index) => (
                 <div
                   key={index}
-                  className="px-4 py-2 bg-primary/5 hover:bg-primary/10 backdrop-blur-sm border border-primary/10 hover:border-primary/30 rounded-full cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-md text-sm font-medium text-primary/80 hover:text-primary"
+                  className="px-4 py-2 bg-muted border border-border rounded-full cursor-pointer transition-all duration-300 text-sm font-medium text-foreground"
                   onClick={() => handleSuggestionClick(suggestion)}
                 >
                   {suggestion}

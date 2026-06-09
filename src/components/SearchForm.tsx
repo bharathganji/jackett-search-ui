@@ -55,7 +55,7 @@ export const SearchForm = forwardRef<HTMLInputElement, SearchFormProps>(
             <div className="flex-1 w-full relative group">
               <Input
                 ref={ref}
-                className="relative w-full h-12 pr-12 bg-background/80 backdrop-blur-xl border-border/80 rounded-xl transition-all duration-300 focus:ring-2 focus:ring-primary/20 focus:border-primary/50 hover:border-primary/30 text-lg shadow-sm"
+                className="relative w-full h-12 pr-12 bg-background border border-border rounded-md transition-all duration-300 focus:ring-2 focus:ring-ring text-lg"
                 placeholder="Search for movies, TV shows, or anything..."
                 disabled={loading}
                 value={value}
@@ -87,7 +87,7 @@ export const SearchForm = forwardRef<HTMLInputElement, SearchFormProps>(
                   e.preventDefault();
                   onCancel();
                 }}
-                className="w-full sm:w-auto h-12 px-8 border-destructive/30 text-destructive bg-destructive/5 hover:bg-destructive/10 backdrop-blur-sm transition-all duration-300 rounded-xl"
+                className="w-full sm:w-auto h-12 px-8 border-destructive/30 text-destructive bg-destructive/5 hover:bg-destructive/10 transition-all duration-300 rounded-md"
               >
                 <Loader2 className="w-5 h-5 mr-3 animate-spin" />
                 Cancel
@@ -96,7 +96,7 @@ export const SearchForm = forwardRef<HTMLInputElement, SearchFormProps>(
               <Button
                 variant="default"
                 type="submit"
-                className="w-full sm:w-auto h-12 px-8 transition-all duration-300 hover:scale-[1.02] active:scale-95 bg-gradient-to-r from-primary to-cyan-600 hover:from-primary/90 hover:to-cyan-600/90 text-white font-semibold rounded-xl"
+                className="w-full sm:w-auto h-12 px-8 transition-all duration-300 hover:scale-[1.02] active:scale-95 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-md"
               >
                 <Search className="w-5 h-5 mr-3" />
                 Search
@@ -106,7 +106,7 @@ export const SearchForm = forwardRef<HTMLInputElement, SearchFormProps>(
         </form>
 
         {showSuggestions && showSuggestionsPanel && (
-          <div className="mt-4 animate-fadeIn">
+          <div className="mt-4">
             <SearchSuggestions onSuggestionClick={handleSuggestionClick} />
           </div>
         )}

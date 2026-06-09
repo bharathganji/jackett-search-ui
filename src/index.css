@@ -4,95 +4,48 @@
 
 @layer base {
   :root {
-    /* Premium Light Theme - Soft Silvers & Slate */
-    --background: 210 20% 98%;
-    --foreground: 222 47% 11%;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-
-    /* Sophisticated Blue Primary */
-    --primary: 217 91% 60%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222 47% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 217 91% 60%;
-    --accent-foreground: 222 47% 11.2%;
-
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 14.3% 95.9%;
+    --secondary-foreground: 220.9 34.4% 14.1%;
+    --muted: 220 14.3% 95.9%;
+    --muted-foreground: 220 14.3% 41.4%;
+    --accent: 220 14.3% 95.9%;
+    --accent-foreground: 220.9 34.4% 14.1%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 217 91% 60%;
-
-    --radius: 1rem;
-
-    --font-geist-sans: "Geist", system-ui, sans-serif;
-    --font-geist-mono: "Geist Mono", monospace;
-
-    /* Gradients */
-    --gradient-primary: linear-gradient(
-      135deg,
-      hsl(217 91% 60%) 0%,
-      hsl(199 89% 55%) 100%
-    );
-
-    --gradient-glass: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.4) 0%,
-      rgba(255, 255, 255, 0.1) 100%
-    );
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 22% 88%;
+    --input: 220 22% 88%;
+    --ring: 222.2 47.4% 50%;
+    --radius: 0.5rem;
   }
 
   .dark {
-    /* Premium Dark Theme - Deep Obsidian & Navy */
-    --background: 222 47% 4%;
+    --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
-
-    --card: 222 47% 6%;
+    --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
-
-    --popover: 222 47% 4%;
+    --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-
-    /* Electric Blue Primary */
-    --primary: 217 91% 65%;
-    --primary-foreground: 222 47% 11%;
-
-    --secondary: 222 47% 11%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 14.1%;
+    --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
-
-    --muted: 222 47% 11%;
+    --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217 91% 65%;
+    --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
-
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-
-    --border: 222 47% 11%;
-    --input: 222 47% 11%;
-    --ring: 217 91% 65%;
-
-    --gradient-primary: linear-gradient(
-      135deg,
-      hsl(217 91% 65%) 0%,
-      hsl(199 89% 60%) 100%
-    );
-
-    --gradient-glass: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.05) 0%,
-      rgba(255, 255, 255, 0.01) 100%
-    );
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 210 40% 98%;
   }
 }
 
@@ -126,16 +79,5 @@
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
-  }
-
-  .touch-manipulation {
-    touch-action: manipulation;
-  }
-
-  @media (hover: hover) {
-    .mobile-card-hover:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.05);
-    }
   }
 }

@@ -33,7 +33,7 @@ export function IndexerChips({
   })();
 
   return (
-    <div className="flex flex-wrap items-center gap-3 p-4 bg-background/20 backdrop-blur-md rounded-2xl border border-border/80">
+    <div className="flex flex-wrap items-center gap-3 p-4 bg-muted rounded-lg border border-border">
       <div className="flex items-center gap-2 mr-2">
         <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
           Filter by:
