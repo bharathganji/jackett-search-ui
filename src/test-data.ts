@@ -8,8 +8,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    Year: null,
-    Details: "testing",
+    Year: 2025,
+    Details: "Animation, Action, Comedy",
   },
   {
     Title:
@@ -20,8 +20,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: 2025,
+    Details: "Animation, Adventure",
   },
   {
     Title:
@@ -32,8 +32,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -44,8 +44,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "d9f71ea77321ccc263ccd0a1daebe42697a2ae8f",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -56,8 +56,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -68,8 +68,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -80,8 +80,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "3a1b54370a7157c2e013355579a9ae0e5f6026bb",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -92,8 +92,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -104,8 +104,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "Batman.Begins.2005.REMASTERED.1080p.BluRay.H264.AAC5.1",
@@ -115,8 +115,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "Batman.The.Movie.1966.1080p.BluRay.x264.AAC.5.1-LAMA",
@@ -126,8 +126,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "Batman – Full Moon  (2025)",
@@ -137,8 +137,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -149,8 +149,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "Batman.Begins.2005.UHD.BluRay.2160p.DTS HD.MA.5.1.DV.HEVC.x265-E",
@@ -160,8 +160,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "[Batman] Dragon Ball Super - 062 [720p].mkv",
@@ -171,8 +171,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "c6e905307761792d011e0c15cb8223f1803897c8",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "[Batman] Dragon Ball Super - 060 [720p].mkv",
@@ -182,8 +182,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "64efcb622a26994ad54d231cceaa795e704277e3",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "Suits LA (2025) S01E04  Batman Returns   PrimeWire",
@@ -193,8 +193,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "The.Batman.2022.4K.HDR.DV.2160p BDRemux Ita Eng Fre x265-NAHOM",
@@ -204,8 +204,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -216,8 +216,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -228,8 +228,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "Batman.1989.UHD.BluRay.2160p.TrueHD.Atmos.7.1.DV.HEVC.x265-E",
@@ -239,8 +239,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "Absolute Batman Vol. 1 – The Zoo (TPB) (2025)",
@@ -250,8 +250,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -262,8 +262,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "[Batman] Dragon Ball Super - 061 [720p].mkv",
@@ -273,8 +273,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "3f8a9250eeb68ced357a691a88ba108b27394cab",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -285,8 +285,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "[Batman] Dragon Ball Super - 059 [720p].mkv",
@@ -296,8 +296,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "f20a257f9ec07ceef66b27902ed83d1d42801fae",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "Batman Ninja vs Yakuza League 2025 1080p AMZN WEB-DL x264 [i_c]",
@@ -307,8 +307,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -319,8 +319,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -331,8 +331,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -343,8 +343,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "755636acf7d4d3ee23572e2d5d35ff09ee878202",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -355,8 +355,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -367,8 +367,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "Batman '66 (001 073+Extras) (2013-2018)",
@@ -378,8 +378,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -390,8 +390,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -402,8 +402,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -414,8 +414,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "[Batman] Dragon Ball Super - 058 [720p]",
@@ -425,8 +425,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "5be02392d1c91a3cb4d44cb33fa75df1e7db0d54",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "Marvel – DC – Deadpool – Batman #1 (2025)",
@@ -436,8 +436,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "Batman #1 (2025)",
@@ -447,8 +447,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -459,8 +459,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "Batman – Year Three – The Deluxe Edition (TPB) (2025)",
@@ -470,8 +470,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -482,8 +482,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -494,8 +494,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "Batman.Begins.2005[DVD]-PANAM",
@@ -505,8 +505,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -517,8 +517,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "DC W.I.P. – Absolute Batman #1 (2025)",
@@ -528,8 +528,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -540,8 +540,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "Batman – Superman – World’s Finest #44 (2025)",
@@ -551,8 +551,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "Batman Superman Wonder Woman – Trinity Rebirth Omnibus (Fan-Made)",
@@ -562,8 +562,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "Immortal Legend Batman #1 (2025)",
@@ -573,8 +573,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "Batman.Begins.2005.NORDiC.BluRay.1080p.DD.5.1.x264-THEDANE",
@@ -584,8 +584,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -596,8 +596,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "Batman and Robin 1997 UHD BluRay2160p TrueHD Atmos 7 1 x265-E",
@@ -607,8 +607,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -619,8 +619,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -631,8 +631,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -643,8 +643,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -655,8 +655,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "[Batman] Dragon Ball Super - 057 [720p]",
@@ -666,8 +666,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "01eb9d0aa56e721638c4d248cf72e76d956e0ecb",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "Batman Year One 2011 UHD BluRay REMUX 2160p HEVC DTS HD MA5 1-HDS",
@@ -677,8 +677,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "Batman – Justice Buster #27 (2025)",
@@ -688,8 +688,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -700,8 +700,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "Absolute Batman #12 (2025)",
@@ -711,8 +711,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -723,8 +723,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -735,8 +735,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -747,8 +747,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -759,8 +759,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "NikkiSims com 13 10 14 Batman XXX iMAGESET LEWD [XC]",
@@ -770,8 +770,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "[Erai-raws] Ninja Batman [1080p][Multiple Subtitle].mkv",
@@ -781,8 +781,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "0be0fef6aa0a626d4ebaa5e8109b960f01a93d51",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -793,8 +793,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "f0f632979efc9328a52f9e7c96714c1e9093e693",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -805,8 +805,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -817,8 +817,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -829,8 +829,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -841,8 +841,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "Absolute Batman #11 (2025)",
@@ -852,8 +852,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "Heart.of.Batman.2018.1080p.BluRay.x264-OFT",
@@ -863,8 +863,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "[ManyVids] Anna Batman PART1 (39 videos) Pack 2021-2025",
@@ -874,8 +874,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -886,8 +886,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "4c4e3b3085cb23b769d06243f7fb8aa3528ffb5d",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "Absolute Batman #13 (2025)",
@@ -897,8 +897,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -909,8 +909,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -921,8 +921,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "Scooby.Doo.Meets.Batman.480p.SuckAss.DVDRip.x264.AAC-R3DB0X",
@@ -932,8 +932,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -944,8 +944,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "[Erai-raws] Ninja Batman [720p][Multiple Subtitle].mkv",
@@ -955,8 +955,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "e6346c2184d6d56aa950ccf6365fcb9eed238efd",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -967,8 +967,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "78eb83e3db7d089685c26ede53db2918c35cc6d3",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -979,8 +979,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "9e27f23590de9490490d2cbdf85adb5675d079f4",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -991,8 +991,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -1003,8 +1003,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "NikkiSims 13 10 11 Batman XXX 1080p WMV LEWD [XC]",
@@ -1014,8 +1014,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "[EuReKA] Batman: Gotham Knight (BD 1080p)",
@@ -1025,8 +1025,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "0e82ef3ded02968f7ab4d90c952f50b43ac40d80",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "Batman Ninja (2018) BD 1080p.x264.Tri-Audio.Ita.Eng.Jap [Rady].mkv",
@@ -1036,8 +1036,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "db5f78ee579b90c5b65dc4e2c7eb694fc531fc56",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -1048,8 +1048,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "c59d065372d9d25ddf6d27ed476ec8ae3f961ec8",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -1060,8 +1060,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "0magnet",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "The.Batman.2022.2160p.iT.WEB-DL.DDP5.1.Atmos.DV.MP4.x265-DVSUX",
@@ -1071,8 +1071,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "0magnet",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "The.Batman.2022.2160p.iT.WEB-DL.DDP5.1.Atmos.DV.MKV.x265-DVSUX",
@@ -1082,8 +1082,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "0magnet",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -1094,8 +1094,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "0magnet",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "X蝙F侠.The.Batman.2022.HD2160P.AAC.H264.CHS-ENG.BTSJ5",
@@ -1105,8 +1105,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "0magnet",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "Batman The Dark Knight (2008) [1080p]",
@@ -1116,8 +1116,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "0magnet",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -1128,8 +1128,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "0magnet",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -1140,8 +1140,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "0magnet",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "The LEGO Batman Movie 3D BluRay 1080p48 x264 AAC5.1",
@@ -1151,8 +1151,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -1163,8 +1163,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -1175,8 +1175,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -1187,8 +1187,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -1199,8 +1199,8 @@ export const testData = [
     Leechers: null,
     InfoHash: null,
     IndexerId: "1337x",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -1211,8 +1211,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "f83e2d208639ca34c3c30195d1c1195b4ce6485a",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -1223,8 +1223,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "37bc718c93a754e380473525a203a112f6ca9ea4",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -1235,8 +1235,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "fe942ec186199c5f56acc2325080194f509b94e5",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -1247,8 +1247,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "a317d8cfcf90519e0a5fb66ebfb801c463848ef7",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -1259,8 +1259,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "9c5b126d2f7a269b85a7b517f158ecb82d852769",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -1271,8 +1271,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "eb1770c9437095d19db7bda3466437d0e3d89e5b",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -1283,8 +1283,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "14f9d3889b86cbc174484e120634876593b77f15",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -1295,8 +1295,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "0ee2875a3722143bee6545e00a4f452fc5f1ca9b",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -1307,8 +1307,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "41526d5fbea3ec5212986377cb9d044aade928e9",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -1319,8 +1319,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "ca65c5c0526a2a8d5faed2177dbb615d5950a578",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -1331,8 +1331,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "27d59d17df2b2de85e2e1fab283dbfa09c816ec3",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -1343,8 +1343,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "78f31ba7ca3fdad9340084e511b9ca9f603eef54",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "Batman.Ninja.2018.1080p.BluRay.x264-NODLABS",
@@ -1354,8 +1354,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "3cbb00d5fd34d8775d31deefd40b8323bc0c6af6",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "[Erai-raws] Ninja Batman [480p][Multiple Subtitle].mkv",
@@ -1365,8 +1365,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "d8c02828902ca9dacf6d496a8b29c20f2673fd8b",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "[DragsterPS] Batman Ninja [720p] [Multi-Audio] [Multi-Subs]",
@@ -1376,8 +1376,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "5eed186b3f56fced93b6444fddb204d15db51b6a",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "[DragsterPS] Batman Ninja [1080p] [Multi-Audio] [Multi-Subs]",
@@ -1387,8 +1387,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "a1c0054ddeeebe482c29a1aff6aed3178e284c34",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -1399,8 +1399,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "2cbb00d55afba329bbdb8b6b912bed2d387df6c7",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -1411,8 +1411,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "6d8b5974a1538d204c2e2d6c4e21b7d80facc013",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title:
@@ -1423,8 +1423,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "21525c3bc8daed973a7d2649f543bceaefecdd67",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "[AU] Batman Ninja 2018 [1080p][Dual-Audio]",
@@ -1434,8 +1434,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "6afe4b0f7de8e9bb32e76184deab8ee4f8f7c8f0",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "[Batman] Dragon Ball Super - 056 [720p].mkv",
@@ -1445,8 +1445,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "7f8a65eeb8748c40ee1039bcd00a3494aa39259e",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "[Batman] Dragon Ball Super - 055",
@@ -1456,8 +1456,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "b9fbb30843e24db2c4b68bfc536236a51a4e5897",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "[Batman] Dragon Ball Super - 054 [720p].mkv",
@@ -1467,8 +1467,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "a3d88b1d4466c8b8d681ba2bb1620c2778f156d5",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "[Batman] Dragon Ball Super - 053",
@@ -1478,8 +1478,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "e3ec3aeaa49645294f77d25b9fb6975c49ef04eb",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "[Batman] Dragon Ball Super - 052.mkv",
@@ -1489,8 +1489,8 @@ export const testData = [
     Leechers: null,
     InfoHash: "c6e2ce48b9f541afa5380cf9f2fe6bee9d475485",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
   {
     Title: "cor.movie.batman.gotham.knight.[96B83D8F].mkv",
@@ -1500,7 +1500,7 @@ export const testData = [
     Leechers: null,
     InfoHash: "d27c9c565b68e1ab271d2e60e34a2d3fc3f0bdb4",
     IndexerId: "animetosho",
-    year: null,
-    Details: "testing",
+    Year: null,
+    Details: "Action, Adventure, Animation",
   },
 ];

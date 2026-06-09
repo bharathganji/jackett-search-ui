@@ -49,6 +49,7 @@ function calculateRelevance(
   fuseScore: number = 1
 ): number {
   const titleLower = result.Title.toLowerCase();
+  const yearStr = result.Year ? String(result.Year) : "";
   let bonus = 0;
 
   // 1. Exact phrase start bonus
@@ -59,9 +60,20 @@ function calculateRelevance(
 
   // 2. Term-specific boosts
   terms.forEach((term) => {
-    // Exact match in word boundaries
-    const regex = new RegExp(`\\b${term}\\b`, "i");
-    if (regex.test(result.Title)) bonus += 0.2;
+    const termLower = term.toLowerCase();
+
+    // Exact match in title word boundaries
+    const titleRegex = new RegExp(`\\b${term}\\b`, "i");
+    if (titleRegex.test(result.Title)) bonus += 0.2;
+
+    // Exact match in Details word boundaries
+    if (result.Details) {
+      const detailsRegex = new RegExp(`\\b${term}\\b`, "i");
+      if (detailsRegex.test(result.Details)) bonus += 0.15;
+    }
+
+    // Year-specific boost
+    if (yearStr && termLower === yearStr) bonus += 0.3;
 
     // Pattern specific boosts (Seasons, Years)
     bonus += getPatternBoost(result.Title, term);
@@ -95,7 +107,7 @@ export function advancedFuzzySearch(
 
   // Initialize Fuse one time for the entire batch
   const fuse = new Fuse(results, {
-    keys: ["Title"],
+    keys: ["Title", "Year", "Details", "IndexerId"],
     threshold: 0.4,
     includeScore: true,
     useExtendedSearch: true,
@@ -117,9 +129,16 @@ export function advancedFuzzySearch(
   // Fallback: If Fuse finds nothing, try basic inclusion for each term
   return results
     .map((r) => {
-      const matchedTerms = terms.filter((t) =>
-        r.Title.toLowerCase().includes(t.toLowerCase())
-      );
+      const yearStr = r.Year ? String(r.Year) : "";
+      const matchedTerms = terms.filter((t) => {
+        const termLower = t.toLowerCase();
+        return (
+          r.Title.toLowerCase().includes(termLower) ||
+          yearStr.toLowerCase().includes(termLower) ||
+          (r.Details && r.Details.toLowerCase().includes(termLower)) ||
+          (r.IndexerId && r.IndexerId.toLowerCase().includes(termLower))
+        );
+      });
       const score = matchedTerms.length / terms.length;
       return {
         ...r,
