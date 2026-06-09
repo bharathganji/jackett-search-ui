@@ -58,7 +58,7 @@ export function ResultsMobileCard({ result, onCopy }: ResultsMobileCardProps) {
           }}
         >
           {renderMagetButton(result.Link)}
-          <span className="ml-1.5 truncate">Magnet</span>
+          <span className="ml-1.5 truncate">Link</span>
         </Button>
       </div>
     </div>

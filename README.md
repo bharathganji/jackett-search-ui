@@ -1,17 +1,17 @@
 ```markdown
 # Jackett Search UI
 
-A modern, responsive React-based UI for searching torrents using Jackett with real-time streaming results, advanced filtering, and efficient caching.
+A modern, responsive React-based UI for searching content using Jackett with real-time streaming results, advanced filtering, and efficient caching.
 
 ## ✨ Features
 
-- **Real-time Search**: Stream search results as they come in from multiple indexers
+- **Real-time Search**: Stream search results as they come in from multiple sources
 - **Modern UI**: Built with React 19, TypeScript, and Tailwind CSS
 - **Responsive Design**: Mobile-first design that works on all devices
-- **Advanced Filtering**: Filter results by size, seeders, and indexer
+- **Advanced Filtering**: Filter results by size, seeders, and source
 - **Virtualized Results**: Efficient rendering of large result sets using TanStack Virtual
 - **Dark/Light Theme**: Toggle between themes with next-themes
-- **Copy to Clipboard**: Easy copying of magnet links and source URLs
+- **Copy to Clipboard**: Easy copying of source links and URLs
 - **Modern Components**: Built with shadcn/ui components
 ```
 
@@ -65,12 +65,12 @@ A modern, responsive React-based UI for searching torrents using Jackett with re
 ## 📖 Usage
 
 1. **Search**: Enter your search query in the input field
-2. **Real-time Results**: Watch as results stream in from multiple indexers
+2. **Real-time Results**: Watch as results stream in from multiple sources
 3. **Filter**: Use the filter options to narrow down results by:
    - File size (min/max)
    - Seeders count
-   - Specific indexers
-4. **Copy Links**: Click the copy buttons to get magnet links or source URLs
+   - Specific sources
+4. **Copy Links**: Click the copy buttons to get source links or URLs
 5. **Theme Toggle**: Switch between light and dark themes using the theme toggle
 
 ## 🛠️ Available Scripts
@@ -146,7 +146,7 @@ This project is for educational purposes and is not intended for illegal activit
 
 ## 🙏 Acknowledgments
 
-- [Jackett](https://github.com/Jackett/Jackett) - The awesome torrent indexer aggregator
+- [Jackett](https://github.com/Jackett/Jackett) - The awesome content aggregator
 - [shadcn/ui](https://ui.shadcn.com/) - For the beautiful component library
 - [Lucide](https://lucide.dev/) - For the clean icons
 

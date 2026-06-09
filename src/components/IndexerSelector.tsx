@@ -69,7 +69,7 @@ export function IndexerSelector({
   };
 
   if (loading) {
-    return <LoadingState message="Loading indexers..." />;
+    return <LoadingState message="Loading sources..." />;
   }
 
   if (error) {

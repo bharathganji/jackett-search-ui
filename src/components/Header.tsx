@@ -22,7 +22,7 @@ export function Header() {
               Jackett Search
             </h1>
             <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">
-              Enhanced Torrent Search
+              Enhanced Content Search
             </p>
           </div>
         </div>
