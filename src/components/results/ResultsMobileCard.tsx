@@ -40,10 +40,7 @@ export function ResultsMobileCard({ result, onCopy }: ResultsMobileCardProps) {
           variant="default"
           size="sm"
           className="h-8 px-3 flex-1 min-w-0 shadow-sm hover:scale-[1.02] transition-transform text-xs"
-          onClick={() => {
-            onCopy("source", result.Details);
-            window.open(result.Details, "_blank");
-          }}
+          onClick={() => window.open(result.Details, "_blank")}
         >
           <ExternalLink className="h-3 w-3 flex-shrink-0 mr-1.5" />
           <span className="truncate">Source</span>
@@ -56,7 +53,6 @@ export function ResultsMobileCard({ result, onCopy }: ResultsMobileCardProps) {
             if (result.Link?.startsWith("magnet:")) {
               onCopy("magnet", result.Link);
             } else {
-              onCopy("magnet", result.Link);
               window.open(result.Link, "_blank");
             }
           }}

@@ -44,7 +44,6 @@ export function ResultsTableRow({
             if (result.Link?.startsWith("magnet:")) {
               onCopy("magnet", result.Link);
             } else {
-              onCopy("magnet", result.Link);
               window.open(result.Link, "_blank");
             }
           }}
@@ -57,10 +56,7 @@ export function ResultsTableRow({
           variant="default"
           size="icon"
           className="h-8 w-8 hover:scale-110 transition-transform shadow-sm"
-          onClick={() => {
-            onCopy("source", result.Details);
-            window.open(result.Details, "_blank");
-          }}
+          onClick={() => window.open(result.Details, "_blank")}
         >
           <ExternalLink className="h-3 w-3" />
         </Button>
