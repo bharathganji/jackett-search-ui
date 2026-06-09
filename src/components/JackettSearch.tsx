@@ -186,6 +186,7 @@ const JackettSearch = memo(() => {
               indexers={indexers}
               selectedIndexerFilters={selectedIndexerFilters}
               searchQuery={searchQuery}
+              onClearIndexerFilters={handleClearIndexerFilters}
             />
             <div className="max-w-4xl mx-auto w-full">
               <IndexerChips
