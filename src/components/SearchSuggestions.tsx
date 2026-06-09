@@ -60,11 +60,11 @@ export function SearchSuggestions({
                   </kbd>{" "}
                   to focus search from anywhere
                 </p>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Use fuzzy terms like{" "}
-                  <span className="font-medium text-foreground">720p</span> or a{" "}
-                  <span className="font-medium text-foreground">year</span> to filter results
-                </p>
+                 <p className="text-sm text-muted-foreground mt-1">
+                   Use fuzzy terms like{" "}
+                   <span className="font-medium text-foreground">720p</span> or a{" "}
+                   <span className="font-medium text-foreground">year</span> to filter results
+                 </p>
               </div>
             </div>
           )}
