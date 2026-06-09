@@ -51,7 +51,7 @@
     "postversion": "git push && git push --tags"
   },
   "engines": {
-    "node": ">=18",
+    "node": ">=22.14.0",
     "npm": ">=9"
   },
   "dependencies": {
