@@ -131,6 +131,33 @@ const JackettSearch = memo(() => {
     }
   }, []);
 
+  // Keyboard shortcut to focus search input with `/`
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if target is an input or textarea
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement
+      ) {
+        return;
+      }
+
+      // Ignore during composition (for international keyboards)
+      if (e.isComposing) {
+        return;
+      }
+
+      // Handle `/` key to focus search
+      if (e.key === "/") {
+        e.preventDefault();
+        inputRef.current?.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background selection:bg-primary/20">
       <div className="flex flex-col w-full max-w-7xl mx-auto gap-12 p-4 sm:p-8 animate-fadeIn">
