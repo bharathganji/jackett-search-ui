@@ -215,6 +215,99 @@ describe("advancedFuzzySearch", () => {
     });
   });
 
+  // Test year, details, and indexer fallback matching
+  describe("Year, Details, and IndexerId field matching", () => {
+    const yearResults: JackettSearchResult[] = [
+      {
+        Title: "Some.Other.Movie.2010.1080p.WEB-DL",
+        Link: "testing",
+        Size: 1000000000,
+        Seeders: 10,
+        Leechers: null,
+        InfoHash: null,
+        IndexerId: "1337x",
+        Year: 2005,
+        Details: "Action movie",
+      },
+      {
+        Title: "Another.Film.2015.1080p.BluRay",
+        Link: "testing",
+        Size: 2000000000,
+        Seeders: 5,
+        Leechers: null,
+        InfoHash: null,
+        IndexerId: "rarbg",
+        Year: null,
+        Details: "Drama film",
+      },
+      {
+        Title: "Third.Title.2018.720p.WEBRip",
+        Link: "testing",
+        Size: 800000000,
+        Seeders: 20,
+        Leechers: null,
+        InfoHash: null,
+        IndexerId: "1337x",
+        Year: 2005,
+        Details: "Comedy show with special details about 2005 release",
+      },
+    ];
+
+    it("should match Year field when year is searched even if title lacks the year", () => {
+      const results = advancedFuzzySearch(yearResults, "2005");
+      expect(results.length).toBeGreaterThanOrEqual(1);
+      const matched = results.filter((r) => r.Year === 2005);
+      expect(matched.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it("should match Details field when details term is searched", () => {
+      const results = advancedFuzzySearch(yearResults, "special");
+      expect(results.length).toBeGreaterThanOrEqual(1);
+      results.forEach((result) => {
+        expect(result.Details.toLowerCase()).toContain("special");
+      });
+    });
+
+    it("should match IndexerId field when indexer is searched", () => {
+      const results = advancedFuzzySearch(yearResults, "rarbg");
+      expect(results.length).toBeGreaterThanOrEqual(1);
+      results.forEach((result) => {
+        expect(result.IndexerId.toLowerCase()).toContain("rarbg");
+      });
+    });
+
+    it("should prioritize Title matches over Year/Details matches", () => {
+      const mixedResults: JackettSearchResult[] = [
+        {
+          Title: "Batman 2005",
+          Link: "testing",
+          Size: 1000000000,
+          Seeders: 10,
+          Leechers: null,
+          InfoHash: null,
+          IndexerId: "1337x",
+          Year: null,
+          Details: "",
+        },
+        {
+          Title: "Unrelated.Title",
+          Link: "testing",
+          Size: 2000000000,
+          Seeders: 100,
+          Leechers: null,
+          InfoHash: null,
+          IndexerId: "1337x",
+          Year: 2005,
+          Details: "2005 story",
+        },
+      ];
+
+      const results = advancedFuzzySearch(mixedResults, "Batman 2005");
+      expect(results.length).toBeGreaterThan(0);
+      expect(results[0]?.Title).toBe("Batman 2005");
+    });
+  });
+
   // Test result ordering
   describe("Result ordering", () => {
     it("should prioritize exact matches over fuzzy matches", () => {
@@ -373,17 +466,24 @@ describe("advancedFuzzySearch", () => {
 
   // Test abbreviation expansion
   describe("Abbreviation expansion", () => {
-    it("should match 'dub' with 'dubbed', 'dual', and 'dub'", () => {
+    it("should match 'dub' with 'dubbed', 'dual', or 'dub' in searchable fields", () => {
       const results = advancedFuzzySearch(typedTestData, "bat dub");
       expect(results.length).toBeGreaterThan(0);
-      // Results should contain titles with dubbed, dual, or dub
       results.forEach((result) => {
         const titleLower = result.Title.toLowerCase();
-        const hasDubbed =
+        const detailsLower = result.Details.toLowerCase();
+        const indexerLower = result.IndexerId.toLowerCase();
+        const hasDub =
           titleLower.includes("dubbed") ||
           titleLower.includes("dual") ||
-          titleLower.includes("dub");
-        expect(hasDubbed).toBe(true);
+          titleLower.includes("dub") ||
+          detailsLower.includes("dubbed") ||
+          detailsLower.includes("dual") ||
+          detailsLower.includes("dub") ||
+          indexerLower.includes("dubbed") ||
+          indexerLower.includes("dual") ||
+          indexerLower.includes("dub");
+        expect(hasDub).toBe(true);
       });
     });
 
@@ -392,8 +492,7 @@ describe("advancedFuzzySearch", () => {
       expect(results.length).toBeGreaterThan(0);
       results.forEach((result) => {
         const titleLower = result.Title.toLowerCase();
-        const hasWeb = titleLower.includes("web");
-        expect(hasWeb).toBe(true);
+        expect(titleLower.includes("web")).toBe(true);
       });
     });
 
