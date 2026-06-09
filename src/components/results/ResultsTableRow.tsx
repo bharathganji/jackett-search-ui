@@ -29,6 +29,7 @@ export function ResultsTableRow({
       >
         {result.Title}
       </div>
+      <div className="col-span-1 hidden sm:block" aria-hidden="true" />
       <div className="col-span-1 text-center font-medium flex-shrink-0 text-primary">
         {result.Seeders}
       </div>
