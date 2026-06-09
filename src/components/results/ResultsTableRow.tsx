@@ -24,7 +24,7 @@ export function ResultsTableRow({
   return (
     <div className="grid grid-cols-12 gap-2 p-2 border-b hover:bg-muted/50 items-center text-sm min-h-[60px] transition-colors duration-200 group">
       <div
-        className="col-span-6 font-medium text-foreground/90 break-all"
+        className="col-span-4 font-medium text-foreground/90 break-all"
         title={result.Title}
       >
         {result.Title}
@@ -33,6 +33,9 @@ export function ResultsTableRow({
         {result.Seeders}
       </div>
       <div className="col-span-1 text-center flex-shrink-0 text-muted-foreground">
+        {result.Leechers ?? "--"}
+      </div>
+      <div className="col-span-2 text-center flex-shrink-0 text-muted-foreground">
         {convertSizeToGB(result.Size)}
       </div>
       <div className="col-span-1 flex justify-center flex-shrink-0">
@@ -61,7 +64,7 @@ export function ResultsTableRow({
           <ExternalLink className="h-3 w-3" />
         </Button>
       </div>
-      <div className="col-span-2 flex items-center gap-2 min-w-0 pr-2">
+      <div className="col-span-1 flex items-center gap-2 min-w-0 pr-2">
         <span
           className="truncate text-muted-foreground group-hover:text-foreground transition-colors text-right w-full"
           title={result.IndexerId}
