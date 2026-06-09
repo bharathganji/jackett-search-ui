@@ -33,7 +33,7 @@ export function ResultsMobileCard({ result, onCopy }: ResultsMobileCardProps) {
           </span>
           <span className="flex-shrink-0">{convertSizeToGB(result.Size)}</span>
           {result.Leechers !== null && (
-            <span className="flex-shrink-0">{result.Leechers} leech</span>
+            <span className="flex-shrink-0">{result.Leechers} leechers</span>
           )}
         </div>
         <div className="truncate max-w-[100px]">{result.IndexerId}</div>

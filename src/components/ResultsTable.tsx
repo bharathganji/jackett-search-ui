@@ -143,6 +143,7 @@ export function ResultsTable({
 
           <div className="flex flex-col sm:flex-row gap-4 items-center">
             <select
+              aria-label="Items per page"
               value={itemsPerPage}
               onChange={(e) => setItemsPerPage(Number(e.target.value))}
               className="h-10 px-4 bg-secondary/20 border-border text-sm font-medium rounded-lg hover:bg-secondary/30 transition-all focus:ring-ring cursor-pointer w-full sm:w-auto"
