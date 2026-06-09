@@ -4,74 +4,41 @@ on:
   push:
     branches:
       - main
-    tags:
-      - 'v*'
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   release:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
+    if: ${{ !contains(github.event.head_commit.message, 'skip ci') }}
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20.x'
-        cache: 'npm'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
 
-    - name: Install dependencies
-      run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Run tests
-      run: |
-        npm run lint
-        npx tsc --noEmit
-        npm run format:check
+      - name: Run tests
+        run: |
+          npm run lint
+          npx tsc --noEmit
+          npm run format:check
 
-    - name: Determine version bump and create release
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git config --global user.name "github-actions[bot]"
-        
-        LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
-        
-        if git log --oneline ${LATEST_TAG}..HEAD | grep -qE "(feat|Feature):"; then
-          BUMP="minor"
-        elif git log --oneline ${LATEST_TAG}..HEAD | grep -qE "(fix|Fix):"; then
-          BUMP="patch"
-        elif git log --oneline ${LATEST_TAG}..HEAD | grep -qE "(perf|Perf):"; then
-          BUMP="patch"
-        else
-          BUMP="patch"
-        fi
-        
-        echo "Bump type: $BUMP"
-        
-        npm run release:$BUMP
-        git push --follow-tags origin main
+      - name: Build
+        run: npm run build
 
-    - name: Build project
-      if: startsWith(github.ref, 'refs/tags/')
-      run: npm run build
-
-    - name: Create Release
-      if: startsWith(github.ref, 'refs/tags/')
-      uses: softprops/action-gh-release@v2
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        name: Release ${{ github.ref_name }}
-        body_path: CHANGELOG.md
-        draft: false
-        prerelease: false
-        files: ./dist
+      - name: Semantic Release
+        run: npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
