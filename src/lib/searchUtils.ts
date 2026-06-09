@@ -74,11 +74,11 @@ function calculateRelevance(
     }
 
     // Exact match in Details
-    const detailsLower = result.Details.toLowerCase();
+    const detailsLower = (result.Details ?? "").toLowerCase();
     if (detailsLower.includes(termLower)) bonus += 0.1;
 
     // Exact match in IndexerId
-    const indexerLower = result.IndexerId.toLowerCase();
+    const indexerLower = (result.IndexerId ?? "").toLowerCase();
     if (indexerLower.includes(termLower)) bonus += 0.08;
 
     // Pattern specific boosts (Seasons, Years) - applied to Title
@@ -138,8 +138,8 @@ export function advancedFuzzySearch(
       const matchedTerms = terms.filter((t) => {
         const termLower = t.toLowerCase();
         const titleLower = r.Title.toLowerCase();
-        const detailsLower = r.Details.toLowerCase();
-        const indexerLower = r.IndexerId.toLowerCase();
+        const detailsLower = (r.Details ?? "").toLowerCase();
+        const indexerLower = (r.IndexerId ?? "").toLowerCase();
         return (
           titleLower.includes(termLower) ||
           (r.Year !== null && String(r.Year).toLowerCase() === termLower) ||
