@@ -1,4 +1,4 @@
-import { Clock, Search, X } from "lucide-react";
+import { Clock, Info, Search, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -40,6 +40,30 @@ export function SearchSuggestions({
     >
       <CardContent className="p-6">
         <div className="space-y-8">
+          {/* Onboarding Tip - shown when no recent searches */}
+          {recentSearches.length === 0 && (
+            <div>
+              <div className="flex items-center gap-3 mb-4 group/header">
+                <div className="p-2 bg-muted/50 rounded-lg">
+                  <Info className="h-4 w-4 text-muted-foreground" />
+                </div>
+                <span className="text-sm font-bold tracking-tight text-foreground/80 uppercase text-[11px]">
+                  Tip
+                </span>
+                <div className="h-[1px] flex-1 bg-border" />
+              </div>
+              <div className="px-4 py-2 bg-muted/30 border border-border/50 rounded-lg">
+                <p className="text-sm text-muted-foreground">
+                  Press{" "}
+                  <kbd className="px-1.5 py-0.5 text-xs font-mono bg-background border border-border rounded">
+                    /
+                  </kbd>{" "}
+                  to focus search from anywhere
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Recent Searches section */}
           {recentSearches.length > 0 && (
             <div>

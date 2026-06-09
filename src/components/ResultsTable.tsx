@@ -25,6 +25,7 @@ interface ResultsTableProps {
   indexers: Indexer[];
   selectedIndexerFilters: string[];
   searchQuery: string;
+  onClearIndexerFilters: () => void;
 }
 
 /**
@@ -43,6 +44,7 @@ export function ResultsTable({
   onCopy,
   selectedIndexerFilters,
   searchQuery,
+  onClearIndexerFilters,
 }: ResultsTableProps) {
   // --- UI State ---
   const [filter, setFilter] = useState("");
@@ -151,6 +153,20 @@ export function ResultsTable({
                 </option>
               ))}
             </select>
+
+            {(filter || selectedIndexerFilters.length > 0) && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-[10px] h-8 px-4 font-bold uppercase tracking-widest text-destructive hover:bg-destructive/10 rounded-full whitespace-nowrap transition-all"
+                onClick={() => {
+                  setFilter("");
+                  onClearIndexerFilters();
+                }}
+              >
+                Clear All Filters
+              </Button>
+            )}
 
             <div className="relative flex-1 w-full group">
               <Input
