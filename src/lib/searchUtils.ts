@@ -151,6 +151,8 @@ export function advancedFuzzySearch(
   }
 
   // Fallback: If Fuse finds nothing, try basic inclusion for each term
+  const lowerTerms = terms.map((t) => t.toLowerCase());
+
   return results
     .map((r) => {
       const titleLower = r.Title.toLowerCase();
@@ -159,7 +161,7 @@ export function advancedFuzzySearch(
       const yearStringLower =
         r.Year !== null ? String(r.Year).toLowerCase() : null;
 
-      const matchedTerms = terms.filter((t) => {
+    const matchedTerms = terms.filter((t) => {
         return (
           titleLower.includes(t.lower) ||
           (yearStringLower !== null && yearStringLower === t.lower) ||
@@ -167,7 +169,7 @@ export function advancedFuzzySearch(
           indexerLower.includes(t.lower)
         );
       });
-      const score = matchedTerms.length / terms.length;
+      const score = matchedTerms.length / lowerTerms.length;
       return {
         ...r,
         Relevance: score > 0 ? calculateRelevance(r, terms, 1 - score) : 0,
