@@ -44,6 +44,20 @@ export function useFilteredResults({
       const aVal = a[sortField];
       const bVal = b[sortField];
 
+      // Special handling for Seeders, Leechers, Size, Relevance to ensure numeric sort
+      if (
+        sortField === "Seeders" ||
+        sortField === "Leechers" ||
+        sortField === "Size" ||
+        sortField === "Relevance"
+      ) {
+        const aNum =
+          typeof aVal === "string" ? parseFloat(aVal) : Number(aVal) || 0;
+        const bNum =
+          typeof bVal === "string" ? parseFloat(bVal) : Number(bVal) || 0;
+        return sortDirection === "asc" ? aNum - bNum : bNum - aNum;
+      }
+
       if (typeof aVal === "number" && typeof bVal === "number") {
         return sortDirection === "asc" ? aVal - bVal : bVal - aVal;
       }
