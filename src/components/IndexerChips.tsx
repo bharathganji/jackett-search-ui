@@ -25,10 +25,17 @@ export function IndexerChips({
     for (const result of results) {
       stats.set(result.IndexerId, (stats.get(result.IndexerId) || 0) + 1);
     }
+
+    // Precompute site links for O(1) lookup
+    const siteLinks = new Map<string, string | undefined>();
+    for (const indexer of indexers) {
+      siteLinks.set(indexer.id, indexer.site_link);
+    }
+
     return Array.from(stats.entries()).map(([indexerId, count]) => ({
       indexerId,
       count,
-      siteLink: indexers.find((idx) => idx.id === indexerId)?.site_link,
+      siteLink: siteLinks.get(indexerId),
     }));
   })();
 
