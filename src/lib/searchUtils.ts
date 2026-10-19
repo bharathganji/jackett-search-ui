@@ -22,20 +22,31 @@ export function filterValidSearchResults(
   return results.filter(isValidSearchResult);
 }
 
+// Pre-compile static patterns
+const sePattern = /s\d{1,2}e\d{1,2}/i;
+const yearPattern = /\b(19|20)\d{2}\b/;
+
+/**
+ * Escapes special characters in a string for use in a regular expression
+ */
+function escapeRegExp(string: string): string {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
+}
+
+type ProcessedTerm = {
+  original: string;
+  lower: string;
+  regex: RegExp;
+  hasSePattern: boolean;
+  hasYearPattern: boolean;
+};
+
 /**
  * Calculates a relevance boost for media-specific patterns (Season/Episode)
  */
-function getPatternBoost(title: string, term: string): number {
-  const titleLower = title.toLowerCase();
-  const termLower = term.toLowerCase();
-
-  // Season/Episode pattern (e.g. S01E05)
-  const sePattern = /s\d{1,2}e\d{1,2}/i;
-  if (sePattern.test(term) && titleLower.includes(termLower)) return 0.5;
-
-  // Year pattern
-  const yearPattern = /\b(19|20)\d{2}\b/;
-  if (yearPattern.test(term) && titleLower.includes(termLower)) return 0.3;
+function getPatternBoost(titleLower: string, term: ProcessedTerm): number {
+  if (term.hasSePattern && titleLower.includes(term.lower)) return 0.5;
+  if (term.hasYearPattern && titleLower.includes(term.lower)) return 0.3;
 
   return 0;
 }
@@ -45,7 +56,7 @@ function getPatternBoost(title: string, term: string): number {
  */
 function calculateRelevance(
   result: JackettSearchResult,
-  terms: string[],
+  terms: ProcessedTerm[],
   fuseScore: number = 1
 ): number {
   const titleLower = result.Title.toLowerCase();
@@ -53,37 +64,37 @@ function calculateRelevance(
 
   // 1. Exact phrase start bonus
   const firstTerm = terms[0];
-  if (firstTerm && titleLower.startsWith(firstTerm.toLowerCase())) {
+  if (firstTerm && titleLower.startsWith(firstTerm.lower)) {
     bonus += 0.4;
   }
 
   // 2. Term-specific boosts across searchable fields
-  terms.forEach((term) => {
-    const termLower = term.toLowerCase();
+  for (let i = 0; i < terms.length; i++) {
+    const term = terms[i];
+    if (!term) continue;
 
     // Exact match in word boundaries (Title first priority)
-    const titleRegex = new RegExp(`\\b${term}\\b`, "i");
-    if (titleRegex.test(result.Title)) bonus += 0.2;
+    if (term.regex.test(result.Title)) bonus += 0.2;
 
     // Exact match in Year
     if (
       result.Year !== null &&
-      String(result.Year).toLowerCase() === termLower
+      String(result.Year).toLowerCase() === term.lower
     ) {
       bonus += 0.15;
     }
 
     // Exact match in Details
     const detailsLower = (result.Details || "").toLowerCase();
-    if (detailsLower.includes(termLower)) bonus += 0.1;
+    if (detailsLower.includes(term.lower)) bonus += 0.1;
 
     // Exact match in IndexerId
     const indexerLower = (result.IndexerId || "").toLowerCase();
-    if (indexerLower.includes(termLower)) bonus += 0.08;
+    if (indexerLower.includes(term.lower)) bonus += 0.08;
 
     // Pattern specific boosts (Seasons, Years) - applied to Title
-    bonus += getPatternBoost(result.Title, term);
-  });
+    bonus += getPatternBoost(titleLower, term);
+  }
 
   // 3. Health bonus (Seeds) - capped to avoid popularity overriding relevance
   const healthBonus = Math.min(0.2, (result.Seeders || 0) / 2000);
@@ -109,7 +120,14 @@ export function advancedFuzzySearch(
     }));
   }
 
-  const terms = query.split(/\s+/).filter((t) => t.length > 1);
+  const rawTerms = query.split(/\s+/).filter((t) => t.length > 1);
+  const terms: ProcessedTerm[] = rawTerms.map((t) => ({
+    original: t,
+    lower: t.toLowerCase(),
+    regex: new RegExp(`\\b${escapeRegExp(t)}\\b`, "i"),
+    hasSePattern: sePattern.test(t),
+    hasYearPattern: yearPattern.test(t),
+  }));
 
   // Initialize Fuse one time for the entire batch
   const fuse = new Fuse(results, {
@@ -133,8 +151,6 @@ export function advancedFuzzySearch(
   }
 
   // Fallback: If Fuse finds nothing, try basic inclusion for each term
-  const lowerTerms = terms.map((t) => t.toLowerCase());
-
   return results
     .map((r) => {
       const titleLower = r.Title.toLowerCase();
@@ -143,15 +159,15 @@ export function advancedFuzzySearch(
       const yearStringLower =
         r.Year !== null ? String(r.Year).toLowerCase() : null;
 
-      const matchedTerms = lowerTerms.filter((termLower) => {
+      const matchedTerms = terms.filter((t) => {
         return (
-          titleLower.includes(termLower) ||
-          (yearStringLower !== null && yearStringLower === termLower) ||
-          detailsLower.includes(termLower) ||
-          indexerLower.includes(termLower)
+          titleLower.includes(t.lower) ||
+          (yearStringLower !== null && yearStringLower === t.lower) ||
+          detailsLower.includes(t.lower) ||
+          indexerLower.includes(t.lower)
         );
       });
-      const score = matchedTerms.length / lowerTerms.length;
+      const score = matchedTerms.length / terms.length;
       return {
         ...r,
         Relevance: score > 0 ? calculateRelevance(r, terms, 1 - score) : 0,
