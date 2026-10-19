@@ -38,7 +38,7 @@ export function ResultsMobileCard({ result, onCopy }: ResultsMobileCardProps) {
         </div>
         <div className="truncate max-w-[100px]">{result.IndexerId}</div>
       </div>
-      <div className="flex gap-1 pt-0.5">
+      <div className="flex flex-wrap gap-1 pt-0.5">
         <Button
           variant="default"
           size="sm"
