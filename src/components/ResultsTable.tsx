@@ -246,7 +246,6 @@ export function ResultsTable({
                     left: 0,
                     width: "100%",
                     transform: `translateY(${v.start}px)`,
-                    paddingBottom: "8px", // add padding inside the absolute div instead of margin on card
                   }}
                 >
                   {!isMobile ? (

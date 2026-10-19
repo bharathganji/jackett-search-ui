@@ -37,11 +37,11 @@ export function SkeletonLoader({
         </div>
 
         {/* Rows */}
-        <div className="px-2 sm:px-0">
+        <div className="px-0">
           {Array.from({ length: rows }).map((_, i) => (
             <div
               key={i}
-              className="w-full rounded-xl border border-border/40 p-3 sm:p-2 mb-2"
+              className="w-full border-b p-3 sm:p-2"
               style={{
                 animationDelay: `${i * 100}ms`,
               }}
