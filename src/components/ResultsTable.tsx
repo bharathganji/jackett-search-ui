@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
-import { useVirtualizer } from "@tanstack/react-virtual";
+import { Virtuoso } from "react-virtuoso";
 import { Search, X } from "lucide-react";
 
 import {
@@ -28,17 +28,6 @@ interface ResultsTableProps {
   onClearIndexerFilters: () => void;
 }
 
-/**
- * Optimized measure function for virtualized list
- */
-const getElementHeight = (
-  element: HTMLElement | null,
-  isMobile: boolean
-): number => {
-  if (!element) return isMobile ? 120 : 60;
-  return Math.max(element.getBoundingClientRect().height, isMobile ? 80 : 60);
-};
-
 export function ResultsTable({
   results,
   onCopy,
@@ -57,10 +46,6 @@ export function ResultsTable({
     typeof window !== "undefined" ? window.innerWidth < 640 : false
   );
 
-  // --- Refs ---
-  const parentRef = useRef<HTMLDivElement>(null);
-  const rowRefs = useRef<Map<number, HTMLDivElement>>(new Map());
-
   // --- Modularized Data Logic ---
   const { paginatedResults, totalPages, totalResults } = useFilteredResults({
     results,
@@ -73,36 +58,18 @@ export function ResultsTable({
     currentPage,
   });
 
-  // --- Virtualization ---
-  const rowVirtualizer = useVirtualizer({
-    count: paginatedResults.length,
-    getScrollElement: () => parentRef.current,
-    estimateSize: (index) =>
-      getElementHeight(rowRefs.current.get(index) || null, isMobile),
-    measureElement: (element) =>
-      getElementHeight(element as HTMLElement, isMobile),
-    overscan: 10,
-  });
-
   // --- Effects ---
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 640);
-      rowVirtualizer.measure();
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [rowVirtualizer]);
+  }, []);
 
   useEffect(() => {
     setCurrentPage(1); // Reset page on filter change
   }, [filter, selectedIndexerFilters]);
-
-  // Handle dynamic measurement synchronization
-  useEffect(() => {
-    const timer = requestAnimationFrame(() => rowVirtualizer.measure());
-    return () => cancelAnimationFrame(timer);
-  }, [paginatedResults, isMobile, rowVirtualizer]);
 
   // --- Callbacks ---
   const handleSort = (field: keyof JackettSearchResult) => {
@@ -216,38 +183,15 @@ export function ResultsTable({
           />
         </div>
 
-        <div
-          ref={parentRef}
-          className="h-[600px] sm:h-96 overflow-auto sm:mt-2 will-change-transform scrollbar-thin scrollbar-thumb-primary/20 bg-background sm:bg-transparent"
-        >
-          <div
-            style={{
-              height: `${rowVirtualizer.getTotalSize()}px`,
-              width: "100%",
-              position: "relative",
-            }}
-          >
-            {rowVirtualizer.getVirtualItems().map((v) => {
-              const result = paginatedResults[v.index];
+        <div className="h-[600px] sm:h-96 mt-2">
+          <Virtuoso
+            className="h-full scrollbar-thin scrollbar-thumb-primary/20"
+            data={paginatedResults}
+            itemContent={(index, result) => {
               if (!result) return null;
 
               return (
-                <div
-                  key={v.key}
-                  ref={(el) => {
-                    if (el) {
-                      rowRefs.current.set(v.index, el);
-                      rowVirtualizer.measureElement(el);
-                    } else rowRefs.current.delete(v.index);
-                  }}
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    transform: `translateY(${v.start}px)`,
-                  }}
-                >
+                <div key={result.InfoHash || result.Link || index} className="w-full">
                   {!isMobile ? (
                     <ResultsTableRow result={result} onCopy={onCopy} />
                   ) : (
@@ -255,8 +199,8 @@ export function ResultsTable({
                   )}
                 </div>
               );
-            })}
-          </div>
+            }}
+          />
         </div>
 
         <div className="p-3 sm:p-0">
