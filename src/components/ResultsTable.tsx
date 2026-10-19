@@ -59,7 +59,7 @@ export function ResultsTable({
 
   // --- Refs ---
   const parentRef = useRef<HTMLDivElement>(null);
-  const rowRefs = useRef<Map<number, HTMLDivElement>>(new Map());
+
 
   // --- Modularized Data Logic ---
   const { paginatedResults, totalPages, totalResults } = useFilteredResults({
@@ -77,10 +77,8 @@ export function ResultsTable({
   const rowVirtualizer = useVirtualizer({
     count: paginatedResults.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: (index) =>
-      getElementHeight(rowRefs.current.get(index) || null, isMobile),
-    measureElement: (element) =>
-      getElementHeight(element as HTMLElement, isMobile),
+    estimateSize: () => isMobile ? 120 : 60,
+
     overscan: 10,
   });
 
@@ -232,12 +230,8 @@ export function ResultsTable({
               return (
                 <div
                   key={v.key}
-                  ref={(el) => {
-                    if (el) {
-                      rowRefs.current.set(v.index, el);
-                      rowVirtualizer.measureElement(el);
-                    } else rowRefs.current.delete(v.index);
-                  }}
+                  data-index={v.index}
+                  ref={rowVirtualizer.measureElement}
                   style={{
                     position: "absolute",
                     top: 0,
