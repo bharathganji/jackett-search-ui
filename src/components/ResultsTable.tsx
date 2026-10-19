@@ -146,7 +146,7 @@ export function ResultsTable({
               aria-label="Items per page"
               value={itemsPerPage}
               onChange={(e) => setItemsPerPage(Number(e.target.value))}
-              className="h-10 px-4 bg-secondary/20 border-border text-sm font-medium rounded-lg hover:bg-secondary/30 transition-all focus:ring-ring cursor-pointer w-full sm:w-auto"
+              className="h-10 px-4 bg-secondary/30 border-border/60 text-sm font-semibold rounded-full hover:bg-secondary/50 transition-all focus:ring-ring cursor-pointer w-full sm:w-auto shadow-sm"
             >
               {[25, 50, 100, 200].map((val) => (
                 <option key={val} value={val}>
@@ -159,7 +159,7 @@ export function ResultsTable({
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-[10px] h-8 px-4 font-bold uppercase tracking-widest text-destructive hover:bg-destructive/10 rounded-full whitespace-nowrap transition-all"
+                className="text-[10px] h-9 px-4 font-bold uppercase tracking-widest text-destructive bg-destructive/5 hover:bg-destructive/15 rounded-full whitespace-nowrap transition-all border border-destructive/20"
                 onClick={() => {
                   setFilter("");
                   onClearIndexerFilters();
@@ -174,7 +174,7 @@ export function ResultsTable({
                 placeholder="Fuzzy filter results (e.g. '720p season 1')..."
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
-                className="h-10 pl-10 bg-secondary/20 border-border rounded-md transition-all duration-300 focus:ring-2 focus:ring-ring focus:border-ring"
+                className="h-10 pl-10 bg-secondary/30 border-border/60 rounded-full transition-all duration-300 focus:ring-4 focus:ring-ring/20 focus:border-ring shadow-sm"
               />
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
               {filter && (

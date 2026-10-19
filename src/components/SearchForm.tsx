@@ -55,7 +55,7 @@ export const SearchForm = forwardRef<HTMLInputElement, SearchFormProps>(
             <div className="flex-1 w-full relative group">
               <Input
                 ref={ref}
-                className="relative w-full h-12 pr-12 bg-background border border-border rounded-md transition-all duration-300 focus:ring-2 focus:ring-ring text-lg"
+                className="relative w-full h-14 pl-6 pr-14 bg-background/80 shadow-sm border border-border/80 rounded-full transition-all duration-300 focus:ring-4 focus:ring-ring/20 focus:border-ring text-lg backdrop-blur-sm"
                 placeholder="Search for movies, TV shows, or anything..."
                 disabled={loading}
                 value={value}
@@ -72,7 +72,7 @@ export const SearchForm = forwardRef<HTMLInputElement, SearchFormProps>(
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 flex-shrink-0 hover:bg-destructive/10 hover:text-destructive transition-colors duration-200"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 flex-shrink-0 hover:bg-destructive/10 hover:text-destructive rounded-full transition-colors duration-200"
                   onClick={handleClear}
                   title="Clear search"
                 >
@@ -87,7 +87,7 @@ export const SearchForm = forwardRef<HTMLInputElement, SearchFormProps>(
                   e.preventDefault();
                   onCancel();
                 }}
-                className="w-full sm:w-auto h-12 px-8 border-destructive/30 text-destructive bg-destructive/5 hover:bg-destructive/10 transition-all duration-300 rounded-md"
+                className="w-full sm:w-auto h-14 px-8 border-destructive/30 text-destructive bg-destructive/5 hover:bg-destructive/10 transition-all duration-300 rounded-full shadow-sm"
               >
                 <Loader2 className="w-5 h-5 mr-3 animate-spin" />
                 Cancel
@@ -96,7 +96,7 @@ export const SearchForm = forwardRef<HTMLInputElement, SearchFormProps>(
               <Button
                 variant="default"
                 type="submit"
-                className="w-full sm:w-auto h-12 px-8 transition-all duration-300 hover:scale-[1.02] active:scale-95 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-md"
+                className="w-full sm:w-auto h-14 px-8 transition-all duration-300 hover:scale-105 active:scale-95 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-full shadow-md"
               >
                 <Search className="w-5 h-5 mr-3" />
                 Search

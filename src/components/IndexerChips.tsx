@@ -40,9 +40,9 @@ export function IndexerChips({
   })();
 
   return (
-    <div className="flex flex-wrap items-center gap-3 p-4 bg-muted rounded-lg border border-border">
+    <div className="flex flex-wrap items-center gap-3 p-4 bg-secondary/30 rounded-xl border border-border/60 shadow-sm">
       <div className="flex items-center gap-2 mr-2">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80">
           Filter by:
         </span>
       </div>
@@ -56,10 +56,10 @@ export function IndexerChips({
               key={index}
               className={`flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border transition-all duration-300 cursor-pointer ${
                 isFiltered
-                  ? "bg-primary text-primary-foreground border-primary scale-[1.02]"
+                  ? "bg-primary text-primary-foreground border-primary scale-[1.02] shadow-sm"
                   : selectedIndexerFilters.length > 0 && !isFiltered
-                    ? "bg-secondary/5 border-transparent opacity-30 grayscale hover:grayscale-0 hover:opacity-100 hover:bg-secondary/15"
-                    : "bg-background/80 border-border/60 hover:border-primary/50 hover:bg-background shadow-sm"
+                    ? "bg-secondary/10 border-transparent opacity-40 hover:opacity-100 hover:bg-secondary/30"
+                    : "bg-background border-border/40 hover:border-primary/40 hover:bg-primary/5 shadow-sm"
               }`}
               onClick={() => onToggleFilter(indexerId)}
             >
@@ -69,9 +69,9 @@ export function IndexerChips({
                 {indexerId}
               </span>
               <span
-                className={`text-[10px] font-black px-1.5 py-0.5 rounded-md min-w-[22px] text-center transition-colors ${
+                className={`text-[10px] font-black px-1.5 py-0.5 rounded-full min-w-[22px] text-center transition-colors ${
                   isFiltered
-                    ? "bg-white/20 text-white"
+                    ? "bg-primary-foreground/20 text-primary-foreground"
                     : "bg-primary/10 text-primary"
                 }`}
               >
@@ -79,7 +79,7 @@ export function IndexerChips({
               </span>
               {siteLink && (
                 <button
-                  className={`p-1 transition-colors focus:outline-none ${isFiltered ? "hover:text-white/80" : "hover:text-primary"}`}
+                  className={`p-1 transition-colors focus:outline-none rounded-full ${isFiltered ? "hover:bg-primary-foreground/20 text-primary-foreground/80 hover:text-primary-foreground" : "hover:bg-primary/10 hover:text-primary text-muted-foreground"}`}
                   onClick={(e) => {
                     e.stopPropagation();
                     window.open(siteLink, "_blank", "noopener,noreferrer");

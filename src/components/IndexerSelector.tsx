@@ -111,10 +111,10 @@ export function IndexerSelector({
             }
             size="sm"
             onClick={() => handleModeChange("all")}
-            className={`flex-1 flex items-center justify-center gap-2 h-9 rounded-md transition-all duration-300 ${
+            className={`flex-1 flex items-center justify-center gap-2 h-9 rounded-full transition-all duration-300 shadow-sm ${
               selectionState.searchMode === "all"
                 ? "bg-primary border-none text-primary-foreground font-semibold"
-                : "border-border hover:border-ring hover:bg-accent"
+                : "border-border/60 hover:border-primary/50 hover:bg-primary/5"
             }`}
           >
             <Search className="h-3.5 w-3.5" />
@@ -126,10 +126,10 @@ export function IndexerSelector({
             }
             size="sm"
             onClick={() => handleModeChange("selected")}
-            className={`flex-1 flex items-center justify-center gap-2 h-9 rounded-md transition-all duration-300 ${
+            className={`flex-1 flex items-center justify-center gap-2 h-9 rounded-full transition-all duration-300 shadow-sm ${
               selectionState.searchMode === "selected"
                 ? "bg-primary border-none text-primary-foreground font-semibold"
-                : "border-border hover:border-ring hover:bg-accent"
+                : "border-border/60 hover:border-primary/50 hover:bg-primary/5"
             }`}
             disabled={selectionState.selectedIndexers.length === 0}
           >
@@ -155,7 +155,7 @@ export function IndexerSelector({
                   placeholder="Filter indexers..."
                   value={searchFilter}
                   onChange={(e) => setSearchFilter(e.target.value)}
-                  className="h-10 pl-10 bg-accent border border-border focus:border-ring focus:ring-2 focus:ring-ring transition-all rounded-md"
+                  className="h-10 pl-10 bg-secondary/30 border border-border/60 focus:border-ring focus:ring-4 focus:ring-ring/20 transition-all rounded-full shadow-sm"
                 />
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
               </div>
@@ -164,7 +164,7 @@ export function IndexerSelector({
                   variant="outline"
                   size="sm"
                   onClick={handleSelectAll}
-                  className="px-4 bg-secondary border border-border hover:border-ring hover:bg-accent rounded-md transition-all font-medium text-xs"
+                  className="px-4 bg-secondary/50 border border-border/60 hover:border-primary/50 hover:bg-primary/5 rounded-full transition-all font-semibold text-xs shadow-sm"
                 >
                   All
                 </Button>
@@ -172,7 +172,7 @@ export function IndexerSelector({
                   variant="outline"
                   size="sm"
                   onClick={handleSelectNone}
-                  className="px-4 bg-secondary border border-border hover:border-ring hover:bg-accent rounded-md transition-all font-medium text-xs"
+                  className="px-4 bg-secondary/50 border border-border/60 hover:border-primary/50 hover:bg-primary/5 rounded-full transition-all font-semibold text-xs shadow-sm"
                 >
                   None
                 </Button>
@@ -191,10 +191,10 @@ export function IndexerSelector({
                       key={indexer.id}
                       role="button"
                       tabIndex={0}
-                      className={`flex items-center justify-between p-3 rounded-md border transition-all ${
+                      className={`flex items-center justify-between p-3 rounded-xl border transition-all duration-300 ${
                         isSelected
-                          ? "bg-primary/10 border-primary"
-                          : "bg-muted/50 border-transparent hover:border-ring hover:bg-muted"
+                          ? "bg-primary/15 border-primary/50 shadow-sm"
+                          : "bg-secondary/30 border-border/40 hover:border-primary/40 hover:bg-primary/5"
                       }`}
                       onClick={() => handleIndexerToggle(indexer.id)}
                       onKeyDown={(e) => {
@@ -206,18 +206,18 @@ export function IndexerSelector({
                     >
                       <div className="flex items-center gap-3 flex-1 min-w-0">
                         <div
-                          className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
+                          className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${
                             isSelected
                               ? "bg-primary border-primary"
                               : "border-muted-foreground/30"
                           }`}
                         >
                           {isSelected && (
-                            <Check className="h-3.5 w-3.5 text-primary-foreground stroke-[3px]" />
+                            <Check className="h-3 w-3 text-primary-foreground stroke-[3px]" />
                           )}
                         </div>
                         <span
-                          className={`text-sm font-medium truncate ${isSelected ? "text-primary" : "text-foreground"}`}
+                          className={`text-sm font-semibold truncate ${isSelected ? "text-primary" : "text-foreground/80"}`}
                         >
                           {indexer.id}
                         </span>
@@ -239,13 +239,13 @@ export function IndexerSelector({
 
             {/* Selected Summary */}
             {selectionState.selectedIndexers.length > 0 && (
-              <div className="pt-4 border-t border-border/20">
+              <div className="pt-4 border-t border-border/30">
                 <div className="flex flex-wrap gap-2">
                   {selectionState.selectedIndexers.slice(0, 15).map((id) => (
                     <Badge
                       key={id}
                       variant="outline"
-                      className="px-3 py-1 bg-primary/10 border-primary/20 text-primary font-bold text-[10px] rounded-full"
+                      className="px-3 py-1 bg-primary/15 border-primary/30 text-primary font-bold text-[10px] rounded-full shadow-sm"
                     >
                       {id}
                     </Badge>
@@ -253,7 +253,7 @@ export function IndexerSelector({
                   {selectionState.selectedIndexers.length > 15 && (
                     <Badge
                       variant="outline"
-                      className="px-3 py-1 bg-muted border-border text-muted-foreground text-[10px] font-bold rounded-full"
+                      className="px-3 py-1 bg-secondary/50 border-border/60 text-muted-foreground text-[10px] font-bold rounded-full shadow-sm"
                     >
                       +{selectionState.selectedIndexers.length - 15} MORE
                     </Badge>

@@ -12,9 +12,9 @@ export function ResultsTableHeader({
   onSort,
 }: ResultsTableHeaderProps) {
   return (
-    <div className="hidden sm:grid grid-cols-12 gap-2 p-2 border-b font-medium text-sm overflow-hidden bg-muted/30 rounded-t-lg">
+    <div className="hidden sm:grid grid-cols-12 gap-2 px-3 py-4 mb-2 font-bold text-xs uppercase tracking-wider text-muted-foreground bg-secondary/40 rounded-xl mx-1 border border-border/40 shadow-sm">
       <div
-        className="col-span-4 cursor-pointer hover:text-primary truncate transition-colors"
+        className="col-span-4 cursor-pointer hover:text-primary truncate transition-colors pl-2"
         onClick={() => onSort("Title")}
         role="button"
         tabIndex={0}
