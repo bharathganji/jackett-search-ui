@@ -28,17 +28,6 @@ interface ResultsTableProps {
   onClearIndexerFilters: () => void;
 }
 
-/**
- * Optimized measure function for virtualized list
- */
-const getElementHeight = (
-  element: HTMLElement | null,
-  isMobile: boolean
-): number => {
-  if (!element) return isMobile ? 120 : 60;
-  return Math.max(element.getBoundingClientRect().height, isMobile ? 80 : 60);
-};
-
 export function ResultsTable({
   results,
   onCopy,
