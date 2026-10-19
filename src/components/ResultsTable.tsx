@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
-import { useVirtualizer } from "@tanstack/react-virtual";
+import { Virtuoso } from "react-virtuoso";
 import { Search, X } from "lucide-react";
 
 import {
@@ -46,9 +46,6 @@ export function ResultsTable({
     typeof window !== "undefined" ? window.innerWidth < 640 : false
   );
 
-  // --- Refs ---
-  const parentRef = useRef<HTMLDivElement>(null);
-
   // --- Modularized Data Logic ---
   const { paginatedResults, totalPages, totalResults } = useFilteredResults({
     results,
@@ -61,34 +58,18 @@ export function ResultsTable({
     currentPage,
   });
 
-  // --- Virtualization ---
-  const rowVirtualizer = useVirtualizer({
-    count: paginatedResults.length,
-    getScrollElement: () => parentRef.current,
-    estimateSize: () => (isMobile ? 120 : 60),
-
-    overscan: 10,
-  });
-
   // --- Effects ---
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 640);
-      rowVirtualizer.measure();
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [rowVirtualizer]);
+  }, []);
 
   useEffect(() => {
     setCurrentPage(1); // Reset page on filter change
   }, [filter, selectedIndexerFilters]);
-
-  // Handle dynamic measurement synchronization
-  useEffect(() => {
-    const timer = requestAnimationFrame(() => rowVirtualizer.measure());
-    return () => cancelAnimationFrame(timer);
-  }, [paginatedResults, isMobile, rowVirtualizer]);
 
   // --- Callbacks ---
   const handleSort = (field: keyof JackettSearchResult) => {
@@ -200,34 +181,15 @@ export function ResultsTable({
           />
         </div>
 
-        <div
-          ref={parentRef}
-          className="h-[600px] sm:h-96 overflow-auto mt-2 will-change-transform scrollbar-thin scrollbar-thumb-primary/20"
-        >
-          <div
-            style={{
-              height: `${rowVirtualizer.getTotalSize()}px`,
-              width: "100%",
-              position: "relative",
-            }}
-          >
-            {rowVirtualizer.getVirtualItems().map((v) => {
-              const result = paginatedResults[v.index];
+        <div className="h-[600px] sm:h-96 mt-2">
+          <Virtuoso
+            className="h-full scrollbar-thin scrollbar-thumb-primary/20"
+            data={paginatedResults}
+            itemContent={(index, result) => {
               if (!result) return null;
 
               return (
-                <div
-                  key={v.key}
-                  data-index={v.index}
-                  ref={rowVirtualizer.measureElement}
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    transform: `translateY(${v.start}px)`,
-                  }}
-                >
+                <div key={result.InfoHash || result.Link || index} className="w-full">
                   {!isMobile ? (
                     <ResultsTableRow result={result} onCopy={onCopy} />
                   ) : (
@@ -235,8 +197,8 @@ export function ResultsTable({
                   )}
                 </div>
               );
-            })}
-          </div>
+            }}
+          />
         </div>
 
         <PaginationControls
