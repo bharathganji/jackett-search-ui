@@ -49,7 +49,6 @@ export function ResultsTable({
   // --- Refs ---
   const parentRef = useRef<HTMLDivElement>(null);
 
-
   // --- Modularized Data Logic ---
   const { paginatedResults, totalPages, totalResults } = useFilteredResults({
     results,
@@ -66,7 +65,7 @@ export function ResultsTable({
   const rowVirtualizer = useVirtualizer({
     count: paginatedResults.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => isMobile ? 120 : 60,
+    estimateSize: () => (isMobile ? 120 : 60),
 
     overscan: 10,
   });
