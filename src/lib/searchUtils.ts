@@ -153,13 +153,16 @@ export function advancedFuzzySearch(
   // Fallback: If Fuse finds nothing, try basic inclusion for each term
   return results
     .map((r) => {
+      const titleLower = r.Title.toLowerCase();
+      const detailsLower = (r.Details || "").toLowerCase();
+      const indexerLower = (r.IndexerId || "").toLowerCase();
+      const yearStringLower =
+        r.Year !== null ? String(r.Year).toLowerCase() : null;
+
       const matchedTerms = terms.filter((t) => {
-        const titleLower = r.Title.toLowerCase();
-        const detailsLower = (r.Details || "").toLowerCase();
-        const indexerLower = (r.IndexerId || "").toLowerCase();
         return (
           titleLower.includes(t.lower) ||
-          (r.Year !== null && String(r.Year).toLowerCase() === t.lower) ||
+          (yearStringLower !== null && yearStringLower === t.lower) ||
           detailsLower.includes(t.lower) ||
           indexerLower.includes(t.lower)
         );

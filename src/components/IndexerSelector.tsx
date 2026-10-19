@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { getSafeUrl } from "@/lib/utils";
 
 import type { Indexer, IndexerSelectionState } from "../types/indexer";
 import { ErrorDisplay } from "./ErrorDisplay";
@@ -222,7 +223,7 @@ export function IndexerSelector({
                         </span>
                       </div>
                       <a
-                        href={indexer.site_link}
+                        href={getSafeUrl(indexer.site_link)}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
