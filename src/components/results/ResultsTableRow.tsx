@@ -22,7 +22,7 @@ export function ResultsTableRow({
   };
 
   return (
-    <div className="grid grid-cols-12 gap-2 p-2 mb-2 rounded-xl bg-background border border-border/40 hover:border-primary/30 hover:bg-primary/5 hover:shadow-md items-center text-sm min-h-[60px] transition-all duration-300 group mx-1">
+    <div className="grid grid-cols-12 gap-2 p-2 rounded-xl bg-background border border-border/40 hover:border-primary/30 hover:bg-primary/5 hover:shadow-md items-center text-sm min-h-[60px] transition-all duration-300 group">
       <div
         className="col-span-4 font-semibold text-foreground/90 break-all pl-2"
         title={result.Title}

@@ -160,9 +160,9 @@ const JackettSearch = memo(() => {
 
   return (
     <div className="min-h-screen bg-background selection:bg-primary/20">
-      <div className="flex flex-col w-full max-w-7xl mx-auto gap-12 p-4 sm:p-8 animate-fadeIn">
+      <div className="flex flex-col w-full max-w-7xl mx-auto gap-6 sm:gap-12 p-3 sm:p-8 animate-fadeIn">
         {/* Unified Search Console */}
-        <div className="flex flex-col w-full max-w-4xl mx-auto gap-6 sm:gap-8">
+        <div className="flex flex-col w-full max-w-4xl mx-auto gap-4 sm:gap-8">
           <Header />
 
           <SearchForm
@@ -189,14 +189,16 @@ const JackettSearch = memo(() => {
             </div>
           )}
 
-          <IndexerSelector
-            indexers={indexers}
-            loading={indexersLoading}
-            error={indexersError}
-            selectionState={indexerSelection}
-            onSelectionChange={setIndexerSelection}
-            onRefetch={refetchIndexers}
-          />
+          <div className="mb-2 sm:mb-0">
+            <IndexerSelector
+              indexers={indexers}
+              loading={indexersLoading}
+              error={indexersError}
+              selectionState={indexerSelection}
+              onSelectionChange={setIndexerSelection}
+              onRefetch={refetchIndexers}
+            />
+          </div>
         </div>
 
         {loading && results.length === 0 && (
@@ -206,7 +208,7 @@ const JackettSearch = memo(() => {
         )}
 
         {results.length > 0 ? (
-          <div className="space-y-8">
+          <div className="space-y-6 sm:space-y-8">
             <ResultsTable
               results={results}
               onCopy={handleCopy}

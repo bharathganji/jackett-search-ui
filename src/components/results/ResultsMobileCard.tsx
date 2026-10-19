@@ -19,39 +19,47 @@ export function ResultsMobileCard({ result, onCopy }: ResultsMobileCardProps) {
   };
 
   return (
-    <div className="p-2.5 border-b hover:bg-muted/50 flex flex-col gap-1.5 transition-colors active:bg-muted/30">
+    <div className="mx-2 p-3 bg-card border border-border/60 rounded-xl shadow-sm flex flex-col gap-2 transition-all active:scale-[0.98]">
       <div
-        className="font-medium text-foreground/90 break-all leading-snug text-sm"
+        className="font-semibold text-card-foreground break-all leading-snug text-[13px] line-clamp-2"
         title={result.Title}
       >
         {result.Title}
       </div>
-      <div className="flex justify-between text-xs text-muted-foreground gap-2 flex-wrap items-center">
-        <div className="flex gap-2 items-center">
-          <span className="flex-shrink-0 bg-primary/10 px-1.5 py-0.5 rounded text-primary font-medium">
-            {result.Seeders} seeds
+
+      <div className="flex justify-between text-xs gap-2 items-center flex-wrap">
+        <div className="flex gap-1.5 items-center">
+          <span className="bg-primary/15 text-primary px-2 py-0.5 rounded-full font-bold text-[11px]">
+            {result.Seeders} <span className="opacity-70 font-normal">seeds</span>
           </span>
-          <span className="flex-shrink-0">{convertSizeToGB(result.Size)}</span>
+          <span className="bg-secondary/50 text-secondary-foreground px-2 py-0.5 rounded-full font-medium text-[11px]">
+            {convertSizeToGB(result.Size)}
+          </span>
           {result.Leechers !== null && (
-            <span className="flex-shrink-0">{result.Leechers} leechers</span>
+            <span className="text-muted-foreground text-[11px]">
+              {result.Leechers} leech
+            </span>
           )}
         </div>
-        <div className="truncate max-w-[100px]">{result.IndexerId}</div>
+        <span className="truncate text-[10px] font-medium text-muted-foreground uppercase tracking-wider max-w-[90px] text-right">
+          {result.IndexerId}
+        </span>
       </div>
-      <div className="flex gap-1 pt-0.5">
+
+      <div className="flex gap-2 pt-1 mt-auto">
         <Button
-          variant="default"
+          variant="outline"
           size="sm"
-          className="h-7 px-2 min-w-0 shadow-sm hover:scale-[1.02] transition-transform text-[10px] flex-1"
+          className="h-8 px-2 min-w-0 flex-1 rounded-lg border-border/50 bg-background/50 text-[11px] font-medium hover:bg-secondary"
           onClick={() => window.open(result.Details, "_blank")}
         >
-          <ExternalLink className="h-3 w-3 flex-shrink-0 mr-1" />
+          <ExternalLink className="h-3.5 w-3.5 flex-shrink-0 mr-1.5 text-muted-foreground" />
           <span className="truncate">Source</span>
         </Button>
         <Button
-          variant="secondary"
+          variant="default"
           size="sm"
-          className="h-7 px-2 min-w-0 shadow-sm hover:scale-[1.02] transition-transform hover:bg-primary hover:text-primary-foreground text-[10px] flex-1"
+          className="h-8 px-2 min-w-0 flex-1 rounded-lg text-[11px] font-semibold shadow-sm transition-all active:scale-95"
           onClick={() => {
             if (result.Link?.startsWith("magnet:")) {
               onCopy("magnet", result.Link);
@@ -61,7 +69,7 @@ export function ResultsMobileCard({ result, onCopy }: ResultsMobileCardProps) {
           }}
         >
           {renderMagetButton(result.Link)}
-          <span className="ml-1 truncate">Magnet</span>
+          <span className="ml-1.5 truncate">Download</span>
         </Button>
       </div>
     </div>

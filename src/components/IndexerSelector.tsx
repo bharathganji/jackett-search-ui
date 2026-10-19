@@ -79,8 +79,8 @@ export function IndexerSelector({
 
   return (
     <Card className="border-border bg-background shadow-sm rounded-lg overflow-hidden">
-      <CardHeader className="pb-3 border-b border-border/20">
-        <div className="flex items-center justify-between mb-4">
+      <CardHeader className="p-3 sm:p-6 sm:pb-3 border-b border-border/20">
+        <div className="flex items-center justify-between mb-3 sm:mb-4">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-primary/10 rounded-lg">
               <Globe className="h-4 w-4 text-primary" />

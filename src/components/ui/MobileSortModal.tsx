@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Check, ChevronDown } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronDown } from "lucide-react";
 
 import { Button } from "./button";
 import { Card } from "./card";
@@ -73,41 +73,27 @@ export function MobileSortModal({
               </div>
               {options.map((option) => {
                 const isSelected = option.key === currentSort;
-                const showAsc = isSelected && currentDirection === "asc";
-                const showDesc = isSelected && currentDirection === "desc";
 
                 return (
-                  <div key={option.key} className="space-y-1">
-                    {/* Descending option */}
-                    <Button
-                      variant="ghost"
-                      className={`w-full justify-between text-left h-9 px-2 ${
-                        showDesc ? "bg-muted" : ""
-                      }`}
-                      onClick={() => handleSort(option.key)}
-                    >
-                      <span className="flex items-center gap-2">
-                        <span className="text-sm">{option.label}</span>
-                        <span className="text-xs text-muted-foreground">↓</span>
-                      </span>
-                      {showDesc && <Check className="h-4 w-4" />}
-                    </Button>
-
-                    {/* Ascending option */}
-                    <Button
-                      variant="ghost"
-                      className={`w-full justify-between text-left h-9 px-2 ${
-                        showAsc ? "bg-muted" : ""
-                      }`}
-                      onClick={() => onSort(option.key, "asc")}
-                    >
-                      <span className="flex items-center gap-2">
-                        <span className="text-sm">{option.label}</span>
-                        <span className="text-xs text-muted-foreground">↑</span>
-                      </span>
-                      {showAsc && <Check className="h-4 w-4" />}
-                    </Button>
-                  </div>
+                  <Button
+                    key={option.key}
+                    variant={isSelected ? "secondary" : "ghost"}
+                    className={`w-full justify-between text-left h-10 px-3 mb-1 last:mb-0 rounded-md transition-all ${
+                      isSelected ? "bg-primary/10 hover:bg-primary/20" : "hover:bg-muted"
+                    }`}
+                    onClick={() => handleSort(option.key)}
+                  >
+                    <span className={`text-sm ${isSelected ? "font-bold text-primary" : "text-foreground"}`}>
+                      {option.label}
+                    </span>
+                    {isSelected && (
+                      currentDirection === "asc" ? (
+                        <ArrowUp className="h-4 w-4 text-primary" />
+                      ) : (
+                        <ArrowDown className="h-4 w-4 text-primary" />
+                      )
+                    )}
+                  </Button>
                 );
               })}
             </div>
