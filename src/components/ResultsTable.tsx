@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
-import { Virtuoso } from "react-virtuoso";
 import { Search, X } from "lucide-react";
+import { Virtuoso } from "react-virtuoso";
 
 import {
   MobileSortModal,
@@ -191,7 +191,10 @@ export function ResultsTable({
               if (!result) return null;
 
               return (
-                <div key={result.InfoHash || result.Link || index} className="w-full">
+                <div
+                  key={result.InfoHash || result.Link || index}
+                  className="w-full"
+                >
                   {!isMobile ? (
                     <ResultsTableRow result={result} onCopy={onCopy} />
                   ) : (

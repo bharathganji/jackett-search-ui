@@ -32,11 +32,15 @@ export function IndexerChips({
       siteLinks.set(indexer.id, indexer.site_link);
     }
 
-    return Array.from(stats.entries()).map(([indexerId, count]) => ({
-      indexerId,
-      count,
-      siteLink: siteLinks.get(indexerId),
-    }));
+    const result = [];
+    for (const [indexerId, count] of stats) {
+      result.push({
+        indexerId,
+        count,
+        siteLink: siteLinks.get(indexerId),
+      });
+    }
+    return result;
   })();
 
   return (
