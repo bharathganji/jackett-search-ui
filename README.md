@@ -60,7 +60,7 @@ A modern, responsive React-based UI for searching torrents using Jackett with re
    npm run dev
    ```
 
-   The app will be available at `http://localhost:5173`.
+   The app will be available at `http://localhost:3000`.
 
 ## 📖 Usage
 

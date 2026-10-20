@@ -5,6 +5,9 @@ import { defineConfig } from "vite";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  server: {
+    port: 3000,
+  },
   base: "/", // Ensure proper base path for deployment
   publicDir: "public", // Explicit public directory
   resolve: {
