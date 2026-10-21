@@ -14,7 +14,7 @@ export function ResultsTableHeader({
   return (
     <div className="hidden sm:grid grid-cols-12 gap-2 px-3 py-4 mb-2 font-bold text-xs uppercase tracking-wider text-muted-foreground bg-secondary/40 rounded-xl mx-1 border border-border/40 shadow-sm">
       <div
-        className="col-span-4 cursor-pointer hover:text-primary truncate transition-colors pl-2"
+        className="col-span-5 cursor-pointer hover:text-primary truncate transition-colors pl-2"
         onClick={() => onSort("Title")}
         role="button"
         tabIndex={0}
@@ -34,28 +34,6 @@ export function ResultsTableHeader({
         }}
       >
         Title {sortField === "Title" && (sortDirection === "asc" ? "↑" : "↓")}
-      </div>
-      <div
-        className="col-span-1 cursor-pointer hover:text-primary text-center flex-shrink-0 transition-colors"
-        onClick={() => onSort("Relevance")}
-        role="button"
-        tabIndex={0}
-        aria-label="Sort by Relevance"
-        aria-sort={
-          sortField === "Relevance"
-            ? sortDirection === "asc"
-              ? "ascending"
-              : "descending"
-            : "none"
-        }
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            onSort("Relevance");
-          }
-        }}
-      >
-        Rel {sortField === "Relevance" && (sortDirection === "asc" ? "↑" : "↓")}
       </div>
       <div
         className="col-span-2 cursor-pointer hover:text-primary text-center flex-shrink-0 transition-colors"
