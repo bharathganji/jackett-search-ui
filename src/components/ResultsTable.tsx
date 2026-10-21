@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
-import { Virtuoso } from "react-virtuoso";
 import { Search, X } from "lucide-react";
+import { Virtuoso } from "react-virtuoso";
 
 import {
   MobileSortModal,
@@ -183,7 +183,7 @@ export function ResultsTable({
           />
         </div>
 
-        <div className="h-[600px] sm:h-96 mt-2">
+        <div className="h-[calc(100vh-320px)] min-h-[400px] mt-2">
           <Virtuoso
             className="h-full scrollbar-thin scrollbar-thumb-primary/20"
             data={paginatedResults}
@@ -191,7 +191,10 @@ export function ResultsTable({
               if (!result) return null;
 
               return (
-                <div key={result.InfoHash || result.Link || index} className="w-full">
+                <div
+                  key={result.InfoHash || result.Link || index}
+                  className="w-full"
+                >
                   {!isMobile ? (
                     <ResultsTableRow result={result} onCopy={onCopy} />
                   ) : (
@@ -203,7 +206,7 @@ export function ResultsTable({
           />
         </div>
 
-        <div className="p-3 sm:p-0">
+        <div className="p-3 sm:p-4 border-t border-border/20">
           <PaginationControls
             currentPage={currentPage}
             totalPages={totalPages}

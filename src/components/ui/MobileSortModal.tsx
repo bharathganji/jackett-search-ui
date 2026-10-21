@@ -79,20 +79,23 @@ export function MobileSortModal({
                     key={option.key}
                     variant={isSelected ? "secondary" : "ghost"}
                     className={`w-full justify-between text-left h-10 px-3 mb-1 last:mb-0 rounded-md transition-all ${
-                      isSelected ? "bg-primary/10 hover:bg-primary/20" : "hover:bg-muted"
+                      isSelected
+                        ? "bg-primary/10 hover:bg-primary/20"
+                        : "hover:bg-muted"
                     }`}
                     onClick={() => handleSort(option.key)}
                   >
-                    <span className={`text-sm ${isSelected ? "font-bold text-primary" : "text-foreground"}`}>
+                    <span
+                      className={`text-sm ${isSelected ? "font-bold text-primary" : "text-foreground"}`}
+                    >
                       {option.label}
                     </span>
-                    {isSelected && (
-                      currentDirection === "asc" ? (
+                    {isSelected &&
+                      (currentDirection === "asc" ? (
                         <ArrowUp className="h-4 w-4 text-primary" />
                       ) : (
                         <ArrowDown className="h-4 w-4 text-primary" />
-                      )
-                    )}
+                      ))}
                   </Button>
                 );
               })}
