@@ -33,9 +33,6 @@ export function useResultBatching({ setResults }: UseResultBatchingProps) {
       // Filter batch results to ensure they're valid before adding to state
       const validBatchResults = filterValidSearchResults(batchToProcess);
       const newResults = [...prevResults, ...validBatchResults];
-      console.log(
-        `Batch processed: ${validBatchResults.length} new results, total: ${newResults.length}`
-      );
       return newResults;
     });
 

@@ -149,7 +149,6 @@ export function useSearch({
                 const { done, value } = await reader.read();
 
                 if (done) {
-                  console.log("Stream completed");
                   // Clear timeout since request completed successfully
                   clearTimeoutId();
 
@@ -194,7 +193,6 @@ export function useSearch({
           })
           .catch((error) => {
             if (error.name === "AbortError") {
-              console.log("Request aborted");
               return;
             }
 
@@ -209,10 +207,6 @@ export function useSearch({
         // Use EventSource for GET requests (all indexers or single indexer)
         const eventSource = new EventSource(searchUrl);
         eventSourceRef.current = eventSource;
-
-        eventSource.onopen = () => {
-          console.log("EventSource connection opened");
-        };
 
         eventSource.onmessage = (event) => {
           try {
@@ -237,7 +231,6 @@ export function useSearch({
         };
 
         eventSource.addEventListener("close", () => {
-          console.log("EventSource connection closed");
           processBatch();
 
           setLoading(false);
