@@ -30,9 +30,8 @@ export function useFilteredResults({
 
     // 1. Indexer Filtering
     if (selectedIndexerFilters.length > 0) {
-      processed = processed.filter((r) =>
-        selectedIndexerFilters.includes(r.IndexerId)
-      );
+      const selectedIndexerSet = new Set(selectedIndexerFilters);
+      processed = processed.filter((r) => selectedIndexerSet.has(r.IndexerId));
     }
 
     // 2. Fuzzy Filtering & Relevance Scoring
