@@ -104,39 +104,9 @@ function calculateRelevance(
   return 1 - fuseScore + bonus + healthBonus;
 }
 
-// Cache for parsed terms (bounded to ~250 entries to prevent memory leaks)
-const processedTermsCache = new Map<string, ProcessedTerm[]>();
-const MAX_CACHE_SIZE = 250;
-
-function getProcessedTerms(query: string): ProcessedTerm[] {
-  if (processedTermsCache.has(query)) {
-    // Move to end to maintain LRU behavior
-    const cached = processedTermsCache.get(query)!;
-    processedTermsCache.delete(query);
-    processedTermsCache.set(query, cached);
-    return cached;
-  }
-
-  const rawTerms = query.split(/\s+/).filter((t) => t.length > 1);
-  const terms: ProcessedTerm[] = rawTerms.map((t) => ({
-    original: t,
-    lower: t.toLowerCase(),
-    regex: new RegExp(`\\b${escapeRegExp(t)}\\b`, "i"),
-    hasSePattern: sePattern.test(t),
-    hasYearPattern: yearPattern.test(t),
-  }));
-
-  if (processedTermsCache.size >= MAX_CACHE_SIZE) {
-    // Remove oldest entry (first item in the map)
-    const firstKey = processedTermsCache.keys().next().value;
-    if (firstKey !== undefined) {
-      processedTermsCache.delete(firstKey);
-    }
-  }
-
-  processedTermsCache.set(query, terms);
-  return terms;
-}
+// Cache for Fuse instance
+let lastFuseResults: JackettSearchResult[] | null = null;
+let lastFuseInstance: Fuse<JackettSearchResult> | null = null;
 
 /**
  * Perform high-performance fuzzy search and relevance ranking
@@ -154,15 +124,29 @@ export function advancedFuzzySearch(
     }));
   }
 
-  const terms = getProcessedTerms(query);
+  const rawTerms = query.split(/\s+/).filter((t) => t.length > 1);
+  const terms: ProcessedTerm[] = rawTerms.map((t) => ({
+    original: t,
+    lower: t.toLowerCase(),
+    regex: new RegExp(`\\b${escapeRegExp(t)}\\b`, "i"),
+    hasSePattern: sePattern.test(t),
+    hasYearPattern: yearPattern.test(t),
+  }));
 
-  // Initialize Fuse one time for the entire batch
-  const fuse = new Fuse(results, {
-    keys: ["Title", "Year", "Details", "IndexerId"],
-    threshold: 0.4,
-    includeScore: true,
-    useExtendedSearch: true,
-  });
+  // Initialize Fuse only if the results array has changed
+  let fuse: Fuse<JackettSearchResult>;
+  if (lastFuseResults === results && lastFuseInstance) {
+    fuse = lastFuseInstance;
+  } else {
+    fuse = new Fuse(results, {
+      keys: ["Title", "Year", "Details", "IndexerId"],
+      threshold: 0.4,
+      includeScore: true,
+      useExtendedSearch: true,
+    });
+    lastFuseResults = results;
+    lastFuseInstance = fuse;
+  }
 
   // Search using the full query
   const fuseResults = fuse.search(query);
