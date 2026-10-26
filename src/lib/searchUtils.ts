@@ -104,6 +104,40 @@ function calculateRelevance(
   return 1 - fuseScore + bonus + healthBonus;
 }
 
+// Cache for parsed terms (bounded to ~250 entries to prevent memory leaks)
+const processedTermsCache = new Map<string, ProcessedTerm[]>();
+const MAX_CACHE_SIZE = 250;
+
+function getProcessedTerms(query: string): ProcessedTerm[] {
+  if (processedTermsCache.has(query)) {
+    // Move to end to maintain LRU behavior
+    const cached = processedTermsCache.get(query)!;
+    processedTermsCache.delete(query);
+    processedTermsCache.set(query, cached);
+    return cached;
+  }
+
+  const rawTerms = query.split(/\s+/).filter((t) => t.length > 1);
+  const terms: ProcessedTerm[] = rawTerms.map((t) => ({
+    original: t,
+    lower: t.toLowerCase(),
+    regex: new RegExp(`\\b${escapeRegExp(t)}\\b`, "i"),
+    hasSePattern: sePattern.test(t),
+    hasYearPattern: yearPattern.test(t),
+  }));
+
+  if (processedTermsCache.size >= MAX_CACHE_SIZE) {
+    // Remove oldest entry (first item in the map)
+    const firstKey = processedTermsCache.keys().next().value;
+    if (firstKey !== undefined) {
+      processedTermsCache.delete(firstKey);
+    }
+  }
+
+  processedTermsCache.set(query, terms);
+  return terms;
+}
+
 /**
  * Perform high-performance fuzzy search and relevance ranking
  */
@@ -120,14 +154,7 @@ export function advancedFuzzySearch(
     }));
   }
 
-  const rawTerms = query.split(/\s+/).filter((t) => t.length > 1);
-  const terms: ProcessedTerm[] = rawTerms.map((t) => ({
-    original: t,
-    lower: t.toLowerCase(),
-    regex: new RegExp(`\\b${escapeRegExp(t)}\\b`, "i"),
-    hasSePattern: sePattern.test(t),
-    hasYearPattern: yearPattern.test(t),
-  }));
+  const terms = getProcessedTerms(query);
 
   // Initialize Fuse one time for the entire batch
   const fuse = new Fuse(results, {
