@@ -2,6 +2,7 @@ import { ExternalLink, Magnet } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { convertSizeToGB } from "@/lib/searchUtils";
+import { getSafeUrl } from "@/lib/utils";
 import type { JackettSearchResult } from "@/types/search";
 
 interface ResultsTableRowProps {
@@ -47,7 +48,9 @@ export function ResultsTableRow({
             if (result.Link?.startsWith("magnet:")) {
               onCopy("magnet", result.Link);
             } else {
-              window.open(result.Link, "_blank");
+              const safeUrl = getSafeUrl(result.Link);
+              if (safeUrl !== "#")
+                window.open(safeUrl, "_blank", "noopener,noreferrer");
             }
           }}
         >
@@ -59,7 +62,11 @@ export function ResultsTableRow({
           variant="default"
           size="icon"
           className="h-9 w-9 rounded-full hover:scale-110 transition-transform shadow-md bg-primary/90 hover:bg-primary text-primary-foreground"
-          onClick={() => window.open(result.Details, "_blank")}
+          onClick={() => {
+            const safeUrl = getSafeUrl(result.Details);
+            if (safeUrl !== "#")
+              window.open(safeUrl, "_blank", "noopener,noreferrer");
+          }}
         >
           <ExternalLink className="h-4 w-4" />
         </Button>

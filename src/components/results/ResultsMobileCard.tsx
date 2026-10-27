@@ -2,6 +2,7 @@ import { ExternalLink, Magnet } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { convertSizeToGB } from "@/lib/searchUtils";
+import { getSafeUrl } from "@/lib/utils";
 import type { JackettSearchResult } from "@/types/search";
 
 interface ResultsMobileCardProps {
@@ -43,7 +44,11 @@ export function ResultsMobileCard({ result, onCopy }: ResultsMobileCardProps) {
           variant="default"
           size="sm"
           className="h-7 px-2 min-w-0 shadow-sm hover:scale-[1.02] transition-transform text-[10px] flex-1"
-          onClick={() => window.open(result.Details, "_blank")}
+          onClick={() => {
+            const safeUrl = getSafeUrl(result.Details);
+            if (safeUrl !== "#")
+              window.open(safeUrl, "_blank", "noopener,noreferrer");
+          }}
         >
           <ExternalLink className="h-3 w-3 flex-shrink-0 mr-1" />
           <span className="truncate">Source</span>
@@ -56,7 +61,9 @@ export function ResultsMobileCard({ result, onCopy }: ResultsMobileCardProps) {
             if (result.Link?.startsWith("magnet:")) {
               onCopy("magnet", result.Link);
             } else {
-              window.open(result.Link, "_blank");
+              const safeUrl = getSafeUrl(result.Link);
+              if (safeUrl !== "#")
+                window.open(safeUrl, "_blank", "noopener,noreferrer");
             }
           }}
         >
