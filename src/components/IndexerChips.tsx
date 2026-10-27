@@ -1,6 +1,7 @@
 import { ExternalLink } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { getSafeUrl } from "@/lib/utils";
 import type { Indexer } from "@/types/indexer";
 import type { JackettSearchResult } from "@/types/search";
 
@@ -85,7 +86,9 @@ export function IndexerChips({
                   className={`p-1 transition-colors focus:outline-none rounded-full ${isFiltered ? "hover:bg-primary-foreground/20 text-primary-foreground/80 hover:text-primary-foreground" : "hover:bg-primary/10 hover:text-primary text-muted-foreground"}`}
                   onClick={(e) => {
                     e.stopPropagation();
-                    window.open(siteLink, "_blank", "noopener,noreferrer");
+                    const safeUrl = getSafeUrl(siteLink);
+                    if (safeUrl !== "#")
+                      window.open(safeUrl, "_blank", "noopener,noreferrer");
                   }}
                   title={`Visit ${indexerId} site`}
                 >
