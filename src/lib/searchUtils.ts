@@ -37,8 +37,6 @@ type ProcessedTerm = {
   original: string;
   lower: string;
   regex: RegExp;
-  regexInclude: RegExp;
-  regexStartsWith: RegExp;
   hasSePattern: boolean;
   hasYearPattern: boolean;
 };
@@ -46,9 +44,9 @@ type ProcessedTerm = {
 /**
  * Calculates a relevance boost for media-specific patterns (Season/Episode)
  */
-function getPatternBoost(title: string, term: ProcessedTerm): number {
-  if (term.hasSePattern && term.regexInclude.test(title)) return 0.5;
-  if (term.hasYearPattern && term.regexInclude.test(title)) return 0.3;
+function getPatternBoost(titleLower: string, term: ProcessedTerm): number {
+  if (term.hasSePattern && titleLower.includes(term.lower)) return 0.5;
+  if (term.hasYearPattern && titleLower.includes(term.lower)) return 0.3;
 
   return 0;
 }
@@ -61,11 +59,12 @@ function calculateRelevance(
   terms: ProcessedTerm[],
   fuseScore: number = 1
 ): number {
+  const titleLower = result.Title.toLowerCase();
   let bonus = 0;
 
   // 1. Exact phrase start bonus
   const firstTerm = terms[0];
-  if (firstTerm && firstTerm.regexStartsWith.test(result.Title)) {
+  if (firstTerm && titleLower.startsWith(firstTerm.lower)) {
     bonus += 0.4;
   }
 
@@ -78,19 +77,23 @@ function calculateRelevance(
     if (term.regex.test(result.Title)) bonus += 0.2;
 
     // Exact match in Year
-    if (result.Year !== null && String(result.Year) === term.lower) {
+    if (
+      result.Year !== null &&
+      String(result.Year).toLowerCase() === term.lower
+    ) {
       bonus += 0.15;
     }
 
     // Exact match in Details
-    if (result.Details && term.regexInclude.test(result.Details)) bonus += 0.1;
+    const detailsLower = (result.Details || "").toLowerCase();
+    if (detailsLower.includes(term.lower)) bonus += 0.1;
 
     // Exact match in IndexerId
-    if (result.IndexerId && term.regexInclude.test(result.IndexerId))
-      bonus += 0.08;
+    const indexerLower = (result.IndexerId || "").toLowerCase();
+    if (indexerLower.includes(term.lower)) bonus += 0.08;
 
     // Pattern specific boosts (Seasons, Years) - applied to Title
-    bonus += getPatternBoost(result.Title, term);
+    bonus += getPatternBoost(titleLower, term);
   }
 
   // 3. Health bonus (Seeds) - capped to avoid popularity overriding relevance
@@ -100,6 +103,10 @@ function calculateRelevance(
   // Fuse score is 0 (best) to 1 (worst)
   return 1 - fuseScore + bonus + healthBonus;
 }
+
+// Cache for Fuse instance
+let lastFuseResults: JackettSearchResult[] | null = null;
+let lastFuseInstance: Fuse<JackettSearchResult> | null = null;
 
 /**
  * Perform high-performance fuzzy search and relevance ranking
@@ -122,19 +129,24 @@ export function advancedFuzzySearch(
     original: t,
     lower: t.toLowerCase(),
     regex: new RegExp(`\\b${escapeRegExp(t)}\\b`, "i"),
-    regexInclude: new RegExp(escapeRegExp(t), "i"),
-    regexStartsWith: new RegExp(`^${escapeRegExp(t)}`, "i"),
     hasSePattern: sePattern.test(t),
     hasYearPattern: yearPattern.test(t),
   }));
 
-  // Initialize Fuse one time for the entire batch
-  const fuse = new Fuse(results, {
-    keys: ["Title", "Year", "Details", "IndexerId"],
-    threshold: 0.4,
-    includeScore: true,
-    useExtendedSearch: true,
-  });
+  // Initialize Fuse only if the results array has changed
+  let fuse: Fuse<JackettSearchResult>;
+  if (lastFuseResults === results && lastFuseInstance) {
+    fuse = lastFuseInstance;
+  } else {
+    fuse = new Fuse(results, {
+      keys: ["Title", "Year", "Details", "IndexerId"],
+      threshold: 0.4,
+      includeScore: true,
+      useExtendedSearch: true,
+    });
+    lastFuseResults = results;
+    lastFuseInstance = fuse;
+  }
 
   // Search using the full query
   const fuseResults = fuse.search(query);
@@ -152,14 +164,18 @@ export function advancedFuzzySearch(
   // Fallback: If Fuse finds nothing, try basic inclusion for each term
   return results
     .map((r) => {
-      const yearString = r.Year !== null ? String(r.Year) : null;
+      const titleLower = r.Title.toLowerCase();
+      const detailsLower = (r.Details || "").toLowerCase();
+      const indexerLower = (r.IndexerId || "").toLowerCase();
+      const yearStringLower =
+        r.Year !== null ? String(r.Year).toLowerCase() : null;
 
       const matchedTerms = terms.filter((t) => {
         return (
-          t.regexInclude.test(r.Title) ||
-          (yearString !== null && yearString === t.lower) ||
-          (r.Details && t.regexInclude.test(r.Details)) ||
-          (r.IndexerId && t.regexInclude.test(r.IndexerId))
+          titleLower.includes(t.lower) ||
+          (yearStringLower !== null && yearStringLower === t.lower) ||
+          detailsLower.includes(t.lower) ||
+          indexerLower.includes(t.lower)
         );
       });
       const score = matchedTerms.length / terms.length;
