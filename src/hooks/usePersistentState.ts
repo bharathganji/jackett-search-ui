@@ -28,10 +28,6 @@ export function usePersistentState<T>(
   return [state, setPersistentState];
 }
 
-export function useSessionStorage<T>(key: string, defaultValue: T) {
-  return usePersistentState(key, defaultValue, sessionStorage);
-}
-
 export function useLocalStorage<T>(key: string, defaultValue: T) {
   return usePersistentState(key, defaultValue, localStorage);
 }
