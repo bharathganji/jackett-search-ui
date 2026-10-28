@@ -1,9 +1,11 @@
-import { ExternalLink, Magnet } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { convertSizeToGB } from "@/lib/searchUtils";
 import { getSafeUrl } from "@/lib/utils";
 import type { JackettSearchResult } from "@/types/search";
+
+import { DownloadLinkIcon } from "./DownloadLinkIcon";
 
 interface ResultsMobileCardProps {
   result: JackettSearchResult;
@@ -11,14 +13,6 @@ interface ResultsMobileCardProps {
 }
 
 export function ResultsMobileCard({ result, onCopy }: ResultsMobileCardProps) {
-  const renderMagetButton = (Link: string) => {
-    if (Link?.startsWith("magnet:")) {
-      return <Magnet className="h-4 w-4" />;
-    } else {
-      return <ExternalLink className="h-4 w-4" />;
-    }
-  };
-
   return (
     <div className="p-2.5 border-b hover:bg-muted/50 flex flex-col gap-1.5 transition-colors active:bg-muted/30">
       <div
@@ -67,7 +61,7 @@ export function ResultsMobileCard({ result, onCopy }: ResultsMobileCardProps) {
             }
           }}
         >
-          {renderMagetButton(result.Link)}
+          <DownloadLinkIcon link={result.Link} />
           <span className="ml-1 truncate">Magnet</span>
         </Button>
       </div>
