@@ -1,9 +1,11 @@
-import { ExternalLink, Magnet } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { convertSizeToGB } from "@/lib/searchUtils";
 import { getSafeUrl } from "@/lib/utils";
 import type { JackettSearchResult } from "@/types/search";
+
+import { DownloadLinkIcon } from "./DownloadLinkIcon";
 
 interface ResultsTableRowProps {
   result: JackettSearchResult;
@@ -14,14 +16,6 @@ export function ResultsTableRow({
   result,
   onCopy,
 }: Readonly<ResultsTableRowProps>) {
-  const renderMagetButton = (Link: string) => {
-    if (Link?.startsWith("magnet:")) {
-      return <Magnet className="h-4 w-4" />;
-    } else {
-      return <ExternalLink className="h-4 w-4" />;
-    }
-  };
-
   return (
     <div className="grid grid-cols-12 gap-2 p-2 border-b border-border/50 hover:bg-muted/50 items-center text-sm min-h-[60px] transition-colors group">
       <div
@@ -54,7 +48,7 @@ export function ResultsTableRow({
             }
           }}
         >
-          {renderMagetButton(result.Link)}
+          <DownloadLinkIcon link={result.Link} />
         </Button>
       </div>
       <div className="col-span-1 flex justify-center flex-shrink-0">
