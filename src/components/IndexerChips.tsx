@@ -40,9 +40,6 @@ export function IndexerChips({
     }));
   })();
 
-  // Optimize lookups by creating a Set once per render
-  const filterSet = new Set(selectedIndexerFilters);
-
   return (
     <div className="flex flex-wrap items-center gap-3 p-4 bg-secondary/30 rounded-xl border border-border/60 shadow-sm">
       <div className="flex items-center gap-2 mr-2">
@@ -52,8 +49,8 @@ export function IndexerChips({
       </div>
       <div className="flex flex-wrap gap-2.5">
         {indexerStats.map(({ indexerId, count, siteLink }, index) => {
-          const isFiltered = filterSet.has(indexerId);
-          const isActive = filterSet.size === 0 || isFiltered;
+          const isFiltered = selectedIndexerFilters.includes(indexerId);
+          const isActive = selectedIndexerFilters.length === 0 || isFiltered;
 
           return (
             <div
