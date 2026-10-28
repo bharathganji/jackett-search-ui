@@ -1,17 +1,6 @@
-import { memo, useEffect, useRef, useState } from "react";
+import { memo } from "react";
 
-import { toast } from "sonner";
-
-import type { JackettSearchResult } from "@/types/search";
-
-import { useEventSource } from "../hooks/useEventSource";
-import { useIndexers } from "../hooks/useIndexers";
-import { useLocalStorage } from "../hooks/usePersistentState";
-import { useRecentSearches } from "../hooks/useRecentSearches";
-import { useResultBatching } from "../hooks/useResultBatching";
-import { useSearch } from "../hooks/useSearch";
-import { useSearchCache } from "../hooks/useSearchCache";
-import type { IndexerSelectionState } from "../types/indexer";
+import { useJackettSearch } from "../hooks/useJackettSearch";
 import { ErrorDisplay } from "./ErrorDisplay";
 import { Header } from "./Header";
 import { IndexerChips } from "./IndexerChips";
@@ -24,139 +13,27 @@ import { SkeletonLoader } from "./SkeletonLoader";
 
 // JackettSearch component for searching and displaying results
 const JackettSearch = memo(() => {
-  // Use regular state instead of sessionStorage to start fresh on page reload
-  const [results, setResults] = useState<JackettSearchResult[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [info, setInfo] = useState<string | null>(null);
-
-  // Search cache
-  const { getCachedResults, setCachedResults } = useSearchCache();
-
-  // Recent searches
-  const { addToRecentSearches } = useRecentSearches();
-
-  // Indexer management
   const {
-    indexers,
-    loading: indexersLoading,
-    error: indexersError,
-    refetch: refetchIndexers,
-  } = useIndexers();
-  const [indexerSelection, setIndexerSelection] =
-    useLocalStorage<IndexerSelectionState>("jackett-indexer-selection", {
-      selectedIndexers: [],
-      searchMode: "all",
-    });
-
-  // State for post-search indexer filtering
-  const [selectedIndexerFilters, setSelectedIndexerFilters] = useState<
-    string[]
-  >([]);
-
-  // Search query state for the search bar
-  const [searchQuery, setSearchQuery] = useState("");
-
-  // Toggle indexer filter
-  const handleIndexerFilterToggle = (indexerId: string) => {
-    setSelectedIndexerFilters((prev) =>
-      prev.includes(indexerId)
-        ? prev.filter((id) => id !== indexerId)
-        : [...prev, indexerId]
-    );
-  };
-
-  const handleClearIndexerFilters = () => {
-    setSelectedIndexerFilters([]);
-  };
-
-  // Use the EventSource hook
-  const { cleanupEventSource } = useEventSource();
-  // Ref for the input element
-  const inputRef = useRef<HTMLInputElement | null>(null);
-
-  // Use the result batching hook
-  const { addResultToBatch, processBatch, cleanupBatches } = useResultBatching({
-    setResults,
-  });
-
-  // Use the search hook
-  const { fetchDataJackett, cancelSearch } = useSearch({
+    results,
+    loading,
+    error,
+    info,
+    searchQuery,
+    setSearchQuery,
     indexerSelection,
-    setResults,
-    setLoading,
-    setError,
-    setInfo,
-    getCachedResults,
-    setCachedResults,
-    processBatch,
-    addResultToBatch,
-    cleanupBatches,
-  });
-
-  // Wrapper function to match the expected signature
-  const fetchDataJackettWrapper = (queryOverride?: string) => {
-    const query = queryOverride !== undefined ? queryOverride : searchQuery;
-    if (query.trim()) {
-      addToRecentSearches(query.trim());
-    }
-    fetchDataJackett(query);
-  };
-
-  // Handle copy to clipboard
-  const handleCopy = (type: "magnet" | "source", content: string) => {
-    navigator.clipboard.writeText(content).then(
-      () => {
-        toast.success(`Copied ${type} link to clipboard`);
-      },
-      () => {
-        toast.error(`Failed to copy ${type} link to clipboard`);
-      }
-    );
-  };
-
-  // Cleanup the EventSource connection and batches when the component unmounts
-  useEffect(() => {
-    return () => {
-      cleanupBatches();
-      cleanupEventSource();
-      processBatch();
-    };
-  }, [processBatch, cleanupBatches, cleanupEventSource]);
-
-  // Focus the input field when the component mounts
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, []);
-
-  // Keyboard shortcut to focus search input with `/`
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Ignore if target is an input or textarea
-      if (
-        e.target instanceof HTMLInputElement ||
-        e.target instanceof HTMLTextAreaElement
-      ) {
-        return;
-      }
-
-      // Ignore during composition (for international keyboards)
-      if (e.isComposing) {
-        return;
-      }
-
-      // Handle `/` key to focus search
-      if (e.key === "/") {
-        e.preventDefault();
-        inputRef.current?.focus();
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, []);
+    setIndexerSelection,
+    indexers,
+    indexersLoading,
+    indexersError,
+    refetchIndexers,
+    selectedIndexerFilters,
+    handleIndexerFilterToggle,
+    handleClearIndexerFilters,
+    fetchDataJackettWrapper,
+    cancelSearch,
+    handleCopy,
+    inputRef,
+  } = useJackettSearch();
 
   return (
     <div className="min-h-screen bg-background selection:bg-primary/20">
