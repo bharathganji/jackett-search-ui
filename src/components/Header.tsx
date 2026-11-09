@@ -21,7 +21,7 @@ export function Header() {
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground/90 transition-all duration-300 drop-shadow-sm">
               Jackett Search
             </h1>
-            <p className="text-[11px] uppercase tracking-[0.2em] text-primary/80 font-bold mt-0.5">
+            <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground font-semibold mt-0.5">
               Enhanced Torrent Search
             </p>
           </div>

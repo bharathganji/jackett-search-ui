@@ -3,7 +3,12 @@ import { describe, expect, it } from "vitest";
 import type { JackettSearchResult } from "@/types/search";
 
 import { testData } from "../test-data";
-import { advancedFuzzySearch, filterValidSearchResults } from "./searchUtils";
+import {
+  advancedFuzzySearch,
+  compareSearchResults,
+  filterValidSearchResults,
+  scheduleIdle,
+} from "./searchUtils";
 
 // Type assertion for test data to match interface
 const typedTestData = testData as JackettSearchResult[];
@@ -506,5 +511,105 @@ describe("filterValidSearchResults", () => {
   it("should keep all valid results", () => {
     const filtered = filterValidSearchResults(typedTestData);
     expect(filtered.length).toBe(typedTestData.length);
+  });
+});
+
+describe("compareSearchResults", () => {
+  const itemA: JackettSearchResult = {
+    Title: "Alpha Movie 1080p",
+    Link: "magnet:?xt=urn:btih:hash-a",
+    InfoHash: "hash-a",
+    Seeders: 150,
+    Leechers: 10,
+    Size: 2000000000,
+    IndexerId: "TrackerA",
+    Year: 2024,
+    Details: "https://trackera.org/details/1",
+    Relevance: 0.8,
+  };
+
+  const itemB: JackettSearchResult = {
+    ...itemA,
+    Title: "Beta Movie 720p",
+    Link: "magnet:?xt=urn:btih:hash-b",
+    InfoHash: "hash-b",
+    Seeders: 50,
+    Leechers: 40,
+    Size: 1000000000,
+    IndexerId: "TrackerB",
+    Year: 2025,
+    Details: "https://trackerb.org/details/2",
+    Relevance: 0.95,
+  };
+
+  it("sorts by Seeders descending by default", () => {
+    const res = compareSearchResults(itemA, itemB, "Seeders", "desc");
+    expect(res).toBeLessThan(0); // itemA (150) should come before itemB (50) in descending order
+  });
+
+  it("sorts by Seeders ascending", () => {
+    const res = compareSearchResults(itemA, itemB, "Seeders", "asc");
+    expect(res).toBeGreaterThan(0); // itemB (50) should come before itemA (150) in ascending order
+  });
+
+  it("sorts by Size descending", () => {
+    const res = compareSearchResults(itemA, itemB, "Size", "desc");
+    expect(res).toBeLessThan(0); // itemA (2GB) comes before itemB (1GB)
+  });
+
+  it("sorts by Title ascending", () => {
+    const res = compareSearchResults(itemA, itemB, "Title", "asc");
+    expect(res).toBeLessThan(0); // "Alpha" comes before "Beta"
+  });
+
+  it("sorts by Year descending", () => {
+    const res = compareSearchResults(itemA, itemB, "Year", "desc");
+    expect(res).toBeGreaterThan(0); // itemB (2025) is newer than itemA (2024)
+  });
+
+  it("handles null and undefined values safely without crashing", () => {
+    const nullItem = {
+      ...itemA,
+      Seeders: undefined as unknown as number,
+      Size: null as unknown as number,
+    };
+    expect(() =>
+      compareSearchResults(nullItem, itemB, "Seeders", "desc")
+    ).not.toThrow();
+    expect(() =>
+      compareSearchResults(nullItem, itemB, "Size", "desc")
+    ).not.toThrow();
+  });
+
+  it("applies secondary tie-breaker on Seeders when primary field is identical", () => {
+    const sameSizeA = { ...itemA, Size: 1000, Seeders: 200 };
+    const sameSizeB = { ...itemB, Size: 1000, Seeders: 50 };
+    // Primary field is Size, ascending -> diff is 0, so secondary tie breaker applies (Seeders desc)
+    const res = compareSearchResults(sameSizeA, sameSizeB, "Size", "asc");
+    expect(res).toBeLessThan(0); // sameSizeA has more seeders, so it comes first
+  });
+});
+
+describe("scheduleIdle", () => {
+  it("schedules and executes callback asynchronously", async () => {
+    let executed = false;
+    const cancel = scheduleIdle(() => {
+      executed = true;
+    });
+
+    expect(typeof cancel).toBe("function");
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    expect(executed).toBe(true);
+  });
+
+  it("can cancel scheduled callback", async () => {
+    let executed = false;
+    const cancel = scheduleIdle(() => {
+      executed = true;
+    });
+
+    cancel();
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    expect(executed).toBe(false);
   });
 });

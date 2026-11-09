@@ -189,6 +189,63 @@ export function advancedFuzzySearch(
 }
 
 /**
+ * Safe multi-type comparator for sorting search results.
+ * Handles numeric fields (Seeders, Leechers, Size, Relevance, Year) and string fields.
+ * Includes deterministic secondary tie-breaking on Seeders and Title.
+ */
+export function compareSearchResults(
+  a: JackettSearchResult,
+  b: JackettSearchResult,
+  field: keyof JackettSearchResult,
+  direction: "asc" | "desc" = "desc"
+): number {
+  let diff = 0;
+
+  if (
+    field === "Seeders" ||
+    field === "Leechers" ||
+    field === "Size" ||
+    field === "Relevance" ||
+    field === "Year"
+  ) {
+    const valA = Number(a[field]) || 0;
+    const valB = Number(b[field]) || 0;
+    diff = valA - valB;
+  } else {
+    const strA = String(a[field] ?? "");
+    const strB = String(b[field] ?? "");
+    diff = strA.localeCompare(strB, undefined, {
+      numeric: true,
+      sensitivity: "base",
+    });
+  }
+
+  let result = direction === "asc" ? diff : -diff;
+
+  // Secondary tie-breaker: Seeders descending, then Title ascending
+  if (result === 0 && field !== "Seeders") {
+    result = (Number(b.Seeders) || 0) - (Number(a.Seeders) || 0);
+  }
+  if (result === 0 && field !== "Title") {
+    result = String(a.Title ?? "").localeCompare(String(b.Title ?? ""));
+  }
+
+  return result;
+}
+
+/**
+ * Node-safe idle callback scheduler with setTimeout fallback
+ */
+export const scheduleIdle = (callback: () => void): (() => void) => {
+  if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+    const handle = window.requestIdleCallback(callback);
+    return () => window.cancelIdleCallback(handle);
+  }
+  const timer = setTimeout(callback, 1);
+  return () => clearTimeout(timer);
+};
+
+/**
  * Utility: Pretty format file size
  */
 export const convertSizeToGB = (size: number | string): string => {
