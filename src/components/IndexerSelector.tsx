@@ -93,7 +93,13 @@ export function IndexerSelector({
             variant="ghost"
             size="sm"
             onClick={() => setIsExpanded(!isExpanded)}
-            className="h-8 w-8 p-0 rounded-full hover:bg-primary/10 transition-colors"
+            aria-expanded={isExpanded}
+            aria-label={
+              isExpanded
+                ? "Collapse indexer selection"
+                : "Expand indexer selection"
+            }
+            className="h-9 w-9 p-0 rounded-full hover:bg-primary/10 transition-colors focus-visible:ring-2 focus-visible:ring-primary"
           >
             <ChevronDown
               className={`h-4 w-4 transition-transform duration-500 ${
@@ -189,9 +195,10 @@ export function IndexerSelector({
                   return (
                     <div
                       key={indexer.id}
-                      role="button"
+                      role="checkbox"
+                      aria-checked={isSelected}
                       tabIndex={0}
-                      className={`flex items-center justify-between p-3 rounded-xl border transition-all duration-300 ${
+                      className={`flex items-center justify-between p-3 min-h-[44px] rounded-xl border transition-all duration-300 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
                         isSelected
                           ? "bg-primary/15 border-primary/50 shadow-sm"
                           : "bg-secondary/30 border-border/40 hover:border-primary/40 hover:bg-primary/5"
@@ -226,10 +233,11 @@ export function IndexerSelector({
                         href={getSafeUrl(indexer.site_link)}
                         target="_blank"
                         rel="noopener noreferrer"
+                        aria-label={`Visit ${indexer.id} website`}
                         onClick={(e) => e.stopPropagation()}
-                        className="text-muted-foreground hover:text-primary hover:bg-primary/10 p-1.5 rounded-full transition-all"
+                        className="text-muted-foreground hover:text-primary hover:bg-primary/10 p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full transition-all focus-visible:ring-2 focus-visible:ring-primary"
                       >
-                        <Globe className="h-3.5 w-3.5" />
+                        <Globe className="h-4 w-4" />
                       </a>
                     </div>
                   );

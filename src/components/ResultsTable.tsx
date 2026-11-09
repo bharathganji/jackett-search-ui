@@ -1,7 +1,13 @@
-import { useEffect, useState } from "react";
+import {
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
-import { Search, X } from "lucide-react";
-import { Virtuoso } from "react-virtuoso";
+import { ArrowUp, Loader2, Search, X } from "lucide-react";
+import { Virtuoso, type VirtuosoHandle } from "react-virtuoso";
 
 import {
   MobileSortModal,
@@ -14,10 +20,9 @@ import type { JackettSearchResult } from "@/types/search";
 
 import { useFilteredResults } from "../hooks/useFilteredResults";
 import type { Indexer } from "../types/indexer";
-import { PaginationControls } from "./results/PaginationControls";
 import { ResultsMobileCard } from "./results/ResultsMobileCard";
 import { ResultsTableHeader } from "./results/ResultsTableHeader";
-import { ResultsTableRow } from "./results/ResultsTableRow";
+import { type CopiedAction, ResultsTableRow } from "./results/ResultsTableRow";
 
 interface ResultsTableProps {
   results: JackettSearchResult[];
@@ -35,30 +40,52 @@ export function ResultsTable({
   searchQuery,
   onClearIndexerFilters,
 }: ResultsTableProps) {
-  // --- UI State ---
-  const [filter, setFilter] = useState("");
+  // --- UI & Filter State ---
+  const [filterInput, setFilterInput] = useState("");
+  const deferredFilter = useDeferredValue(filterInput);
+  const isFiltering = filterInput !== deferredFilter;
+
+  // Sorting defaults to Seeders descending
   const [sortField, setSortField] =
-    useState<keyof JackettSearchResult>("Relevance");
+    useState<keyof JackettSearchResult>("Seeders");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(50);
+
+  // Viewport & Scroll State
   const [isMobile, setIsMobile] = useState(
     typeof window !== "undefined" ? window.innerWidth < 640 : false
   );
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const virtuosoRef = useRef<VirtuosoHandle>(null);
 
-  // --- Modularized Data Logic ---
-  const { paginatedResults, totalPages, totalResults } = useFilteredResults({
+  // Micro-interaction: Granular copied state
+  const [copiedAction, setCopiedAction] = useState<CopiedAction | null>(null);
+  const copyTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleRowCopy = useCallback(
+    (type: "magnet" | "source", content: string, id: string) => {
+      onCopy(type, content);
+      setCopiedAction({ id, type });
+      if (copyTimerRef.current) {
+        clearTimeout(copyTimerRef.current);
+      }
+      copyTimerRef.current = setTimeout(() => {
+        setCopiedAction(null);
+      }, 1400);
+    },
+    [onCopy]
+  );
+
+  // Filtered & Sorted Full Dataset Virtualization
+  const { sortedResults, totalResults } = useFilteredResults({
     results,
-    filter,
+    filter: deferredFilter,
     searchQuery,
     selectedIndexerFilters,
     sortField,
     sortDirection,
-    itemsPerPage,
-    currentPage,
   });
 
-  // --- Effects ---
+  // Responsive window listener
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 640);
@@ -67,11 +94,15 @@ export function ResultsTable({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Cleanup copy timer on unmount
   useEffect(() => {
-    setCurrentPage(1); // Reset page on filter change
-  }, [filter, selectedIndexerFilters]);
+    return () => {
+      if (copyTimerRef.current) {
+        clearTimeout(copyTimerRef.current);
+      }
+    };
+  }, []);
 
-  // --- Callbacks ---
   const handleSort = (field: keyof JackettSearchResult) => {
     if (sortField === field) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
@@ -81,82 +112,92 @@ export function ResultsTable({
     }
   };
 
+  const scrollToTop = () => {
+    virtuosoRef.current?.scrollToIndex({ index: 0, behavior: "smooth" });
+  };
+
   const mobileSortOptions: SortOption[] = [
-    { key: "Title", label: "Title" },
     { key: "Seeders", label: "Seeds" },
     { key: "Size", label: "Size" },
+    { key: "Title", label: "Title" },
     { key: "Relevance", label: "Relevance" },
   ];
 
   if (results.length === 0) return null;
 
   return (
-    <Card className="border-border bg-background shadow-sm rounded-lg overflow-hidden">
-      <CardHeader className="p-3 sm:p-6 sm:pb-3 border-b border-border/20">
-        <div className="flex flex-col gap-4 sm:gap-6">
+    <Card className="border-border bg-background shadow-sm rounded-xl overflow-hidden relative">
+      <CardHeader className="p-3 sm:p-5 sm:pb-3 border-b border-border/30">
+        <div className="flex flex-col gap-3 sm:gap-4">
+          {/* Header Row: Title & Result Stats */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-2.5">
               <div className="p-1.5 sm:p-2 bg-primary/10 rounded-lg">
-                <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
+                <Search className="h-4 w-4 text-primary" />
               </div>
-              <span className="text-xs sm:text-sm font-bold tracking-tight text-foreground/80 uppercase">
-                Results ({totalResults})
-              </span>
+              <div className="flex items-baseline gap-2">
+                <span className="text-xs sm:text-sm font-bold tracking-tight text-foreground/90 uppercase">
+                  Results
+                </span>
+                <span className="text-xs font-semibold text-muted-foreground font-mono tabular-nums">
+                  ({totalResults.toLocaleString()})
+                </span>
+              </div>
             </div>
-            <div className="text-[10px] sm:text-[11px] font-bold tracking-widest text-muted-foreground uppercase bg-secondary/30 px-2.5 py-1 rounded-full border border-border/50">
-              Page {currentPage} of {totalPages}
+
+            <div className="flex items-center gap-2">
+              {selectedIndexerFilters.length > 0 && (
+                <span className="text-[10px] sm:text-[11px] font-bold tracking-wide text-primary bg-primary/10 px-2.5 py-1 rounded-full border border-primary/20">
+                  {selectedIndexerFilters.length} indexer
+                  {selectedIndexerFilters.length > 1 ? "s" : ""} filtered
+                </span>
+              )}
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center">
-            <div className="flex w-full sm:w-auto gap-2">
-              <select
-                aria-label="Items per page"
-                value={itemsPerPage}
-                onChange={(e) => setItemsPerPage(Number(e.target.value))}
-                className="h-9 sm:h-10 px-3 sm:px-4 bg-secondary/30 border-border/60 text-xs sm:text-sm font-semibold rounded-full hover:bg-secondary/50 transition-all focus:ring-ring cursor-pointer flex-1 sm:flex-none shadow-sm"
-              >
-                {[25, 50, 100, 200].map((val) => (
-                  <option key={val} value={val}>
-                    {val} / page
-                  </option>
-                ))}
-              </select>
-
-              {(filter || selectedIndexerFilters.length > 0) && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-9 px-3 text-[10px] font-bold uppercase tracking-widest text-destructive bg-destructive/5 hover:bg-destructive/15 rounded-full whitespace-nowrap transition-all border border-destructive/20 flex-1 sm:flex-none"
-                  onClick={() => {
-                    setFilter("");
-                    onClearIndexerFilters();
-                  }}
-                >
-                  Clear
-                </Button>
-              )}
-            </div>
-
+          {/* Controls Row: Search Filter & Clear Button */}
+          <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-4 items-center">
             <div className="relative w-full group">
               <Input
-                placeholder="Fuzzy filter (e.g. '720p')..."
-                value={filter}
-                onChange={(e) => setFilter(e.target.value)}
-                className="h-9 sm:h-10 pl-9 sm:pl-10 text-sm bg-secondary/30 border-border/60 rounded-full transition-all duration-300 focus:ring-4 focus:ring-ring/20 focus:border-ring shadow-sm"
+                placeholder="Fuzzy filter (e.g. '720p', 'hevc', 'repack')..."
+                value={filterInput}
+                onChange={(e) => setFilterInput(e.target.value)}
+                aria-label="Fuzzy filter search results"
+                className="h-10 pl-10 pr-10 text-sm bg-secondary/30 border-border/60 rounded-full transition-all duration-200 focus:ring-2 focus:ring-primary/40 focus:border-primary shadow-sm"
               />
-              <Search className="absolute left-3 sm:left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-              {filter && (
+              <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors">
+                {isFiltering ? (
+                  <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                ) : (
+                  <Search className="h-4 w-4" />
+                )}
+              </div>
+              {filterInput && (
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="absolute right-1.5 sm:right-2 top-1/2 -translate-y-1/2 h-6 w-6 sm:h-7 sm:w-7 p-0 rounded-full hover:bg-destructive/10 hover:text-destructive"
-                  onClick={() => setFilter("")}
+                  aria-label="Clear filter text"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 p-0 rounded-full hover:bg-destructive/10 hover:text-destructive"
+                  onClick={() => setFilterInput("")}
                 >
-                  <X className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  <X className="h-3.5 w-3.5" />
                 </Button>
               )}
             </div>
+
+            {(filterInput || selectedIndexerFilters.length > 0) && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-10 px-4 text-xs font-bold uppercase tracking-wider text-destructive bg-destructive/5 hover:bg-destructive/15 rounded-full whitespace-nowrap transition-all border border-destructive/20 w-full sm:w-auto"
+                onClick={() => {
+                  setFilterInput("");
+                  onClearIndexerFilters();
+                }}
+              >
+                Clear all filters
+              </Button>
+            )}
           </div>
         </div>
       </CardHeader>
@@ -168,9 +209,11 @@ export function ResultsTable({
           onSort={handleSort}
         />
 
-        <div className="sm:hidden flex justify-between items-center px-3 py-2 border-b bg-muted/20">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-            Sort By
+        {/* Mobile Sort Controller */}
+        <div className="sm:hidden flex justify-between items-center px-3 py-2 border-b border-border/40 bg-muted/20">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+            Sort by: <strong className="text-foreground">{sortField}</strong> (
+            {sortDirection.toUpperCase()})
           </span>
           <MobileSortModal
             currentSort={sortField}
@@ -183,36 +226,55 @@ export function ResultsTable({
           />
         </div>
 
-        <div className="h-[calc(100vh-320px)] min-h-[400px] mt-2">
+        {/* Continuous Full-Dataset Virtualization */}
+        <div className="h-[calc(100dvh-260px)] min-h-[460px] relative">
           <Virtuoso
+            ref={virtuosoRef}
             className="h-full scrollbar-thin scrollbar-thumb-primary/20"
-            data={paginatedResults}
-            itemContent={(index, result) => {
+            data={sortedResults}
+            overscan={200}
+            atTopStateChange={(atTop) => setShowScrollTop(!atTop)}
+            computeItemKey={(index, result) =>
+              result.InfoHash ||
+              result.Link ||
+              `${result.Title}-${result.IndexerId}-${index}`
+            }
+            itemContent={(_index, result) => {
               if (!result) return null;
 
               return (
-                <div
-                  key={result.InfoHash || result.Link || index}
-                  className="w-full"
-                >
+                <div className="w-full">
                   {!isMobile ? (
-                    <ResultsTableRow result={result} onCopy={onCopy} />
+                    <ResultsTableRow
+                      result={result}
+                      copiedAction={copiedAction}
+                      onCopy={handleRowCopy}
+                    />
                   ) : (
-                    <ResultsMobileCard result={result} onCopy={onCopy} />
+                    <ResultsMobileCard
+                      result={result}
+                      copiedAction={copiedAction}
+                      onCopy={handleRowCopy}
+                    />
                   )}
                 </div>
               );
             }}
           />
-        </div>
 
-        <div className="p-3 sm:p-4 border-t border-border/20">
-          <PaginationControls
-            currentPage={currentPage}
-            totalPages={totalPages}
-            totalResults={totalResults}
-            onPageChange={setCurrentPage}
-          />
+          {/* Floating Back to Top Button */}
+          {showScrollTop && (
+            <Button
+              variant="default"
+              size="sm"
+              onClick={scrollToTop}
+              aria-label="Scroll back to top"
+              className="absolute bottom-4 right-4 z-20 shadow-lg rounded-full flex items-center gap-1.5 px-3.5 py-2 bg-primary/95 hover:bg-primary text-primary-foreground backdrop-blur-sm animate-in fade-in slide-in-from-bottom-2 duration-200"
+            >
+              <ArrowUp className="h-4 w-4" />
+              <span className="text-xs font-semibold">Top</span>
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>
