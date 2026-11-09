@@ -109,22 +109,45 @@ let lastFuseResults: JackettSearchResult[] | null = null;
 let lastFuseInstance: Fuse<JackettSearchResult> | null = null;
 
 /**
- * Perform high-performance fuzzy search and relevance ranking
+ * Perform high-performance fuzzy search and relevance ranking.
+ * When `filter` is non-empty, fuzzy filtering is executed and matching results are returned.
+ * When `filter` is empty, NO results are filtered/dropped; if `scoringQuery` is provided,
+ * relevance is calculated across all results without pruning.
  */
 export function advancedFuzzySearch(
   results: JackettSearchResult[],
   filter: string,
   scoringQuery?: string
 ): JackettSearchResult[] {
-  const query = (filter || scoringQuery || "").trim();
-  if (!query) {
+  const cleanFilter = (filter || "").trim();
+  const cleanScoring = (scoringQuery || "").trim();
+
+  // 1. If no in-table filter is active, do NOT filter out any results!
+  if (!cleanFilter) {
+    if (!cleanScoring) {
+      return results.map((r) => ({
+        ...r,
+        Relevance: Math.min(1, (Number(r.Seeders) || 0) / 1000),
+      }));
+    }
+
+    const rawTerms = cleanScoring.split(/\s+/).filter((t) => t.length > 1);
+    const terms: ProcessedTerm[] = rawTerms.map((t) => ({
+      original: t,
+      lower: t.toLowerCase(),
+      regex: new RegExp(`\\b${escapeRegExp(t)}\\b`, "i"),
+      hasSePattern: sePattern.test(t),
+      hasYearPattern: yearPattern.test(t),
+    }));
+
     return results.map((r) => ({
       ...r,
-      Relevance: Math.min(1, r.Seeders / 1000),
+      Relevance: calculateRelevance(r, terms, 1),
     }));
   }
 
-  const rawTerms = query.split(/\s+/).filter((t) => t.length > 1);
+  // 2. An explicit filter IS active -> filter results using Fuse.js
+  const rawTerms = cleanFilter.split(/\s+/).filter((t) => t.length > 1);
   const terms: ProcessedTerm[] = rawTerms.map((t) => ({
     original: t,
     lower: t.toLowerCase(),
@@ -148,8 +171,8 @@ export function advancedFuzzySearch(
     lastFuseInstance = fuse;
   }
 
-  // Search using the full query
-  const fuseResults = fuse.search(query);
+  // Search using the filter query
+  const fuseResults = fuse.search(cleanFilter);
 
   // If we have fuzzy results, process them
   if (fuseResults.length > 0) {

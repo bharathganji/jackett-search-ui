@@ -181,6 +181,24 @@ describe("advancedFuzzySearch", () => {
       expect(results.length).toBe(typedTestData.length);
     });
 
+    it("should never filter out results when filter is empty, even if scoringQuery is provided", () => {
+      const resultsWithQuery = advancedFuzzySearch(typedTestData, "", "Batman");
+      expect(resultsWithQuery.length).toBe(typedTestData.length);
+
+      const resultsWithNonExistent = advancedFuzzySearch(
+        typedTestData,
+        "",
+        "TotallyNonExistentQueryXYZ123"
+      );
+      expect(resultsWithNonExistent.length).toBe(typedTestData.length);
+    });
+
+    it("should filter results only when filter string is explicitly non-empty", () => {
+      const filtered = advancedFuzzySearch(typedTestData, "1080p", "Batman");
+      expect(filtered.length).toBeLessThan(typedTestData.length);
+      expect(filtered.length).toBeGreaterThan(0);
+    });
+
     it("should return empty array for non-matching search", () => {
       const results = advancedFuzzySearch(typedTestData, "XYZ123NonExistent");
       expect(results.length).toBe(0);
