@@ -40,6 +40,7 @@ export const useJackettSearch = () => {
   >([]);
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeSearchQuery, setActiveSearchQuery] = useState("");
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const handleIndexerFilterToggle = useCallback((indexerId: string) => {
@@ -79,6 +80,7 @@ export const useJackettSearch = () => {
       if (query.trim()) {
         addToRecentSearches(query.trim());
       }
+      setActiveSearchQuery(query.trim());
       fetchDataJackett(query);
     },
     [searchQuery, addToRecentSearches, fetchDataJackett]
@@ -140,6 +142,7 @@ export const useJackettSearch = () => {
     info,
     searchQuery,
     setSearchQuery,
+    activeSearchQuery,
     indexerSelection,
     setIndexerSelection,
     indexers,

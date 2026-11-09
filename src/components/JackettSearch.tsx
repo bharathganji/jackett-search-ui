@@ -20,6 +20,7 @@ const JackettSearch = memo(() => {
     info,
     searchQuery,
     setSearchQuery,
+    activeSearchQuery,
     indexerSelection,
     setIndexerSelection,
     indexers,
@@ -91,7 +92,7 @@ const JackettSearch = memo(() => {
               onCopy={handleCopy}
               indexers={indexers}
               selectedIndexerFilters={selectedIndexerFilters}
-              searchQuery={searchQuery}
+              searchQuery={activeSearchQuery}
               onClearIndexerFilters={handleClearIndexerFilters}
             />
             <div className="max-w-4xl mx-auto w-full">
